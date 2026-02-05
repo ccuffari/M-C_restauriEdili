@@ -12,8 +12,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-    
-
 </head>
 <body>
     <div class="dashboard-page" id="dashboardPage">
@@ -81,43 +79,10 @@
                 <div class="page-header">
                     <h1><i class="fas fa-file-contract"></i> Gestione Preventivi</h1>
                     <div class="header-actions">
-                        <button class="btn btn-secondary" id="downloadTemplateBtn">
-                            <i class="fas fa-download"></i>
-                            Scarica Template Word
-                        </button>
                         <button class="btn btn-success" id="addPreventivoBtn">
                             <i class="fas fa-plus"></i>
                             Nuovo Preventivo
                         </button>
-                    </div>
-                </div>
-                
-                <!-- Istruzioni Template -->
-                <div class="content-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-info-circle"></i> Istruzioni Template</h3>
-                    </div>
-                    <div class="card-body">
-                        <p>Utilizza il template Word preformattato per creare preventivi professionali:</p>
-                        <ol style="margin-left: var(--space-lg); margin-bottom: var(--space-md);">
-                            <li><strong>Scarica il template</strong> cliccando su "Scarica Template Word"</li>
-                            <li><strong>Apri il file .docx</strong> con Microsoft Word o LibreOffice</li>
-                            <li><strong>Compila tutti i campi evidenziati</strong> nel documento</li>
-                            <li><strong>Salva il preventivo completato</strong> con nome descrittivo</li>
-                            <li><strong>Carica il file</strong> nella sezione "Nuovo Preventivo"</li>
-                            <li><strong>Genera automaticamente il PDF</strong> per l'invio al cliente</li>
-                        </ol>
-                        
-                        <div class="template-badge" id="downloadTemplateBadge">
-                            <i class="fas fa-file-word"></i>
-                            <span>Scarica Template Preventivo.docx</span>
-                        </div>
-                        
-                        <div class="alert alert-info mt-3">
-                            <i class="fas fa-lightbulb"></i>
-                            <strong>Suggerimento:</strong> Il template include tutte le sezioni necessarie per un preventivo valido:
-                            dati aziendali, cliente, descrizione lavori, prezzi, condizioni e firme.
-                        </div>
                     </div>
                 </div>
                 
@@ -285,9 +250,9 @@
                                         <i class="fas fa-file-word"></i>
                                     </div>
                                     <div class="file-upload-text">
-                                        <h4>File Word (.docx)</h4>
+                                        <h4>File Word (.docx) *</h4>
                                         <p>Template compilato</p>
-                                        <input type="file" id="wordFileInput" accept=".doc,.docx" style="display: none;">
+                                        <input type="file" id="wordFileInput" accept=".doc,.docx" style="display: none;" required>
                                         <button type="button" class="btn btn-primary" id="selectWordFileBtn">
                                             <i class="fas fa-folder-open"></i>
                                             Seleziona Word
@@ -322,7 +287,7 @@
                         
                         <div class="alert alert-info mt-2">
                             <i class="fas fa-sync-alt"></i>
-                            <strong>Conversione automatica:</strong> Se carichi solo il file Word, il sistema genererà automaticamente la versione PDF.
+                            <strong>Nota:</strong> Carica il file Word del preventivo (obbligatorio). Puoi anche caricare una versione PDF già convertita.
                         </div>
                     </div>
                 </div>
@@ -340,21 +305,35 @@
     <script src="scripts/loadSidebar.js"></script>
     
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
-            authDomain: "work-tracker-v120400.firebaseapp.com",
-            projectId: "work-tracker-v120400",
-            storageBucket: "work-tracker-v120400.firebasestorage.app",
-            messagingSenderId: "437459935839",
-            appId: "1:437459935839:web:cb0b54608314dcb25731ea",
-            measurementId: "G-2LPKL9WREX"
-        };
+        // Firebase Configuration (caricata dal file JSON)
+        let firebaseConfig = null;
+        let auth = null;
+        let db = null;
+        let storage = null;
         
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+        // Carica la configurazione Firebase dal file JSON
+        async function loadFirebaseConfig() {
+            try {
+                const response = await fetch('firebase_config.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                firebaseConfig = await response.json();
+                
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                db = firebase.firestore();
+                storage = firebase.storage();
+                
+                console.log('Firebase configurato correttamente');
+                return true;
+            } catch (error) {
+                console.error('Errore nel caricamento della configurazione Firebase:', error);
+                showAlert('error', 'Errore nel caricamento della configurazione. Controlla il file firebase_config.json');
+                return false;
+            }
+        }
         
         // Variabili globali
         let currentUser = null;
@@ -363,8 +342,6 @@
         let allCantieri = [];
         
         // DOM elements
-        const downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
-        const downloadTemplateBadge = document.getElementById('downloadTemplateBadge');
         const addPreventivoBtn = document.getElementById('addPreventivoBtn');
         const preventiviTableBody = document.getElementById('preventiviTableBody');
         const preventivoModal = document.getElementById('preventivoModal');
@@ -395,7 +372,13 @@
         const menuToggle = document.getElementById('menuToggle');
         
         // Initialize app
-        function initApp() {
+        async function initApp() {
+            // Carica la configurazione Firebase
+            const configLoaded = await loadFirebaseConfig();
+            if (!configLoaded) {
+                return;
+            }
+            
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     currentUser = user;
@@ -407,9 +390,6 @@
             });
             
             // Event listeners
-            downloadTemplateBtn.addEventListener('click', downloadTemplate);
-            downloadTemplateBadge.addEventListener('click', downloadTemplate);
-            
             addPreventivoBtn.addEventListener('click', () => {
                 document.getElementById('preventivoModalTitle').innerHTML = '<i class="fas fa-plus"></i> Nuovo Preventivo';
                 preventivoForm.reset();
@@ -501,136 +481,6 @@
             updateUserDisplay();
             loadCantieri();
             loadPreventivi();
-        }
-        
-        // Genera e scarica template Word
-        function downloadTemplate() {
-            // Crea il contenuto del documento Word in formato XML/HTML
-            const templateContent = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Preventivo Marocco & Cuffari</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .header { text-align: center; margin-bottom: 40px; }
-        .company-info { margin-bottom: 30px; }
-        .client-info { margin-bottom: 30px; border: 1px solid #ccc; padding: 20px; }
-        .table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        .table th, .table td { border: 1px solid #ccc; padding: 10px; text-align: left; }
-        .table th { background-color: #f2f2f2; }
-        .signature { margin-top: 50px; }
-        .highlight { background-color: #ffffcc; padding: 3px; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>MAROCCO & CUFFARI SRL</h1>
-        <p>Via Roma, 123 - 10100 Torino (TO)</p>
-        <p>P.IVA: 12345678901 - Tel: 011 1234567</p>
-        <p>Email: info@marocco-cuffari.it</p>
-    </div>
-    
-    <div class="company-info">
-        <h2>PREVENTIVO N. <span class="highlight">[NUMERO_PREVENTIVO]</span></h2>
-        <p>Data: <span class="highlight">[DATA_PREVENTIVO]</span></p>
-        <p>Valido fino al: <span class="highlight">[DATA_SCADENZA]</span></p>
-    </div>
-    
-    <div class="client-info">
-        <h3>CLIENTE</h3>
-        <p>Ragione Sociale: <span class="highlight">[NOME_CLIENTE]</span></p>
-        <p>Indirizzo: <span class="highlight">[INDIRIZZO_CLIENTE]</span></p>
-        <p>P.IVA/CF: <span class="highlight">[PIVA_CLIENTE]</span></p>
-        <p>Referente: <span class="highlight">[REFERENTE_CLIENTE]</span></p>
-        <p>Email: <span class="highlight">[EMAIL_CLIENTE]</span></p>
-        <p>Telefono: <span class="highlight">[TELEFONO_CLIENTE]</span></p>
-    </div>
-    
-    <div class="description">
-        <h3>DESCRIZIONE LAVORI</h3>
-        <p class="highlight">[DESCRIZIONE_DETTAGLIATA_LAVORI]</p>
-    </div>
-    
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Descrizione</th>
-                <th>Quantità</th>
-                <th>Prezzo Unitario (€)</th>
-                <th>Totale (€)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="highlight">[DESCRIZIONE_VOCE_1]</td>
-                <td class="highlight">[QUANTITA_1]</td>
-                <td class="highlight">[PREZZO_UNITARIO_1]</td>
-                <td class="highlight">[TOTALE_VOCE_1]</td>
-            </tr>
-            <tr>
-                <td class="highlight">[DESCRIZIONE_VOCE_2]</td>
-                <td class="highlight">[QUANTITA_2]</td>
-                <td class="highlight">[PREZZO_UNITARIO_2]</td>
-                <td class="highlight">[TOTALE_VOCE_2]</td>
-            </tr>
-            <!-- Aggiungi altre righe secondo necessità -->
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" style="text-align: right;"><strong>TOTALE IMPONIBILE</strong></td>
-                <td class="highlight">[TOTALE_IMPONIBILE] €</td>
-            </tr>
-            <tr>
-                <td colspan="3" style="text-align: right;"><strong>IVA 22%</strong></td>
-                <td class="highlight">[IVA] €</td>
-            </tr>
-            <tr>
-                <td colspan="3" style="text-align: right;"><strong>TOTALE PREVENTIVO</strong></td>
-                <td class="highlight"><strong>[TOTALE_PREVENTIVO] €</strong></td>
-            </tr>
-        </tfoot>
-    </table>
-    
-    <div class="conditions">
-        <h3>CONDIZIONI</h3>
-        <ul>
-            <li>Validità preventivo: <span class="highlight">[GIORNI_VALIDITA]</span> giorni dalla data di emissione</li>
-            <li>Tempi di consegna: <span class="highlight">[TEMPI_CONSEGNA]</span></li>
-            <li>Modalità di pagamento: <span class="highlight">[MODALITA_PAGAMENTO]</span></li>
-            <li>Garanzia: <span class="highlight">[GARANZIA]</span></li>
-        </ul>
-    </div>
-    
-    <div class="signature">
-        <p>Per accettazione</p>
-        <br><br><br>
-        <p>_________________________</p>
-        <p>Il Cliente</p>
-        <br><br><br>
-        <p>_________________________</p>
-        <p>Marocco & Cuffari Srl</p>
-    </div>
-</body>
-</html>`;
-            
-            // Crea un blob con il contenuto
-            const blob = new Blob([templateContent], { type: 'application/msword' });
-            const url = window.URL.createObjectURL(blob);
-            
-            // Crea link per il download
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'Template_Preventivo_Marocco_Cuffari.doc';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Rilascia l'URL
-            window.URL.revokeObjectURL(url);
-            
-            showAlert('success', 'Template Word generato e scaricato! Apri il file e compila tutti i campi evidenziati.');
         }
         
         // Setup drag & drop per file
@@ -1048,7 +898,7 @@
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 
-                <!-- Includi il footer -->
+    <!-- Includi il footer -->
     <script>
         // Carica il footer
         fetch('footer.html')
