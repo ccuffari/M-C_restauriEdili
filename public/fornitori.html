@@ -741,17 +741,28 @@
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
     
-    <!-- Footer -->
-    <footer class="dashboard-footer">
-        <div class="footer-container">
-            <p>&copy; <span id="currentYear">2024</span> Marocco&Cuffari Ristauri Edili</p>
-            <p class="developer-credit">Sviluppato da Cristian Felice Cuffari</p>
-        </div>
-    </footer>
-    
+
+    <!-- Includi il footer -->
     <script>
-        // Set current year in footer
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        // Carica il footer
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.body.insertAdjacentHTML('beforeend', data);
+            })
+            .catch(error => {
+                console.error('Errore nel caricamento del footer:', error);
+                // Fallback: crea un footer minimale se il caricamento fallisce
+                const fallbackFooter = document.createElement('footer');
+                fallbackFooter.className = 'dashboard-footer';
+                fallbackFooter.innerHTML = `
+                    <div class="footer-container">
+                        <p>&copy; ${new Date().getFullYear()} Marocco&Cuffari Ristauri Edili</p>
+                        <p class="developer-credit">Sviluppato da Cristian Felice Cuffari</p>
+                    </div>
+                `;
+                document.body.appendChild(fallbackFooter);
+            });
     </script>
 </body>
 </html>
