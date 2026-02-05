@@ -63,12 +63,15 @@
         </div>
     </div>
     
-    <!-- Dashboard Page (solo profilo) -->
+    <!-- Dashboard Page -->
     <div class="dashboard-page" id="dashboardPage">
-        <!-- Navbar semplice -->
+        <!-- Navbar -->
         <nav class="navbar">
             <div class="navbar-container">
                 <div class="navbar-brand">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <div class="logo">
                         <i class="fas fa-hard-hat"></i>
                         <span>Marocco<span class="logo-highlight">&</span>Cuffari</span>
@@ -77,7 +80,9 @@
                 
                 <div class="navbar-user">
                     <div class="user-info" id="userDropdownToggle">
-                        <div class="user-avatar" id="userAvatar"></div>
+                        <div class="user-avatar" id="userAvatar">
+                            <!-- Initials will be set by JavaScript -->
+                        </div>
                         <div class="user-details">
                             <div class="user-name" id="userName">Caricamento...</div>
                             <div class="user-role" id="userRole">Caricamento...</div>
@@ -95,87 +100,185 @@
             </div>
         </nav>
         
-        <!-- Main Content - Solo profilo -->
-        <main class="profile-container">
-            <div class="profile-header">
-                <h1><i class="fas fa-user-circle"></i> Il Mio Profilo</h1>
-                <p>Gestisci le tue informazioni personali</p>
+        <!-- Main Container -->
+        <div class="main-container">
+            <!-- Sidebar -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h3><i class="fas fa-user-circle"></i> Menu Utente</h3>
+                </div>
+                <div class="sidebar-menu">
+                    <div class="menu-section">
+                        <h4><i class="fas fa-user"></i> Il Mio Account</h4>
+                        <a href="#" class="menu-item active" data-section="profile">
+                            <i class="fas fa-user"></i>
+                            <span>Il Mio Profilo</span>
+                        </a>
+                    </div>
+                    
+                    <div class="menu-section">
+                        <h4><i class="fas fa-shield-alt"></i> Sicurezza</h4>
+                        <a href="#" class="menu-item" data-section="password">
+                            <i class="fas fa-key"></i>
+                            <span>Cambia Password</span>
+                        </a>
+                    </div>
+                    
+                    <div class="sidebar-footer">
+                        <p class="small-text">
+                            <i class="fas fa-info-circle"></i>
+                            Per altre funzioni, accedi alle altre sezioni del sistema.
+                        </p>
+                    </div>
+                </div>
             </div>
             
-            <div class="alert-container" id="alertContainer"></div>
-            
-            <div class="profile-card">
-                <div class="profile-section">
-                    <h2><i class="fas fa-user"></i> Informazioni Personali</h2>
+            <!-- Content Area -->
+            <div class="page-content" id="mainContent">
+                <!-- Alert Container -->
+                <div id="alertContainer"></div>
+                
+                <!-- Profile Section -->
+                <div class="page-section active" id="profileSection">
+                    <div class="page-header">
+                        <h1><i class="fas fa-user-circle"></i> Il Mio Profilo</h1>
+                        <p>Gestisci le tue informazioni personali</p>
+                    </div>
                     
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="profileName">Nome Completo</label>
-                            <input type="text" id="profileName" placeholder="Nome e cognome">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-user"></i> Informazioni Personali</h3>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="profileEmail">Email</label>
-                            <input type="email" id="profileEmail" readonly class="readonly">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="profileRole">Ruolo</label>
-                            <input type="text" id="profileRole" readonly class="readonly">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="profilePhone">Telefono</label>
-                            <input type="tel" id="profilePhone" placeholder="+39 123 456 7890">
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="profileName">Nome Completo *</label>
+                                    <input type="text" id="profileName" placeholder="Nome e cognome">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="profileEmail">Email *</label>
+                                    <input type="email" id="profileEmail" readonly class="readonly">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="profileRole">Ruolo *</label>
+                                    <input type="text" id="profileRole" readonly class="readonly">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="profilePhone">Telefono</label>
+                                    <input type="tel" id="profilePhone" placeholder="+39 123 456 7890">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profileAddress">Indirizzo</label>
+                                <textarea id="profileAddress" rows="2" placeholder="Via, Città, CAP"></textarea>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button class="btn btn-primary" id="saveProfileBtn">
+                                    <i class="fas fa-save"></i>
+                                    Salva Modifiche
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="profileAddress">Indirizzo</label>
-                        <textarea id="profileAddress" rows="2" placeholder="Via, Città, CAP"></textarea>
+                    <!-- Account Info -->
+                    <div class="content-card mt-3">
+                        <div class="card-header">
+                            <h3><i class="fas fa-info-circle"></i> Informazioni Account</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Account creato il:</span>
+                                    <span class="info-value" id="profileCreated"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Ultimo accesso:</span>
+                                    <span class="info-value" id="lastLogin"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">ID Utente:</span>
+                                    <span class="info-value" id="userId"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <button class="btn btn-primary" id="saveProfileBtn">
-                        <i class="fas fa-save"></i>
-                        Salva Modifiche
-                    </button>
                 </div>
                 
-                <div class="profile-section">
-                    <h2><i class="fas fa-lock"></i> Sicurezza</h2>
-                    
-                    <div class="form-group">
-                        <label for="currentPassword">Password Attuale</label>
-                        <input type="password" id="currentPassword" placeholder="Inserisci la password attuale">
+                <!-- Password Section -->
+                <div class="page-section" id="passwordSection">
+                    <div class="page-header">
+                        <h1><i class="fas fa-key"></i> Cambia Password</h1>
+                        <p>Aggiorna la tua password per mantenere l'account sicuro</p>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="newPassword">Nuova Password</label>
-                        <input type="password" id="newPassword" placeholder="Minimo 6 caratteri">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-lock"></i> Sicurezza Account</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="currentPassword">Password Attuale *</label>
+                                <input type="password" id="currentPassword" placeholder="Inserisci la password attuale">
+                                <small class="form-text">Inserisci la password che stai utilizzando attualmente</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newPassword">Nuova Password *</label>
+                                <input type="password" id="newPassword" placeholder="Minimo 6 caratteri">
+                                <small class="form-text">La nuova password deve contenere almeno 6 caratteri</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword">Conferma Nuova Password *</label>
+                                <input type="password" id="confirmPassword" placeholder="Conferma la nuova password">
+                                <small class="form-text">Re-inserisci la nuova password per confermare</small>
+                            </div>
+                            
+                            <div class="password-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="passwordStrength"></div>
+                                </div>
+                                <div class="strength-text" id="passwordStrengthText">Forza password: debole</div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button class="btn btn-primary" id="changePasswordBtn">
+                                    <i class="fas fa-key"></i>
+                                    Cambia Password
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="confirmPassword">Conferma Nuova Password</label>
-                        <input type="password" id="confirmPassword" placeholder="Conferma la nuova password">
+                    <!-- Security Tips -->
+                    <div class="content-card mt-3">
+                        <div class="card-header">
+                            <h3><i class="fas fa-shield-alt"></i> Suggerimenti per la Sicurezza</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="tips-list">
+                                <li><i class="fas fa-check-circle text-success"></i> Usa una password lunga almeno 8 caratteri</li>
+                                <li><i class="fas fa-check-circle text-success"></i> Includi lettere maiuscole, minuscole, numeri e simboli</li>
+                                <li><i class="fas fa-check-circle text-success"></i> Non riutilizzare password vecchie</li>
+                                <li><i class="fas fa-check-circle text-success"></i> Cambia la password regolarmente</li>
+                                <li><i class="fas fa-check-circle text-success"></i> Non condividere mai la tua password con altri</li>
+                            </ul>
+                        </div>
                     </div>
-                    
-                    <button class="btn btn-primary" id="changePasswordBtn">
-                        <i class="fas fa-key"></i>
-                        Cambia Password
-                    </button>
                 </div>
             </div>
-            
-            <div class="profile-info">
-                <p><i class="fas fa-info-circle"></i> Account creato il: <span id="profileCreated"></span></p>
-                <p><i class="fas fa-clock"></i> Ultimo accesso: <span id="lastLogin"></span></p>
-            </div>
-        </main>
+        </div>
         
         <!-- Footer -->
         <footer class="dashboard-footer">
             <div class="footer-container">
-                <p>&copy; 2024 Marocco&Cuffari Ristauri Edili</p>
+                <p>&copy; <span id="currentYear"></span> Marocco&Cuffari Ristauri Edili - Tutti i diritti riservati</p>
                 <p class="developer-credit">Sviluppato da Cristian Felice Cuffari</p>
             </div>
         </footer>
@@ -183,5 +286,67 @@
 
     <!-- Script -->
     <script src="scripts/app.js"></script>
+    
+    <!-- Inizializzazione sidebar e footer -->
+    <script>
+        // Imposta l'anno corrente nel footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Gestione sidebar toggle
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+        
+        // Gestione menu sidebar
+        document.querySelectorAll('.sidebar-menu .menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.getAttribute('data-section');
+                
+                // Rimuovi active da tutti i menu items
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                // Aggiungi active al corrente
+                this.classList.add('active');
+                
+                // Nascondi tutte le sezioni
+                document.querySelectorAll('.page-section').forEach(sec => {
+                    sec.classList.remove('active');
+                });
+                
+                // Mostra la sezione selezionata
+                if (section === 'profile') {
+                    document.getElementById('profileSection').classList.add('active');
+                } else if (section === 'password') {
+                    document.getElementById('passwordSection').classList.add('active');
+                }
+                
+                // Chiudi sidebar su mobile
+                if (window.innerWidth <= 991) {
+                    document.getElementById('sidebar').classList.remove('show');
+                }
+            });
+        });
+        
+        // Chiudi sidebar quando si clicca fuori (solo su mobile)
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            if (window.innerWidth <= 991 && 
+                !sidebar.contains(e.target) && 
+                !menuToggle.contains(e.target) && 
+                sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+            }
+        });
+        
+        // Forza il ridimensionamento della sidebar su resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth > 991) {
+                sidebar.classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>
