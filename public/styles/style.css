@@ -1,6 +1,74 @@
-/* ===== CANTIERI PAGE STYLES ===== */
+/* ==========================================================================
+   BUILD-MANAGER DASHBOARD - UNIFIED STYLESHEET
+   Version: 1.0.0
+   Description: Professional corporate styles for construction management dashboard
+   Author: BuildManager Team
+   ========================================================================== */
 
-/* Status Badges for Cantieri */
+/* ===== CSS VARIABLES & THEME SETUP ===== */
+:root {
+    /* Primary Color Palette - Corporate Blue Theme */
+    --primary: #1a365d;
+    --primary-light: #2d4a8a;
+    --primary-dark: #0f2547;
+    --accent: #2b6cb0;
+    --accent-light: #4299e1;
+    
+    /* Status Colors */
+    --success: #38a169;
+    --warning: #d69e2e;
+    --danger: #e53e3e;
+    --info: #3182ce;
+    
+    /* Neutral Colors */
+    --white: #ffffff;
+    --light: #f7fafc;
+    --gray: #718096;
+    --dark: #2d3748;
+    
+    /* Spacing Scale (8px base) */
+    --space-xs: 0.25rem;   /* 4px */
+    --space-sm: 0.5rem;    /* 8px */
+    --space-md: 1rem;      /* 16px */
+    --space-lg: 1.5rem;    /* 24px */
+    --space-xl: 2rem;      /* 32px */
+    --space-2xl: 3rem;     /* 48px */
+    
+    /* Border Radius */
+    --radius-sm: 0.25rem;  /* 4px */
+    --radius-md: 0.5rem;   /* 8px */
+    --radius-lg: 0.75rem;  /* 12px */
+    --radius-xl: 1rem;     /* 16px */
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    
+    /* Transitions */
+    --transition-fast: 150ms ease-in-out;
+    --transition-normal: 250ms ease-in-out;
+    --transition-slow: 350ms ease-in-out;
+}
+
+/* ===== RESET & BASE STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    color: var(--dark);
+    background-color: var(--light);
+    font-size: 14px;
+}
+
+/* ===== COMMON COMPONENTS ===== */
+
+/* ---- Status Badges (Used across multiple pages) ---- */
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -10,46 +78,281 @@
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
+/* Cantiere Status Variants */
 .status-in-progress {
-    background-color: rgba(52, 152, 219, 0.1);
+    background-color: rgba(66, 153, 225, 0.1);
     color: var(--accent);
+    border: 1px solid rgba(66, 153, 225, 0.2);
 }
 
 .status-completed {
-    background-color: rgba(39, 174, 96, 0.1);
+    background-color: rgba(56, 161, 105, 0.1);
     color: var(--success);
+    border: 1px solid rgba(56, 161, 105, 0.2);
 }
 
 .status-on-hold {
-    background-color: rgba(243, 156, 18, 0.1);
+    background-color: rgba(214, 158, 46, 0.1);
     color: var(--warning);
+    border: 1px solid rgba(214, 158, 46, 0.2);
 }
 
 .status-cancelled {
-    background-color: rgba(231, 76, 60, 0.1);
+    background-color: rgba(229, 62, 62, 0.1);
     color: var(--danger);
+    border: 1px solid rgba(229, 62, 62, 0.2);
 }
 
-/* Instructions (se necessario in futuro) */
-.instructions {
-    background-color: var(--white);
-    border-radius: var(--radius-lg);
-    padding: var(--space-lg);
-    margin-bottom: var(--space-xl);
+/* Payment Status Badges */
+.badge-paid {
+    background-color: rgba(56, 161, 105, 0.1);
+    color: var(--success);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+    border: 1px solid rgba(56, 161, 105, 0.2);
+}
+
+.badge-unpaid {
+    background-color: rgba(214, 158, 46, 0.1);
+    color: var(--warning);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+    border: 1px solid rgba(214, 158, 46, 0.2);
+}
+
+.badge-overdue {
+    background-color: rgba(229, 62, 62, 0.1);
+    color: var(--danger);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+    border: 1px solid rgba(229, 62, 62, 0.2);
+}
+
+/* Fornitore Type Badges */
+.badge-materiali {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: rgba(159, 122, 234, 0.1);
+    color: #9b59b6;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(159, 122, 234, 0.2);
+}
+
+.badge-servizi {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: rgba(66, 153, 225, 0.1);
+    color: var(--accent);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(66, 153, 225, 0.2);
+}
+
+.badge-manodopera {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: rgba(56, 161, 105, 0.1);
+    color: var(--success);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(56, 161, 105, 0.2);
+}
+
+.badge-attrezzature {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: rgba(237, 137, 54, 0.1);
+    color: #e67e22;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(237, 137, 54, 0.2);
+}
+
+.badge-default {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: rgba(160, 174, 192, 0.1);
+    color: #a0aec0;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(160, 174, 192, 0.2);
+}
+
+/* Fornitore Status Badges */
+.badge-active {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: rgba(56, 161, 105, 0.1);
+    color: var(--success);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(56, 161, 105, 0.2);
+}
+
+.badge-inactive {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: rgba(229, 62, 62, 0.1);
+    color: var(--danger);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(229, 62, 62, 0.2);
+}
+
+/* Lavoro/Preventivi Status Badges */
+.status-approved {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    background-color: rgba(56, 161, 105, 0.1);
+    color: var(--success);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(56, 161, 105, 0.2);
+}
+
+.status-pending {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    background-color: rgba(214, 158, 46, 0.1);
+    color: var(--warning);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(214, 158, 46, 0.2);
+}
+
+.status-rejected {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    background-color: rgba(229, 62, 62, 0.1);
+    color: var(--danger);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(229, 62, 62, 0.2);
+}
+
+/* Preventivi-specific Status Badges */
+.status-draft {
+    background-color: rgba(113, 128, 150, 0.1);
+    color: var(--gray);
+    border: 1px solid rgba(113, 128, 150, 0.2);
+}
+
+.status-sent {
+    background-color: rgba(66, 153, 225, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(66, 153, 225, 0.2);
+}
+
+.status-accepted {
+    background-color: rgba(56, 161, 105, 0.1);
+    color: var(--success);
+    border: 1px solid rgba(56, 161, 105, 0.2);
+}
+
+.status-expired {
+    background-color: rgba(229, 62, 62, 0.1);
+    color: var(--danger);
+    border: 1px solid rgba(229, 62, 62, 0.2);
+}
+
+/* ---- Template Badge (Used in Lavoro & Preventivi) ---- */
+.template-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background-color: var(--light);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+}
+
+.template-badge:hover {
+    background-color: #edf2f7;
+    transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
 }
 
-.instructions ol {
-    margin-left: var(--space-lg);
-    margin-bottom: var(--space-md);
+.template-badge i {
+    color: var(--accent);
 }
 
-.instructions li {
-    margin-bottom: var(--space-sm);
+/* ---- File Type Badges ---- */
+.file-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
 }
-/* ===== DASHBOARD SPECIFIC ===== */
+
+.file-type-badge.word {
+    background-color: rgba(43, 87, 154, 0.1);
+    color: #2b579a;
+    border: 1px solid rgba(43, 87, 154, 0.2);
+}
+
+.file-type-badge.pdf {
+    background-color: rgba(229, 62, 62, 0.1);
+    color: var(--danger);
+    border: 1px solid rgba(229, 62, 62, 0.2);
+}
+
+/* ---- File Preview Component ---- */
+.file-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    background-color: var(--light);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-sm);
+    border: 1px solid #e2e8f0;
+}
+
+.file-preview i {
+    color: var(--accent);
+    font-size: 1.25rem;
+}
+
+/* ---- Amount Display ---- */
+.amount {
+    font-weight: 600;
+    color: var(--success);
+    font-size: 0.875rem;
+}
+
+/* ===== LAYOUT & PAGE STRUCTURE ===== */
+
+/* ---- Page Section Container ---- */
 .page-section {
     background-color: var(--white);
     border-radius: var(--radius-lg);
@@ -57,6 +360,7 @@
     box-shadow: var(--shadow-sm);
     margin-bottom: var(--space-xl);
     padding: var(--space-lg);
+    border: 1px solid #e2e8f0;
 }
 
 .page-section h2 {
@@ -66,64 +370,555 @@
     margin-bottom: var(--space-lg);
     padding-bottom: var(--space-md);
     border-bottom: 1px solid var(--light);
+    color: var(--primary);
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
-/* Welcome Card */
+/* ---- Welcome Card (Dashboard) ---- */
 .welcome-card {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: var(--white);
     border-radius: var(--radius-lg);
     padding: var(--space-xl);
     margin-bottom: var(--space-xl);
+    box-shadow: var(--shadow-md);
 }
 
 .welcome-card h1 {
     color: var(--white);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: var(--space-md);
 }
 
 .welcome-card p {
     color: rgba(255, 255, 255, 0.9);
     font-size: 1.125rem;
     max-width: 600px;
+    line-height: 1.6;
 }
 
-/* ===== FATTURE PAGE STYLES ===== */
+/* ---- Instructions Box ---- */
+.instructions {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid #e2e8f0;
+}
 
-/* Payment status badges */
-.badge-paid {
-    background-color: rgba(39, 174, 96, 0.1);
-    color: var(--success);
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
+.instructions ol {
+    margin-left: var(--space-lg);
+    margin-bottom: var(--space-md);
+}
+
+.instructions li {
+    margin-bottom: var(--space-sm);
+    color: var(--gray);
+}
+
+/* ===== SPECIFIC PAGE STYLES ===== */
+
+/* ---- Preventivi Page Specific ---- */
+.preventivi-table td.amount {
     font-weight: 600;
-    display: inline-block;
+    color: var(--success);
+    text-align: right;
 }
 
-.badge-unpaid {
-    background-color: rgba(243, 156, 18, 0.1);
+.preventivi-table td.expiry-date {
     color: var(--warning);
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: inline-block;
+    font-size: 0.875rem;
 }
 
-.badge-overdue {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: inline-block;
+.preventivo-card {
+    border-left: 4px solid var(--accent);
+    transition: all var(--transition-fast);
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    border: 1px solid #e2e8f0;
 }
 
-.amount {
+.preventivo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.preventivo-card.expired {
+    border-left-color: var(--danger);
+}
+
+.preventivo-card.accepted {
+    border-left-color: var(--success);
+}
+
+/* Client Info in Preventivi */
+.client-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.client-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
     font-weight: 600;
+}
+
+.client-details h4 {
+    margin-bottom: var(--space-xs);
+    color: var(--dark);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.client-details p {
+    color: var(--gray);
+    font-size: 0.75rem;
+    margin-bottom: 0;
+}
+
+/* Preventivi Form Section */
+.preventivo-form-section {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    border: 1px solid var(--light);
+    box-shadow: var(--shadow-sm);
+}
+
+.preventivo-form-section h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    color: var(--primary);
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+/* Items Table in Preventivi */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-lg) 0;
+    font-size: 0.875rem;
+}
+
+.items-table th {
+    background-color: var(--light);
+    padding: var(--space-md);
+    text-align: left;
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.875rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.items-table td {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--light);
+    vertical-align: top;
+}
+
+.items-table .item-description {
+    width: 40%;
+}
+
+.items-table .item-quantity,
+.items-table .item-price,
+.items-table .item-total {
+    width: 20%;
+    text-align: right;
+}
+
+/* Total Section */
+.total-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 2px solid var(--light);
+}
+
+.total-amount {
+    text-align: right;
+    min-width: 200px;
+}
+
+.total-amount h3 {
+    margin-bottom: var(--space-sm);
+    color: var(--dark);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.total-amount .amount {
+    font-size: 1.5rem;
+    font-weight: 700;
     color: var(--success);
 }
+
+/* ---- Data Table Responsive ---- */
+@media (max-width: 768px) {
+    .data-table thead {
+        display: none;
+    }
+    
+    .data-table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1rem;
+        background: var(--white);
+    }
+    
+    .data-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .data-table tbody td:last-child {
+        border-bottom: none;
+    }
+    
+    .data-table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #666;
+        margin-right: 1rem;
+    }
+    
+    .data-table tbody td[data-label] {
+        flex-direction: column;
+    }
+    
+    /* Responsive adjustments for preventivi page */
+    .preventivi-table td.amount,
+    .items-table .item-quantity,
+    .items-table .item-price,
+    .items-table .item-total {
+        text-align: left;
+    }
+    
+    .total-section {
+        justify-content: flex-start;
+    }
+    
+    .client-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* ===== LAYOUT CORRECTIONS ===== */
+
+/* Corregge sovrapposizione login/dashboard */
+.login-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+}
+
+.dashboard-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Corregge altezza sidebar */
+.main-container {
+    display: flex;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    min-height: calc(100vh - 140px);
+}
+
+.sidebar {
+    width: 250px;
+    background-color: var(--primary);
+    color: var(--white);
+    padding: var(--space-lg) 0;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition-normal);
+    height: calc(100vh - 70px);
+    position: sticky;
+    top: 70px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.page-content {
+    flex: 1;
+    padding: var(--space-lg);
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 140px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        transform: translateX(-100%);
+        z-index: 1000;
+        height: calc(100vh - 70px);
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    
+    .page-content {
+        width: 100%;
+        min-height: calc(100vh - 70px);
+    }
+}
+
+/* Assicura che il footer sia sempre in fondo */
+.dashboard-footer {
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+/* Aggiusta spaziatura sezioni */
+.page-section {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    display: none;
+}
+
+.page-section:target,
+.page-section.active {
+    display: block;
+}
+
+.welcome-card {
+    display: block;
+}
+
+/* ===== LOGIN PAGE ===== */
+.login-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    padding: 20px;
+    z-index: 10000;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-card {
+    padding: var(--space-xl);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+}
+
+.logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: var(--space-lg);
+}
+
+.logo i {
+    font-size: 2.5rem;
+    color: var(--accent);
+}
+
+.logo-highlight {
+    color: var(--accent);
+}
+
+.login-header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--space-sm);
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.login-header p {
+    color: var(--gray);
+    font-size: 1.125rem;
+    line-height: 1.5;
+}
+
+.login-form {
+    width: 100%;
+}
+
+.login-form .form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.login-form .form-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    color: var(--primary);
+    margin-bottom: var(--space-sm);
+    font-size: 0.95rem;
+}
+
+.login-form .form-group input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid var(--light);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    background: var(--white);
+}
+
+.login-form .form-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+.login-form .btn {
+    margin-top: var(--space-sm);
+    padding: 14px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-weight: 600;
+    width: 100%;
+}
+
+.login-form .btn:hover {
+    background: var(--accent-light);
+    transform: translateY(-1px);
+}
+
+.form-footer {
+    margin-top: var(--space-xl);
+    text-align: center;
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--light);
+}
+
+.form-footer p {
+    font-size: 0.875rem;
+    color: var(--gray);
+    line-height: 1.5;
+}
+
+/* Alert styles */
+.login-form .alert {
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+}
+
+.login-form .alert.hidden {
+    display: none;
+}
+
+.login-form .alert-error {
+    background-color: rgba(229, 62, 62, 0.1);
+    color: var(--danger);
+    border-left: 4px solid var(--danger);
+}
+
+.login-form .alert-success {
+    background-color: rgba(56, 161, 105, 0.1);
+    color: var(--success);
+    border-left: 4px solid var(--success);
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .login-card {
+        padding: var(--space-lg) var(--space-md);
+    }
+    
+    .logo {
+        font-size: 1.75rem;
+    }
+    
+    .logo i {
+        font-size: 2rem;
+    }
+    
+    .login-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .login-form .form-group input {
+        padding: 12px;
+    }
+}
+
 /* ===== FOOTER STYLES ===== */
 .dashboard-footer {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -272,8 +1067,8 @@
     align-items: center;
     gap: var(--space-sm);
     padding: var(--space-sm) var(--space-md);
-    background: rgba(39, 174, 96, 0.1);
-    border: 1px solid rgba(39, 174, 96, 0.3);
+    background: rgba(56, 161, 105, 0.1);
+    border: 1px solid rgba(56, 161, 105, 0.3);
     border-radius: var(--radius-md);
     align-self: flex-start;
 }
@@ -341,10 +1136,11 @@
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
+    text-decoration: none;
 }
 
 .footer-btn:hover {
-    background: rgba(52, 152, 219, 0.2);
+    background: rgba(66, 153, 225, 0.2);
     border-color: var(--accent);
     transform: translateY(-1px);
 }
@@ -405,7 +1201,7 @@
 .version-badge {
     margin-left: var(--space-sm);
     padding: 2px 6px;
-    background: rgba(52, 152, 219, 0.2);
+    background: rgba(66, 153, 225, 0.2);
     border-radius: var(--radius-sm);
     font-size: 0.7rem;
     font-weight: 600;
@@ -448,1286 +1244,28 @@
     }
 }
 
-/* ===== FORNITORI PAGE STYLES ===== */
-
-/* Badge per tipi di fornitore */
-.badge-materiali {
-    display: inline-block;
-    padding: 4px 8px;
-    background-color: rgba(155, 89, 182, 0.1);
-    color: #9b59b6;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.badge-servizi {
-    display: inline-block;
-    padding: 4px 8px;
-    background-color: rgba(52, 152, 219, 0.1);
-    color: #3498db;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.badge-manodopera {
-    display: inline-block;
-    padding: 4px 8px;
-    background-color: rgba(46, 204, 113, 0.1);
-    color: #2ecc71;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.badge-attrezzature {
-    display: inline-block;
-    padding: 4px 8px;
-    background-color: rgba(230, 126, 34, 0.1);
-    color: #e67e22;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.badge-default {
-    display: inline-block;
-    padding: 4px 8px;
-    background-color: rgba(149, 165, 166, 0.1);
-    color: #95a5a6;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-/* Badge per stati */
-.badge-active {
-    display: inline-block;
-    padding: 4px 8px;
-    background-color: rgba(46, 204, 113, 0.1);
-    color: #27ae60;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.badge-inactive {
-    display: inline-block;
-    padding: 4px 8px;
-    background-color: rgba(231, 76, 60, 0.1);
-    color: #c0392b;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-/* Responsive table */
-@media (max-width: 768px) {
-    .data-table thead {
-        display: none;
-    }
-    
-    .data-table tbody tr {
-        display: block;
-        margin-bottom: 1rem;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 1rem;
-    }
-    
-    .data-table tbody td {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.5rem 0;
-        border: none;
-        border-bottom: 1px solid #eee;
-    }
-    
-    .data-table tbody td:last-child {
-        border-bottom: none;
-    }
-    
-    .data-table tbody td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: #666;
-        margin-right: 1rem;
-    }
-    
-    .data-table tbody td[data-label] {
-        flex-direction: column;
-    }
-}
-/* ===== LAVORO PAGE STYLES ===== */
-
-/* Template badge */
-.template-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm) var(--space-md);
-    background-color: var(--light);
-    border-radius: var(--radius-md);
-    margin: var(--space-md) 0;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.template-badge:hover {
-    background-color: #dfe6e9;
-}
-
-.template-badge i {
-    color: #2b579a;
-}
-
-/* Status badges */
-.status-approved {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(39, 174, 96, 0.1);
-    color: var(--success);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-.status-pending {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(243, 156, 18, 0.1);
-    color: var(--warning);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-.status-rejected {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-/* File type badges */
-.file-type-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-}
-
-.file-type-badge.word {
-    background-color: rgba(43, 87, 154, 0.1);
-    color: #2b579a;
-}
-
-.file-type-badge.pdf {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-}
-
-/* File preview */
-.file-preview {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm);
-    background-color: var(--light);
-    border-radius: var(--radius-md);
-    margin-top: var(--space-sm);
-}
-
-.file-preview i {
-    color: var(--accent);
-}
-
-/* ===== LOGIN PAGE ===== */
-.login-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    padding: 20px;
-    z-index: 10000;
-}
-
-.login-container {
-    width: 100%;
-    max-width: 400px;
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    animation: slideUp 0.5s ease-out;
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.login-card {
-    padding: 40px;
-}
-
-.login-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 20px;
-}
-
-.logo i {
-    font-size: 2.5rem;
-    color: #3498db;
-}
-
-.logo-highlight {
-    color: #e74c3c;
-}
-
-.login-header h1 {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    color: #2c3e50;
-}
-
-.login-header p {
-    color: #7f8c8d;
-    font-size: 1.125rem;
-}
-
-.login-form {
-    width: 100%;
-}
-
-.login-form .form-group {
-    margin-bottom: 24px;
-}
-
-.login-form .form-group label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 500;
-    color: #2c3e50;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-}
-
-.login-form .form-group input {
-    width: 100%;
-    padding: 14px;
-    border: 2px solid #ecf0f1;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-}
-
-.login-form .form-group input:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-}
-
-.login-form .btn {
-    margin-top: 10px;
-    padding: 14px;
-    font-size: 1.1rem;
-    border-radius: 10px;
-}
-
-.form-footer {
-    margin-top: 32px;
-    text-align: center;
-    padding-top: 32px;
-    border-top: 1px solid #ecf0f1;
-}
-
-.form-footer p {
-    font-size: 0.875rem;
-    color: #7f8c8d;
-    line-height: 1.5;
-}
-
-/* Alert styles */
-.login-form .alert {
-    padding: 14px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 0.95rem;
-}
-
-.login-form .alert.hidden {
-    display: none;
-}
-
-.login-form .alert-error {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
-    border-left: 4px solid #e74c3c;
-}
-
-.login-form .alert-success {
-    background-color: rgba(39, 174, 96, 0.1);
-    color: #27ae60;
-    border-left: 4px solid #27ae60;
-}
-
-/* Responsive */
-@media (max-width: 576px) {
-    .login-card {
-        padding: 30px 20px;
-    }
-    
-    .logo {
-        font-size: 1.75rem;
-    }
-    
-    .logo i {
-        font-size: 2rem;
-    }
-    
-    .login-header h1 {
-        font-size: 1.75rem;
-    }
-    
-    .login-form .form-group input {
-        padding: 12px;
-    }
-}
-
-/* ===== PREVENTIVI PAGE SPECIFIC STYLES ===== */
-
-/* Logo styling for preventivi page */
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--primary);
-}
-
-.logo i {
-    color: var(--accent);
-}
-
-.logo-highlight {
-    color: var(--accent);
-}
-
-/* Template badge - specific for preventivi */
-.template-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm) var(--space-md);
-    background-color: var(--light);
-    border-radius: var(--radius-md);
-    margin: var(--space-md) 0;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.template-badge:hover {
-    background-color: #dfe6e9;
-}
-
-.template-badge i {
-    color: #2b579a;
-}
-
-/* Status badges specific for preventivi */
-.status-approved {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(39, 174, 96, 0.1);
-    color: var(--success);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-.status-pending {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(243, 156, 18, 0.1);
-    color: var(--warning);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-.status-rejected {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-/* File type badges for preventivi */
-.file-type-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-}
-
-.file-type-badge.word {
-    background-color: rgba(43, 87, 154, 0.1);
-    color: #2b579a;
-}
-
-.file-type-badge.pdf {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-}
-
-/* File preview for preventivi */
-.file-preview {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm);
-    background-color: var(--light);
-    border-radius: var(--radius-md);
-    margin-top: var(--space-sm);
-}
-
-/* Preventivi-specific status badges */
-.status-draft {
-    background-color: rgba(149, 165, 166, 0.1);
-    color: var(--gray);
-}
-
-.status-sent {
-    background-color: rgba(52, 152, 219, 0.1);
-    color: var(--accent);
-}
-
-.status-accepted {
-    background-color: rgba(39, 174, 96, 0.1);
-    color: var(--success);
-}
-
-.status-expired {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-}
-
-/* Preventivi table specific styles */
-.preventivi-table td.amount {
-    font-weight: 600;
-    color: var(--success);
-    text-align: right;
-}
-
-.preventivi-table td.expiry-date {
-    color: var(--warning);
-    font-size: 0.875rem;
-}
-
-/* Preventivi card specific */
-.preventivo-card {
-    border-left: 4px solid var(--accent);
-    transition: all var(--transition-fast);
-}
-
-.preventivo-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.preventivo-card.expired {
-    border-left-color: var(--danger);
-}
-
-.preventivo-card.accepted {
-    border-left-color: var(--success);
-}
-
-/* Client info in preventivi */
-.client-info {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-md);
-}
-
-.client-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--primary);
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-}
-
-.client-details h4 {
-    margin-bottom: var(--space-xs);
-}
-
-.client-details p {
-    color: var(--gray);
-    font-size: 0.875rem;
-    margin-bottom: 0;
-}
-
-/* Preventivi form specific */
-.preventivo-form-section {
-    background-color: var(--white);
-    border-radius: var(--radius-lg);
-    padding: var(--space-lg);
-    margin-bottom: var(--space-xl);
-    border: 1px solid var(--light);
-}
-
-.preventivo-form-section h3 {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-lg);
-    color: var(--primary);
-}
-
-/* Items table in preventivi */
-.items-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: var(--space-lg) 0;
-}
-
-.items-table th {
-    background-color: var(--light);
-    padding: var(--space-md);
-    text-align: left;
-    font-weight: 600;
-    color: var(--dark);
-    font-size: 0.875rem;
-}
-
-.items-table td {
-    padding: var(--space-md);
-    border-bottom: 1px solid var(--light);
-}
-
-.items-table .item-description {
-    width: 40%;
-}
-
-.items-table .item-quantity,
-.items-table .item-price,
-.items-table .item-total {
-    width: 20%;
-    text-align: right;
-}
-
-/* Total section */
-.total-section {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: var(--space-lg);
-    padding-top: var(--space-lg);
-    border-top: 2px solid var(--light);
-}
-
-.total-amount {
-    text-align: right;
-}
-
-.total-amount h3 {
-    margin-bottom: var(--space-sm);
-}
-
-.total-amount .amount {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--success);
-}
-
-/* Responsive adjustments for preventivi page */
-@media (max-width: 768px) {
-    .preventivi-table td.amount,
-    .items-table .item-quantity,
-    .items-table .item-price,
-    .items-table .item-total {
-        text-align: left;
-    }
-    
-    .total-section {
-        justify-content: flex-start;
-    }
-    
-    .client-info {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
-/* ===== CORREZIONI LAYOUT ===== */
-
-/* Corregge sovrapposizione login/dashboard */
-.login-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10000;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-}
-
-.dashboard-page {
-    min-height: 100vh;
-    display: none;
-    flex-direction: column;
-}
-
-/* Corregge altezza sidebar */
-.main-container {
-    display: flex;
-    flex: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-    min-height: calc(100vh - 140px); /* 70px navbar + 70px footer */
-}
-
-.sidebar {
-    width: 250px;
-    background-color: var(--primary);
-    color: var(--white);
-    padding: var(--space-lg) 0;
-    display: flex;
-    flex-direction: column;
-    transition: transform var(--transition-normal);
-    height: calc(100vh - 70px);
-    position: sticky;
-    top: 70px;
-    overflow-y: auto;
-    flex-shrink: 0;
-}
-
-.page-content {
-    flex: 1;
-    padding: var(--space-lg);
-    overflow-y: auto;
-    background-color: #f8f9fa;
-    min-height: calc(100vh - 140px);
-}
-
-/* Responsive adjustments */
-@media (max-width: 991.98px) {
-    .sidebar {
-        position: fixed;
-        top: 70px;
-        left: 0;
-        transform: translateX(-100%);
-        z-index: 1000;
-        height: calc(100vh - 70px);
-    }
-    
-    .sidebar.show {
-        transform: translateX(0);
-    }
-    
-    .page-content {
-        width: 100%;
-        min-height: calc(100vh - 70px);
-    }
-}
-
-/* Assicura che il footer sia sempre in fondo */
-.dashboard-footer {
-    flex-shrink: 0;
-    margin-top: auto;
-}
-
-/* Aggiusta spaziatura sezioni */
-.page-section {
-    background-color: var(--white);
-    border-radius: var(--radius-lg);
-    padding: var(--space-lg);
-    margin-bottom: var(--space-xl);
-    display: none;
-}
-
-.page-section:target,
-.page-section.active {
-    display: block;
-}
-
-.welcome-card {
-    display: block;
-}
-
-/* ===== LOGIN PAGE ===== */
-.login-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    padding: 20px;
-    z-index: 10000;
-}
-
-.login-container {
-    width: 100%;
-    max-width: 400px;
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    animation: slideUp 0.5s ease-out;
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.login-card {
-    padding: 40px;
-}
-
-.login-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 20px;
-}
-
-.logo i {
-    font-size: 2.5rem;
-    color: #3498db;
-}
-
-.logo-highlight {
-    color: #e74c3c;
-}
-
-.login-header h1 {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    color: #2c3e50;
-}
-
-.login-header p {
-    color: #7f8c8d;
-    font-size: 1.125rem;
-}
-
-.login-form {
-    width: 100%;
-}
-
-.login-form .form-group {
-    margin-bottom: 24px;
-}
-
-.login-form .form-group label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 500;
-    color: #2c3e50;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-}
-
-.login-form .form-group input {
-    width: 100%;
-    padding: 14px;
-    border: 2px solid #ecf0f1;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-}
-
-.login-form .form-group input:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-}
-
-.login-form .btn {
-    margin-top: 10px;
-    padding: 14px;
-    font-size: 1.1rem;
-    border-radius: 10px;
-}
-
-.form-footer {
-    margin-top: 32px;
-    text-align: center;
-    padding-top: 32px;
-    border-top: 1px solid #ecf0f1;
-}
-
-.form-footer p {
-    font-size: 0.875rem;
-    color: #7f8c8d;
-    line-height: 1.5;
-}
-
-/* Alert styles */
-.login-form .alert {
-    padding: 14px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 0.95rem;
-}
-
-.login-form .alert.hidden {
-    display: none;
-}
-
-.login-form .alert-error {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
-    border-left: 4px solid #e74c3c;
-}
-
-.login-form .alert-success {
-    background-color: rgba(39, 174, 96, 0.1);
-    color: #27ae60;
-    border-left: 4px solid #27ae60;
-}
-
-/* Responsive */
-@media (max-width: 576px) {
-    .login-card {
-        padding: 30px 20px;
-    }
-    
-    .logo {
-        font-size: 1.75rem;
-    }
-    
-    .logo i {
-        font-size: 2rem;
-    }
-    
-    .login-header h1 {
-        font-size: 1.75rem;
-    }
-    
-    .login-form .form-group input {
-        padding: 12px;
-    }
-}
-
-/* ===== PREVENTIVI PAGE SPECIFIC STYLES ===== */
-
-/* Logo styling for preventivi page */
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--primary);
-}
-
-.logo i {
-    color: var(--accent);
-}
-
-.logo-highlight {
-    color: var(--accent);
-}
-
-/* Template badge - specific for preventivi */
-.template-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm) var(--space-md);
-    background-color: var(--light);
-    border-radius: var(--radius-md);
-    margin: var(--space-md) 0;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.template-badge:hover {
-    background-color: #dfe6e9;
-}
-
-.template-badge i {
-    color: #2b579a;
-}
-
-/* Status badges specific for preventivi */
-.status-approved {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(39, 174, 96, 0.1);
-    color: var(--success);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-.status-pending {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(243, 156, 18, 0.1);
-    color: var(--warning);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-.status-rejected {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-/* File type badges for preventivi */
-.file-type-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-}
-
-.file-type-badge.word {
-    background-color: rgba(43, 87, 154, 0.1);
-    color: #2b579a;
-}
-
-.file-type-badge.pdf {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-}
-
-/* File preview for preventivi */
-.file-preview {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm);
-    background-color: var(--light);
-    border-radius: var(--radius-md);
-    margin-top: var(--space-sm);
-}
-
-/* Preventivi-specific status badges */
-.status-draft {
-    background-color: rgba(149, 165, 166, 0.1);
-    color: var(--gray);
-}
-
-.status-sent {
-    background-color: rgba(52, 152, 219, 0.1);
-    color: var(--accent);
-}
-
-.status-accepted {
-    background-color: rgba(39, 174, 96, 0.1);
-    color: var(--success);
-}
-
-.status-expired {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-}
-
-/* Preventivi table specific styles */
-.preventivi-table td.amount {
-    font-weight: 600;
-    color: var(--success);
-    text-align: right;
-}
-
-.preventivi-table td.expiry-date {
-    color: var(--warning);
-    font-size: 0.875rem;
-}
-
-/* Preventivi card specific */
-.preventivo-card {
-    border-left: 4px solid var(--accent);
-    transition: all var(--transition-fast);
-}
-
-.preventivo-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.preventivo-card.expired {
-    border-left-color: var(--danger);
-}
-
-.preventivo-card.accepted {
-    border-left-color: var(--success);
-}
-
-/* Client info in preventivi */
-.client-info {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-md);
-}
-
-.client-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--primary);
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-}
-
-.client-details h4 {
-    margin-bottom: var(--space-xs);
-}
-
-.client-details p {
-    color: var(--gray);
-    font-size: 0.875rem;
-    margin-bottom: 0;
-}
-
-/* Preventivi form specific */
-.preventivo-form-section {
-    background-color: var(--white);
-    border-radius: var(--radius-lg);
-    padding: var(--space-lg);
-    margin-bottom: var(--space-xl);
-    border: 1px solid var(--light);
-}
-
-.preventivo-form-section h3 {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-lg);
-    color: var(--primary);
-}
-
-/* Items table in preventivi */
-.items-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: var(--space-lg) 0;
-}
-
-.items-table th {
-    background-color: var(--light);
-    padding: var(--space-md);
-    text-align: left;
-    font-weight: 600;
-    color: var(--dark);
-    font-size: 0.875rem;
-}
-
-.items-table td {
-    padding: var(--space-md);
-    border-bottom: 1px solid var(--light);
-}
-
-.items-table .item-description {
-    width: 40%;
-}
-
-.items-table .item-quantity,
-.items-table .item-price,
-.items-table .item-total {
-    width: 20%;
-    text-align: right;
-}
-
-/* Total section */
-.total-section {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: var(--space-lg);
-    padding-top: var(--space-lg);
-    border-top: 2px solid var(--light);
-}
-
-.total-amount {
-    text-align: right;
-}
-
-.total-amount h3 {
-    margin-bottom: var(--space-sm);
-}
-
-.total-amount .amount {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--success);
-}
-
-/* Responsive adjustments for preventivi page */
-@media (max-width: 768px) {
-    .preventivi-table td.amount,
-    .items-table .item-quantity,
-    .items-table .item-price,
-    .items-table .item-total {
-        text-align: left;
-    }
-    
-    .total-section {
-        justify-content: flex-start;
-    }
-    
-    .client-info {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
-/* ===== LAVORO PAGE STYLES ===== */
-
-/* Template badge */
-.template-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm) var(--space-md);
-    background-color: var(--light);
-    border-radius: var(--radius-md);
-    margin: var(--space-md) 0;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.template-badge:hover {
-    background-color: #dfe6e9;
-}
-
-.template-badge i {
-    color: #2b579a;
-}
-
-/* Status badges */
-.status-approved {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(39, 174, 96, 0.1);
-    color: var(--success);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-.status-pending {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(243, 156, 18, 0.1);
-    color: var(--warning);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-.status-rejected {
-    display: inline-block;
-    padding: var(--space-xs) var(--space-sm);
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-/* File type badges */
-.file-type-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-}
-
-.file-type-badge.word {
-    background-color: rgba(43, 87, 154, 0.1);
-    color: #2b579a;
-}
-
-.file-type-badge.pdf {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
-}
-
-/* File preview */
-.file-preview {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm);
-    background-color: var(--light);
-    border-radius: var(--radius-md);
-    margin-top: var(--space-sm);
-}
-
-.file-preview i {
-    color: var(--accent);
-}
+/* ===== UTILITY CLASSES ===== */
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger { color: var(--danger); }
+.text-info { color: var(--info); }
+.text-primary { color: var(--primary); }
+.text-accent { color: var(--accent); }
+
+.bg-success-light { background-color: rgba(56, 161, 105, 0.1); }
+.bg-warning-light { background-color: rgba(214, 158, 46, 0.1); }
+.bg-danger-light { background-color: rgba(229, 62, 62, 0.1); }
+.bg-info-light { background-color: rgba(66, 153, 225, 0.1); }
+
+.font-bold { font-weight: 600; }
+.font-semibold { font-weight: 500; }
+.font-normal { font-weight: 400; }
+
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+
+/* ===== END OF STYLESHEET ===== */
