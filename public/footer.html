@@ -1,0 +1,100 @@
+<footer class="dashboard-footer">
+    <div class="footer-container">
+        <div class="footer-main">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <i class="fas fa-hard-hat"></i>
+                    <span>Marocco<span class="logo-highlight">&</span>Cuffari</span>
+                </div>
+                <div class="footer-divider"></div>
+                <div class="footer-info">
+                    <div class="info-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <span class="info-label">Ambiente Sicuro</span>
+                            <span class="info-value">Piattaforma C-Level</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-database"></i>
+                        <div>
+                            <span class="info-label">Versione Sistema</span>
+                            <span class="info-value">v2.4.1</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <span class="info-label">Ultimo Aggiornamento</span>
+                            <span class="info-value" id="currentDateTime"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-actions">
+                <div class="system-status">
+                    <div class="status-indicator active"></div>
+                    <span class="status-text">Sistema Online</span>
+                </div>
+                <div class="footer-buttons">
+                    <button class="footer-btn" onclick="window.print()">
+                        <i class="fas fa-print"></i>
+                        <span>Stampa Report</span>
+                    </button>
+                    <button class="footer-btn" onclick="downloadSystemLog()">
+                        <i class="fas fa-download"></i>
+                        <span>Log Sistema</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="copyright">
+                <span>&copy; <span id="currentYear"></span> Marocco&Cuffari Ristauri Edili S.r.l.</span>
+                <span class="separator">|</span>
+                <span>P.IVA: IT01234567890</span>
+                <span class="separator">|</span>
+                <span>SDI: M5UXCR1</span>
+            </div>
+            
+            <div class="developer-info">
+                <div class="developer-badge">
+                    <i class="fas fa-code"></i>
+                    <span>Sviluppato da Cristian Felice Cuffari</span>
+                    <span class="version-badge">v2.4.1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Imposta l'anno corrente
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    
+    // Aggiorna data e ora corrente
+    function updateDateTime() {
+        const now = new Date();
+        const dateTimeStr = now.toLocaleDateString('it-IT', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }) + ' ' + now.toLocaleTimeString('it-IT', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        document.getElementById('currentDateTime').textContent = dateTimeStr;
+    }
+    
+    // Aggiorna ogni minuto
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+    
+    // Funzione per download log (esempio)
+    function downloadSystemLog() {
+        alert('Funzionalità di download log in sviluppo');
+        // In futuro: scarica i log del sistema
+    }
+</script>

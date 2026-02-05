@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marocco&Cuffari - Gestione Cantieri</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/cantieri.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <!-- Dashboard Page -->
+    <div class="dashboard-page" id="dashboardPage">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-brand">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="logo">
+                        <i class="fas fa-hard-hat"></i>
+                        <span>Marocco<span class="logo-highlight">&</span>Cuffari</span>
+                    </div>
+                </div>
+                
+                <div class="navbar-user">
+                    <div class="user-info" id="userDropdownToggle">
+                        <div class="user-avatar" id="userAvatar">
+                            <!-- Initials will be set by JavaScript -->
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name" id="userName">Caricamento...</div>
+                            <div class="user-role" id="userRole">Caricamento...</div>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="index.html">
+                            <i class="fas fa-home"></i>
+                            Dashboard Principale
+                        </a>
+                        <a href="lavoro.html">
+                            <i class="fas fa-calendar-alt"></i>
+                            Giornate Lavorative
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="logout-btn" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Esci
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Container -->
+        <div class="main-container">
+            <!-- La sidebar verrà caricata dinamicamente qui -->
+            
+            <!-- Content Area -->
+            <div class="page-content" id="mainContent">
+                <!-- Alert Container -->
+                <div id="alertContainer"></div>
+                
+                <!-- Cantieri Page -->
+                <div class="page-header">
+                    <h1><i class="fas fa-hard-hat"></i> Gestione Cantieri</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-success" id="addCantiereBtn">
+                            <i class="fas fa-plus"></i>
+                            Nuovo Cantiere
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Stats Overview -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: var(--accent);">
+                            <i class="fas fa-hard-hat"></i>
+                        </div>
+                        <div class="stat-number" id="totalCantieri">0</div>
+                        <div class="stat-label">Cantieri Totali</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: var(--accent);">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                        <div class="stat-number" id="inProgressCantieri">0</div>
+                        <div class="stat-label">In Corso</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: var(--success);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-number" id="completedCantieri">0</div>
+                        <div class="stat-label">Completati</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: var(--warning);">
+                            <i class="fas fa-pause-circle"></i>
+                        </div>
+                        <div class="stat-number" id="onHoldCantieri">0</div>
+                        <div class="stat-label">In Pausa</div>
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-list"></i> Lista Cantieri</h3>
+                        <div style="width: 300px;">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="cantiereSearch" placeholder="Cerca cantieri...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="data-table-wrapper">
+                            <table class="data-table" id="cantieriTable">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Indirizzo</th>
+                                        <th>Città</th>
+                                        <th>Responsabile</th>
+                                        <th>Stato</th>
+                                        <th>Data Inizio</th>
+                                        <th>Data Fine</th>
+                                        <th>Budget</th>
+                                        <th>Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cantieriTableBody">
+                                    <!-- Cantieri will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="cantieriLoading" class="loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Caricamento cantieri...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Cantiere Modal -->
+    <div class="modal" id="cantiereModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="cantiereModalTitle"><i class="fas fa-plus"></i> Nuovo Cantiere</h3>
+                <button class="modal-close" id="closeCantiereModal">&times;</button>
+            </div>
+            <form id="cantiereForm">
+                <div class="modal-body">
+                    <div id="cantiereAlert" class="alert hidden"></div>
+                    <input type="hidden" id="cantiereId">
+                    
+                    <div class="form-group">
+                        <label for="cantiereNome">Nome Cantiere *</label>
+                        <input type="text" id="cantiereNome" placeholder="Es: Ristrutturazione Appartamento Centro" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cantiereIndirizzo">Indirizzo *</label>
+                        <input type="text" id="cantiereIndirizzo" placeholder="Es: Via Roma 123" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cantiereCitta">Città *</label>
+                        <input type="text" id="cantiereCitta" placeholder="Es: Milano" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cantiereCap">CAP *</label>
+                        <input type="text" id="cantiereCap" placeholder="Es: 20100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cantiereResponsabile">Responsabile *</label>
+                        <input type="text" id="cantiereResponsabile" placeholder="Nome del responsabile" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cantiereStato">Stato *</label>
+                        <select id="cantiereStato" class="form-control" required>
+                            <option value="in_progress">In Corso</option>
+                            <option value="completed">Completato</option>
+                            <option value="on_hold">In Pausa</option>
+                            <option value="cancelled">Cancellato</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cantiereBudget">Budget (€)</label>
+                        <input type="number" id="cantiereBudget" placeholder="Es: 50000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cantiereDataInizio">Data Inizio</label>
+                        <input type="date" id="cantiereDataInizio">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cantiereDataFine">Data Fine Prevista</label>
+                        <input type="date" id="cantiereDataFine">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cantiereNote">Note</label>
+                        <textarea id="cantiereNote" rows="3" placeholder="Note aggiuntive..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelCantiere">Annulla</button>
+                    <button type="submit" class="btn btn-primary" id="submitCantiere">
+                        <i class="fas fa-save"></i>
+                        Salva Cantiere
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Includi lo script della sidebar -->
+    <script src="scripts/loadSidebar.js"></script>
+    
+    <script>
+        // Firebase Configuration (caricata dal file JSON)
+        let firebaseConfig = null;
+        let auth = null;
+        let db = null;
+        
+        // Carica la configurazione Firebase dal file JSON
+        async function loadFirebaseConfig() {
+            try {
+                const response = await fetch('firebase_config.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                firebaseConfig = await response.json();
+                
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                db = firebase.firestore();
+                
+                console.log('Firebase configurato correttamente');
+                return true;
+            } catch (error) {
+                console.error('Errore nel caricamento della configurazione Firebase:', error);
+                showAlert('error', 'Errore nel caricamento della configurazione. Controlla il file firebase_config.json');
+                return false;
+            }
+        }
+        
+        // Current user data
+        let currentUser = null;
+        let currentUserData = null;
+        let allCantieri = [];
+        
+        // DOM elements
+        const dashboardPage = document.getElementById('dashboardPage');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userDropdownToggle = document.getElementById('userDropdownToggle');
+        const userDropdown = document.getElementById('userDropdown');
+        const userName = document.getElementById('userName');
+        const userRole = document.getElementById('userRole');
+        const userAvatar = document.getElementById('userAvatar');
+        const alertContainer = document.getElementById('alertContainer');
+        
+        // Stats elements
+        const totalCantieri = document.getElementById('totalCantieri');
+        const inProgressCantieri = document.getElementById('inProgressCantieri');
+        const completedCantieri = document.getElementById('completedCantieri');
+        const onHoldCantieri = document.getElementById('onHoldCantieri');
+        
+        // Cantieri elements
+        const addCantiereBtn = document.getElementById('addCantiereBtn');
+        const cantiereSearch = document.getElementById('cantiereSearch');
+        const cantieriTableBody = document.getElementById('cantieriTableBody');
+        const cantieriLoading = document.getElementById('cantieriLoading');
+        
+        // Modal elements
+        const cantiereModal = document.getElementById('cantiereModal');
+        const closeCantiereModal = document.getElementById('closeCantiereModal');
+        const cancelCantiere = document.getElementById('cancelCantiere');
+        const cantiereForm = document.getElementById('cantiereForm');
+        const cantiereAlert = document.getElementById('cantiereAlert');
+        const cantiereModalTitle = document.getElementById('cantiereModalTitle');
+        
+        // Helper functions for cantieri
+        function getStatusDisplayName(status) {
+            const statuses = {
+                'in_progress': 'In Corso',
+                'completed': 'Completato',
+                'on_hold': 'In Pausa',
+                'cancelled': 'Cancellato'
+            };
+            return statuses[status] || status;
+        }
+        
+        function getStatusBadgeClass(status) {
+            const badgeClasses = {
+                'in_progress': 'status-in-progress',
+                'completed': 'status-completed',
+                'on_hold': 'status-on-hold',
+                'cancelled': 'status-cancelled'
+            };
+            return badgeClasses[status] || 'status-in-progress';
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('it-IT', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+        
+        function getInitials(name) {
+            if (!name) return '?';
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        }
+        
+        function showAlert(type, message) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'info' ? 'info-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+        
+        function showModalAlert(container, type, message) {
+            container.textContent = message;
+            container.className = `alert alert-${type}`;
+            container.classList.remove('hidden');
+        }
+        
+        // Initialize the application
+        async function initApp() {
+            // Carica la configurazione Firebase
+            const configLoaded = await loadFirebaseConfig();
+            if (!configLoaded) {
+                return;
+            }
+            
+            // Check if user is already logged in
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadUserData(user.uid);
+                    showDashboard();
+                } else {
+                    // Reindirizza alla pagina di login principale
+                    window.location.href = 'index.html';
+                }
+            });
+            
+            // Set up event listeners
+            logoutBtn.addEventListener('click', handleLogout);
+            userDropdownToggle.addEventListener('click', toggleUserDropdown);
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!userDropdownToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+            
+            // Cantieri events
+            addCantiereBtn.addEventListener('click', () => {
+                cantiereModalTitle.innerHTML = '<i class="fas fa-plus"></i> Nuovo Cantiere';
+                cantiereForm.reset();
+                cantiereAlert.classList.add('hidden');
+                cantiereModal.classList.add('show');
+            });
+            
+            cantiereSearch?.addEventListener('input', filterCantieri);
+            
+            // Cantiere modal events
+            closeCantiereModal.addEventListener('click', () => {
+                cantiereModal.classList.remove('show');
+            });
+            
+            cancelCantiere.addEventListener('click', () => {
+                cantiereModal.classList.remove('show');
+            });
+            
+            cantiereForm.addEventListener('submit', saveCantiere);
+        }
+        
+        // Show dashboard
+        function showDashboard() {
+            dashboardPage.style.display = 'flex';
+            updateUserDisplay();
+            loadCantieri();
+        }
+        
+        // Load user data from Firestore
+        async function loadUserData(uid) {
+            try {
+                const userDoc = await db.collection('users').doc(uid).get();
+                if (userDoc.exists) {
+                    currentUserData = userDoc.data();
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                showAlert('error', 'Errore nel caricamento dei dati utente');
+            }
+        }
+        
+        // Update user display information
+        function updateUserDisplay() {
+            if (!currentUserData) return;
+            
+            // Update navbar
+            userName.textContent = currentUserData.name;
+            userRole.textContent = currentUserData.role;
+            userAvatar.textContent = getInitials(currentUserData.name);
+        }
+        
+        // Handle logout
+        function handleLogout(e) {
+            e.preventDefault();
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Logout error:', error);
+                showAlert('error', 'Errore durante il logout');
+            });
+        }
+        
+        // Toggle user dropdown
+        function toggleUserDropdown() {
+            userDropdown.classList.toggle('show');
+        }
+        
+        // ===== CANTIERI FUNCTIONS =====
+        
+        // Load cantieri
+        async function loadCantieri() {
+            cantieriTableBody.innerHTML = '';
+            cantieriLoading.classList.remove('hidden');
+            
+            try {
+                const cantieriSnapshot = await db.collection('cantieri').orderBy('createdAt', 'desc').get();
+                allCantieri = [];
+                let inProgressCount = 0;
+                let completedCount = 0;
+                let onHoldCount = 0;
+                
+                cantieriSnapshot.forEach((doc) => {
+                    const cantiere = doc.data();
+                    const cantiereId = doc.id;
+                    
+                    allCantieri.push({ id: cantiereId, ...cantiere });
+                    
+                    // Update counts for stats
+                    switch(cantiere.stato) {
+                        case 'in_progress':
+                            inProgressCount++;
+                            break;
+                        case 'completed':
+                            completedCount++;
+                            break;
+                        case 'on_hold':
+                        case 'cancelled':
+                            onHoldCount++;
+                            break;
+                    }
+                    
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${cantiere.nome || 'N/A'}</td>
+                        <td>${cantiere.indirizzo || 'N/A'}</td>
+                        <td>${cantiere.citta || 'N/A'}</td>
+                        <td>${cantiere.responsabile || 'N/A'}</td>
+                        <td>
+                            <span class="status-badge ${getStatusBadgeClass(cantiere.stato)}">
+                                ${getStatusDisplayName(cantiere.stato)}
+                            </span>
+                        </td>
+                        <td>${formatDate(cantiere.data_inizio)}</td>
+                        <td>${formatDate(cantiere.data_fine)}</td>
+                        <td>${cantiere.budget ? '€' + cantiere.budget : '-'}</td>
+                        <td>
+                            <button class="btn btn-icon edit-cantiere-btn" data-id="${cantiereId}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-icon delete-cantiere-btn" data-id="${cantiereId}" data-name="${cantiere.nome}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    
+                    cantieriTableBody.appendChild(row);
+                });
+                
+                // Update stats
+                totalCantieri.textContent = allCantieri.length;
+                inProgressCantieri.textContent = inProgressCount;
+                completedCantieri.textContent = completedCount;
+                onHoldCantieri.textContent = onHoldCount;
+                
+                // Add event listeners to buttons
+                document.querySelectorAll('.edit-cantiere-btn').forEach(btn => {
+                    btn.addEventListener('click', () => editCantiere(btn.getAttribute('data-id')));
+                });
+                
+                document.querySelectorAll('.delete-cantiere-btn').forEach(btn => {
+                    btn.addEventListener('click', () => deleteCantiere(
+                        btn.getAttribute('data-id'), 
+                        btn.getAttribute('data-name')
+                    ));
+                });
+                
+            } catch (error) {
+                console.error('Error loading cantieri:', error);
+                showAlert('error', 'Errore nel caricamento dei cantieri');
+            } finally {
+                cantieriLoading.classList.add('hidden');
+            }
+        }
+        
+        // Filter cantieri
+        function filterCantieri() {
+            const searchTerm = cantiereSearch.value.toLowerCase();
+            const rows = cantieriTableBody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+        
+        // Edit cantiere
+        async function editCantiere(cantiereId) {
+            try {
+                const cantiereDoc = await db.collection('cantieri').doc(cantiereId).get();
+                if (!cantiereDoc.exists) {
+                    showAlert('error', 'Cantiere non trovato');
+                    return;
+                }
+                
+                const cantiere = cantiereDoc.data();
+                
+                // Fill form
+                document.getElementById('cantiereId').value = cantiereId;
+                document.getElementById('cantiereNome').value = cantiere.nome || '';
+                document.getElementById('cantiereIndirizzo').value = cantiere.indirizzo || '';
+                document.getElementById('cantiereCitta').value = cantiere.citta || '';
+                document.getElementById('cantiereCap').value = cantiere.cap || '';
+                document.getElementById('cantiereResponsabile').value = cantiere.responsabile || '';
+                document.getElementById('cantiereStato').value = cantiere.stato || 'in_progress';
+                document.getElementById('cantiereBudget').value = cantiere.budget || '';
+                document.getElementById('cantiereDataInizio').value = cantiere.data_inizio || '';
+                document.getElementById('cantiereDataFine').value = cantiere.data_fine || '';
+                document.getElementById('cantiereNote').value = cantiere.note || '';
+                
+                // Update modal title
+                cantiereModalTitle.innerHTML = '<i class="fas fa-edit"></i> Modifica Cantiere';
+                
+                // Clear alert and show modal
+                cantiereAlert.classList.add('hidden');
+                cantiereModal.classList.add('show');
+            } catch (error) {
+                console.error('Error loading cantiere for edit:', error);
+                showAlert('error', 'Errore nel caricamento dei dati del cantiere');
+            }
+        }
+        
+        // Save cantiere (create or update)
+        async function saveCantiere(e) {
+            e.preventDefault();
+            
+            const cantiereId = document.getElementById('cantiereId').value;
+            const nome = document.getElementById('cantiereNome').value.trim();
+            const indirizzo = document.getElementById('cantiereIndirizzo').value.trim();
+            const citta = document.getElementById('cantiereCitta').value.trim();
+            const cap = document.getElementById('cantiereCap').value.trim();
+            const responsabile = document.getElementById('cantiereResponsabile').value.trim();
+            const stato = document.getElementById('cantiereStato').value;
+            const budget = document.getElementById('cantiereBudget').value;
+            const dataInizio = document.getElementById('cantiereDataInizio').value;
+            const dataFine = document.getElementById('cantiereDataFine').value;
+            const note = document.getElementById('cantiereNote').value.trim();
+            
+            // Validate required fields
+            if (!nome || !indirizzo || !citta || !cap || !responsabile) {
+                showModalAlert(cantiereAlert, 'error', 'Tutti i campi contrassegnati con * sono obbligatori');
+                return;
+            }
+            
+            // Validate CAP
+            if (cap && !/^\d{5}$/.test(cap)) {
+                showModalAlert(cantiereAlert, 'error', 'CAP deve essere di 5 cifre');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitCantiere');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvataggio...';
+            submitBtn.disabled = true;
+            
+            try {
+                const cantiereData = {
+                    nome: nome,
+                    indirizzo: indirizzo,
+                    citta: citta,
+                    cap: cap,
+                    responsabile: responsabile,
+                    stato: stato,
+                    budget: budget || null,
+                    data_inizio: dataInizio || null,
+                    data_fine: dataFine || null,
+                    note: note || '',
+                    updatedAt: new Date().toISOString(),
+                    updatedBy: currentUser.uid
+                };
+                
+                if (cantiereId) {
+                    // Update existing cantiere
+                    await db.collection('cantieri').doc(cantiereId).update(cantiereData);
+                } else {
+                    // Create new cantiere
+                    cantiereData.createdAt = new Date().toISOString();
+                    cantiereData.createdBy = currentUser.uid;
+                    const docRef = await db.collection('cantieri').add(cantiereData);
+                    cantiereData.id = docRef.id;
+                }
+                
+                // Close modal
+                cantiereModal.classList.remove('show');
+                
+                // Reload cantieri list
+                loadCantieri();
+                
+                showAlert('success', cantiereId ? 'Cantiere aggiornato con successo!' : 'Cantiere creato con successo!');
+            } catch (error) {
+                console.error('Error saving cantiere:', error);
+                showModalAlert(cantiereAlert, 'error', 'Errore durante il salvataggio del cantiere');
+            } finally {
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Salva Cantiere';
+                submitBtn.disabled = false;
+            }
+        }
+        
+        // Delete cantiere
+        async function deleteCantiere(cantiereId, cantiereNome) {
+            if (!confirm(`Sei sicuro di voler eliminare il cantiere "${cantiereNome}"?`)) {
+                return;
+            }
+            
+            try {
+                await db.collection('cantieri').doc(cantiereId).delete();
+                loadCantieri();
+                showAlert('success', `Cantiere "${cantiereNome}" eliminato con successo!`);
+            } catch (error) {
+                console.error('Error deleting cantiere:', error);
+                showAlert('error', 'Errore durante l\'eliminazione del cantiere');
+            }
+        }
+        
+        // Inizializza l'applicazione
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+
+    <!-- Includi il footer -->
+    <script>
+        // Carica il footer
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.body.insertAdjacentHTML('beforeend', data);
+            })
+            .catch(error => {
+                console.error('Errore nel caricamento del footer:', error);
+                // Fallback: crea un footer minimale se il caricamento fallisce
+                const fallbackFooter = document.createElement('footer');
+                fallbackFooter.className = 'dashboard-footer';
+                fallbackFooter.innerHTML = `
+                    <div class="footer-container">
+                        <p>&copy; ${new Date().getFullYear()} Marocco&Cuffari Ristauri Edili</p>
+                        <p class="developer-credit">Sviluppato da Cristian Felice Cuffari</p>
+                    </div>
+                `;
+                document.body.appendChild(fallbackFooter);
+            });
+    </script>
+</body>
+</html>

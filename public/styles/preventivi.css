@@ -1,0 +1,272 @@
+/* ===== PREVENTIVI PAGE SPECIFIC STYLES ===== */
+
+/* Logo styling for preventivi page */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.logo i {
+    color: var(--accent);
+}
+
+.logo-highlight {
+    color: var(--accent);
+}
+
+/* Template badge - specific for preventivi */
+.template-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background-color: var(--light);
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.template-badge:hover {
+    background-color: #dfe6e9;
+}
+
+.template-badge i {
+    color: #2b579a;
+}
+
+/* Status badges specific for preventivi */
+.status-approved {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    background-color: rgba(39, 174, 96, 0.1);
+    color: var(--success);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+}
+
+.status-pending {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    background-color: rgba(243, 156, 18, 0.1);
+    color: var(--warning);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+}
+
+.status-rejected {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--danger);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+}
+
+/* File type badges for preventivi */
+.file-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+}
+
+.file-type-badge.word {
+    background-color: rgba(43, 87, 154, 0.1);
+    color: #2b579a;
+}
+
+.file-type-badge.pdf {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--danger);
+}
+
+/* File preview for preventivi */
+.file-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    background-color: var(--light);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-sm);
+}
+
+/* Preventivi-specific status badges */
+.status-draft {
+    background-color: rgba(149, 165, 166, 0.1);
+    color: var(--gray);
+}
+
+.status-sent {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: var(--accent);
+}
+
+.status-accepted {
+    background-color: rgba(39, 174, 96, 0.1);
+    color: var(--success);
+}
+
+.status-expired {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--danger);
+}
+
+/* Preventivi table specific styles */
+.preventivi-table td.amount {
+    font-weight: 600;
+    color: var(--success);
+    text-align: right;
+}
+
+.preventivi-table td.expiry-date {
+    color: var(--warning);
+    font-size: 0.875rem;
+}
+
+/* Preventivi card specific */
+.preventivo-card {
+    border-left: 4px solid var(--accent);
+    transition: all var(--transition-fast);
+}
+
+.preventivo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.preventivo-card.expired {
+    border-left-color: var(--danger);
+}
+
+.preventivo-card.accepted {
+    border-left-color: var(--success);
+}
+
+/* Client info in preventivi */
+.client-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.client-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.client-details h4 {
+    margin-bottom: var(--space-xs);
+}
+
+.client-details p {
+    color: var(--gray);
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}
+
+/* Preventivi form specific */
+.preventivo-form-section {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    border: 1px solid var(--light);
+}
+
+.preventivo-form-section h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    color: var(--primary);
+}
+
+/* Items table in preventivi */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-lg) 0;
+}
+
+.items-table th {
+    background-color: var(--light);
+    padding: var(--space-md);
+    text-align: left;
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.875rem;
+}
+
+.items-table td {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--light);
+}
+
+.items-table .item-description {
+    width: 40%;
+}
+
+.items-table .item-quantity,
+.items-table .item-price,
+.items-table .item-total {
+    width: 20%;
+    text-align: right;
+}
+
+/* Total section */
+.total-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 2px solid var(--light);
+}
+
+.total-amount {
+    text-align: right;
+}
+
+.total-amount h3 {
+    margin-bottom: var(--space-sm);
+}
+
+.total-amount .amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--success);
+}
+
+/* Responsive adjustments for preventivi page */
+@media (max-width: 768px) {
+    .preventivi-table td.amount,
+    .items-table .item-quantity,
+    .items-table .item-price,
+    .items-table .item-total {
+        text-align: left;
+    }
+    
+    .total-section {
+        justify-content: flex-start;
+    }
+    
+    .client-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

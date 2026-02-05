@@ -1,0 +1,37 @@
+/* ===== FATTURE PAGE STYLES ===== */
+
+/* Payment status badges */
+.badge-paid {
+    background-color: rgba(39, 174, 96, 0.1);
+    color: var(--success);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-unpaid {
+    background-color: rgba(243, 156, 18, 0.1);
+    color: var(--warning);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-overdue {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--danger);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.amount {
+    font-weight: 600;
+    color: var(--success);
+}
