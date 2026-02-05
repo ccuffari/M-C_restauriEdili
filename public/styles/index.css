@@ -1,5 +1,5 @@
 /* index.css - Marocco&Cuffari Ristauri Edili */
-/* Stile corporate e professionale per impresa edile */
+/* Stile corporate e professionale per impresa edile - CSS UNIFICATO */
 
 /* ===== RESET E VARIABILI ===== */
 :root {
@@ -719,7 +719,7 @@ textarea {
     max-width: 400px;
 }
 
-/* Footer */
+/* Dashboard Footer */
 .dashboard-footer {
     background-color: var(--primary-dark);
     color: var(--white);

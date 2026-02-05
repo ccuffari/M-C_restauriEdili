@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marocco&Cuffari - Gestione Sistema</title>
     
-    <!-- CSS -->
+    <!-- CSS Unificato -->
     <link rel="stylesheet" href="styles/index.css"> 
-    <link rel="stylesheet" href="styles/footer.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Firebase -->
@@ -15,7 +14,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-    
 </head>
 <body>
     <!-- Login Page -->
@@ -349,7 +347,17 @@
                 sidebar.classList.remove('show');
             }
         });
+        
+        // Gestione dropdown utente
+        document.getElementById('userDropdownToggle').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('show');
+        });
+        
+        // Chiudi dropdown quando si clicca fuori
+        document.addEventListener('click', function() {
+            document.getElementById('userDropdown').classList.remove('show');
+        });
     </script>
-    <script src="js/css-loader.js"></script>
 </body>
 </html>
