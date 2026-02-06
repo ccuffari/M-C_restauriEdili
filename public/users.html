@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuffari Restauri Edili - Registrazione Utenti</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDIwMCwgMjEwLCAyMjAsIDAuMikiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==');
+        }
+        
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: #ff9900;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            font-weight: 300;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info {
+            text-align: right;
+            margin-right: 20px;
+        }
+        
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .user-role {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 15px;
+            margin-left: 30px;
+        }
+        
+        .nav-btn {
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .nav-btn i {
+            margin-right: 8px;
+        }
+        
+        .logout-btn {
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logout-btn:hover {
+            background-color: #e68a00;
+        }
+        
+        .logout-btn i {
+            margin-right: 8px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 2.2rem;
+            color: #003366;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-title i {
+            margin-right: 15px;
+            color: #ff9900;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            margin-top: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .back-btn {
+            background-color: #f0f0f0;
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        
+        .back-btn i {
+            margin-right: 8px;
+        }
+        
+        .registration-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 992px) {
+            .registration-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .registration-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .registration-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            background-color: #004080;
+            color: white;
+            padding: 20px 30px;
+        }
+        
+        .card-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-header h3 i {
+            margin-right: 12px;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #004080;
+            font-size: 0.95rem;
+        }
+        
+        .form-group.required label:after {
+            content: " *";
+            color: #dc3545;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #004080;
+            box-shadow: 0 0 0 3px rgba(0, 64, 128, 0.1);
+            outline: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+        
+        .privilege-info {
+            background-color: #e6f0ff;
+            border-left: 4px solid #004080;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        
+        .privilege-info h4 {
+            color: #004080;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .privilege-info h4 i {
+            margin-right: 10px;
+        }
+        
+        .privilege-list {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+        
+        .privilege-list li {
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .privilege-list li i {
+            color: #28a745;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .password-strength {
+            margin-top: 8px;
+            height: 5px;
+            border-radius: 3px;
+            background-color: #eee;
+            overflow: hidden;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .strength-text {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            color: #666;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background-color: #004080;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #003366;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn i {
+            margin-right: 10px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .user-list {
+            margin-top: 30px;
+        }
+        
+        .user-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .user-list-title {
+            font-size: 1.4rem;
+            color: #004080;
+        }
+        
+        .user-table {
+            width: 100%;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .user-table th {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #004080;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .user-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #004080;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .user-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #666;
+            transition: color 0.3s;
+            padding: 5px;
+        }
+        
+        .action-btn:hover {
+            color: #004080;
+        }
+
+        .action-btn:disabled {
+            color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .no-users {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .footer {
+            background-color: #003366;
+            color: white;
+            padding: 25px 0;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .developer-info {
+            margin-bottom: 15px;
+        }
+        
+        .developer-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #ff9900;
+        }
+        
+        .company-info {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .copyright {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 15px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .loading-spinner {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-spinner .loading {
+            width: 40px;
+            height: 40px;
+            border-width: 4px;
+            margin: 0 auto 15px;
+            display: block;
+        }
+
+        .role-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .role-admin {
+            background-color: #004080;
+            color: white;
+        }
+
+        .role-manager {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .role-user {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .user-menu {
+                margin-top: 20px;
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-menu {
+                margin-left: 0;
+                margin-bottom: 15px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .user-info {
+                text-align: center;
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .user-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header con logo aziendale e info utente -->
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <i class="fas fa-building logo-icon"></i>
+                <div>
+                    <div class="logo-text">Cuffari Restauri Edili</div>
+                    <div class="subtitle">Piattaforma di Management Interno</div>
+                </div>
+            </div>
+            
+            <div class="user-menu">
+                <div class="nav-menu">
+                    <a href="dashboard.html" class="nav-btn">
+                        <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+                    </a>
+                    <a href="profile.html" class="nav-btn">
+                        <i class="fas fa-user-circle"></i> <span>Profilo</span>
+                    </a>
+                    <a href="users.html" class="nav-btn">
+                        <i class="fas fa-users"></i> <span>Utenti</span>
+                    </a>
+                    <a href="construction-sites.html" class="nav-btn active">
+                        <i class="fas fa-hard-hat"></i> <span>Cantieri</span>
+                    </a>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-name" id="userName">Caricamento...</div>
+                    <div class="user-role" id="userRole">Utente</div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> <span>Esci</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Contenuto principale -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-user-plus"></i> Registrazione Nuovi Utenti
+                    </h1>
+                    <p class="page-subtitle">Aggiungi nuovi utenti con pieni privilegi sulla piattaforma</p>
+                </div>
+                <a href="profile.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Torna alla Dashboard
+                </a>
+            </div>
+            
+            <div class="registration-container">
+                <!-- Card registrazione utente -->
+                <div class="registration-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-user-plus"></i> Dati Nuovo Utente</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="registrationForm">
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="firstName">Nome</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" id="firstName" class="form-control" placeholder="Inserisci il nome" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group required">
+                                    <label for="lastName">Cognome</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" id="lastName" class="form-control" placeholder="Inserisci il cognome" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group required">
+                                <label for="email">Email</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" id="email" class="form-control" placeholder="esempio@azienda.com" required>
+                                </div>
+                                <div class="strength-text" id="emailAvailability"></div>
+                            </div>
+                            
+                            <div class="form-group required">
+                                <label for="password">Password</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="password" class="form-control" placeholder="Crea una password sicura" required>
+                                </div>
+                                <div class="password-strength">
+                                    <div class="strength-bar" id="strengthBar"></div>
+                                </div>
+                                <div class="strength-text" id="strengthText">Sicurezza password: molto debole</div>
+                            </div>
+                            
+                            <div class="form-group required">
+                                <label for="confirmPassword">Conferma Password</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="confirmPassword" class="form-control" placeholder="Ripeti la password" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="department">Reparto</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-building"></i>
+                                    <select id="department" class="form-control">
+                                        <option value="">Seleziona un reparto</option>
+                                        <option value="amministrazione">Amministrazione</option>
+                                        <option value="progettazione">Progettazione</option>
+                                        <option value="cantiere">Cantiere</option>
+                                        <option value="logistica">Logistica</option>
+                                        <option value="sicurezza">Sicurezza</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="role">Ruolo</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-user-tag"></i>
+                                    <select id="role" class="form-control" required>
+                                        <option value="user">Utente Standard</option>
+                                        <option value="manager">Manager</option>
+                                        <option value="admin">Amministratore</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Info privilegi -->
+                            <div class="privilege-info">
+                                <h4><i class="fas fa-shield-alt"></i> Privilegi Utente</h4>
+                                <p>L'utente registrato avrà <strong>pieni privilegi</strong> sulla piattaforma, tra cui:</p>
+                                <ul class="privilege-list">
+                                    <li><i class="fas fa-check-circle"></i> Accesso completo a tutte le funzionalità</li>
+                                    <li><i class="fas fa-check-circle"></i> Gestione progetti e cantieri</li>
+                                    <li><i class="fas fa-check-circle"></i> Accesso a report e documenti</li>
+                                    <li><i class="fas fa-check-circle"></i> Registrazione di nuovi utenti (solo admin)</li>
+                                    <li><i class="fas fa-check-circle"></i> Modifica delle impostazioni di sistema (solo admin)</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Messaggi di successo/errore -->
+                            <div id="successAlert" class="alert alert-success">
+                                <i class="fas fa-check-circle"></i> <span id="successMessage">Utente registrato con successo!</span>
+                            </div>
+                            
+                            <div id="errorAlert" class="alert alert-error">
+                                <i class="fas fa-exclamation-circle"></i> <span id="errorMessage">Si è verificato un errore. Controlla i dati inseriti.</span>
+                            </div>
+
+                            <div id="infoAlert" class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> <span id="infoMessage"></span>
+                            </div>
+                            
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary" id="registerBtn">
+                                    <i class="fas fa-user-plus"></i> Registra Utente
+                                </button>
+                                <button type="reset" class="btn btn-secondary" id="resetFormBtn">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Card elenco utenti -->
+                <div class="registration-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-users"></i> Utenti Registrati</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="user-list">
+                            <div class="user-list-header">
+                                <h3 class="user-list-title">Utenti Attivi</h3>
+                                <div style="color: #666; font-size: 0.9rem;">Totale: <span id="totalUsers">0</span> utenti</div>
+                            </div>
+                            
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th>Utente</th>
+                                        <th>Reparto</th>
+                                        <th>Ruolo</th>
+                                        <th>Stato</th>
+                                        <th>Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <!-- Gli utenti verranno popolati dinamicamente via JavaScript -->
+                                </tbody>
+                            </table>
+                            
+                            <div id="noUsersMessage" class="no-users" style="display: none;">
+                                <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 15px; color: #ccc;"></i>
+                                <p>Nessun utente registrato. Utilizza il form per aggiungere il primo utente.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer con informazioni sviluppatore -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="developer-info">
+                    <h3>Sviluppatore della Piattaforma</h3>
+                    <p>Cristian Felice Cuffari</p>
+                </div>
+                
+                <div class="company-info">
+                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità</p>
+                </div>
+                
+                <div class="copyright">
+                    <p>&copy; 2023 Cuffari Restauri Edili. Tutti i diritti riservati.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="loading"></div>
+            <p>Caricamento...</p>
+        </div>
+    </div>
+
+    <!-- Modal per modifica utente -->
+    <div class="loading-overlay" id="editUserModal" style="display: none;">
+        <div class="loading-spinner" style="max-width: 500px; width: 90%;">
+            <h3 style="margin-bottom: 20px; color: #004080;"><i class="fas fa-edit"></i> Modifica Utente</h3>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                
+                <div class="form-group">
+                    <label for="editFirstName">Nome</label>
+                    <input type="text" id="editFirstName" class="form-control" placeholder="Nome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editLastName">Cognome</label>
+                    <input type="text" id="editLastName" class="form-control" placeholder="Cognome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDepartment">Reparto</label>
+                    <select id="editDepartment" class="form-control">
+                        <option value="">Seleziona un reparto</option>
+                        <option value="amministrazione">Amministrazione</option>
+                        <option value="progettazione">Progettazione</option>
+                        <option value="cantiere">Cantiere</option>
+                        <option value="logistica">Logistica</option>
+                        <option value="sicurezza">Sicurezza</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editRole">Ruolo</label>
+                    <select id="editRole" class="form-control" required>
+                        <option value="user">Utente Standard</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Amministratore</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editStatus">Stato</label>
+                    <select id="editStatus" class="form-control" required>
+                        <option value="active">Attivo</option>
+                        <option value="inactive">Inattivo</option>
+                    </select>
+                </div>
+                
+                <div class="btn-group" style="margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Salva Modifiche
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">
+                        <i class="fas fa-times"></i> Annulla
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Configurazione Firebase fornita
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
+            authDomain: "work-tracker-v120400.firebaseapp.com",
+            projectId: "work-tracker-v120400",
+            storageBucket: "work-tracker-v120400.firebasestorage.app",
+            messagingSenderId: "437459935839",
+            appId: "1:437459935839:web:cb0b54608314dcb25731ea",
+            measurementId: "G-2LPKL9WREX"
+        };
+
+        // Inizializza Firebase
+        const firebaseApp = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Stato dell'applicazione
+        let currentUser = null;
+        let currentUserData = null;
+        let allUsers = [];
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Elementi UI
+            const headerUserName = document.getElementById('headerUserName');
+            const headerUserRole = document.getElementById('headerUserRole');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const registrationForm = document.getElementById('registrationForm');
+            const registerBtn = document.getElementById('registerBtn');
+            const firstNameInput = document.getElementById('firstName');
+            const lastNameInput = document.getElementById('lastName');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const departmentSelect = document.getElementById('department');
+            const roleSelect = document.getElementById('role');
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            const emailAvailability = document.getElementById('emailAvailability');
+            const successAlert = document.getElementById('successAlert');
+            const successMessage = document.getElementById('successMessage');
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            const infoAlert = document.getElementById('infoAlert');
+            const infoMessage = document.getElementById('infoMessage');
+            const resetFormBtn = document.getElementById('resetFormBtn');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            // Elementi della tabella utenti
+            const usersTableBody = document.getElementById('usersTableBody');
+            const noUsersMessage = document.getElementById('noUsersMessage');
+            const totalUsersSpan = document.getElementById('totalUsers');
+            
+            // Elementi modal modifica
+            const editUserModal = document.getElementById('editUserModal');
+            const editUserForm = document.getElementById('editUserForm');
+            const editUserIdInput = document.getElementById('editUserId');
+            const editFirstNameInput = document.getElementById('editFirstName');
+            const editLastNameInput = document.getElementById('editLastName');
+            const editDepartmentSelect = document.getElementById('editDepartment');
+            const editRoleSelect = document.getElementById('editRole');
+            const editStatusSelect = document.getElementById('editStatus');
+            const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+            // Funzioni di utilità
+            function showAlert(alertElement, message = '') {
+                successAlert.style.display = 'none';
+                errorAlert.style.display = 'none';
+                infoAlert.style.display = 'none';
+                
+                if (message && alertElement === successAlert) {
+                    successMessage.textContent = message;
+                } else if (message && alertElement === errorAlert) {
+                    errorMessage.textContent = message;
+                } else if (message && alertElement === infoAlert) {
+                    infoMessage.textContent = message;
+                }
+                alertElement.style.display = 'block';
+            }
+
+            function setLoading(isLoading) {
+                if (isLoading) {
+                    loadingOverlay.style.display = 'flex';
+                } else {
+                    loadingOverlay.style.display = 'none';
+                }
+            }
+
+            function setButtonLoading(button, isLoading, originalText) {
+                if (isLoading) {
+                    button.disabled = true;
+                    button.innerHTML = `<div class="loading"></div> ${originalText}...`;
+                } else {
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
+            }
+
+            // Analizza la forza della password
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                
+                if (password.length >= 8) strength += 1;
+                if (/[A-Z]/.test(password)) strength += 1;
+                if (/[0-9]/.test(password)) strength += 1;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+                
+                let width = 0;
+                let color = "#dc3545";
+                let text = "Molto debole";
+                
+                switch(strength) {
+                    case 1:
+                        width = 25;
+                        color = "#dc3545";
+                        text = "Debole";
+                        break;
+                    case 2:
+                        width = 50;
+                        color = "#ffc107";
+                        text = "Media";
+                        break;
+                    case 3:
+                        width = 75;
+                        color = "#28a745";
+                        text = "Forte";
+                        break;
+                    case 4:
+                        width = 100;
+                        color = "#20c997";
+                        text = "Molto forte";
+                        break;
+                    default:
+                        width = 5;
+                        color = "#dc3545";
+                        text = "Molto debole";
+                }
+                
+                strengthBar.style.width = width + "%";
+                strengthBar.style.backgroundColor = color;
+                strengthText.textContent = "Sicurezza password: " + text;
+                strengthText.style.color = color;
+                
+                return strength;
+            }
+
+            // Formatta il ruolo per la visualizzazione
+            function formatRole(role) {
+                switch(role) {
+                    case 'admin': return 'Amministratore';
+                    case 'manager': return 'Manager';
+                    case 'user': return 'Utente';
+                    default: return role;
+                }
+            }
+
+            // Ottieni la classe CSS per il badge del ruolo
+            function getRoleClass(role) {
+                switch(role) {
+                    case 'admin': return 'role-admin';
+                    case 'manager': return 'role-manager';
+                    case 'user': return 'role-user';
+                    default: return 'role-user';
+                }
+            }
+
+            // Ottieni le iniziali del nome
+            function getInitials(firstName, lastName) {
+                const first = firstName ? firstName.charAt(0).toUpperCase() : '';
+                const last = lastName ? lastName.charAt(0).toUpperCase() : '';
+                return (first + last) || '??';
+            }
+
+            // Inizializza l'applicazione
+            async function initializeApp() {
+                try {
+                    setLoading(true);
+                    
+                    // Controlla lo stato di autenticazione
+                    auth.onAuthStateChanged(async (user) => {
+                        if (user) {
+                            currentUser = user;
+                            await loadCurrentUserData();
+                            await checkAdminAccess();
+                            await loadAllUsers();
+                            setLoading(false);
+                        } else {
+                            // Utente non autenticato, reindirizza al login
+                            window.location.href = 'index.html';
+                        }
+                    });
+                    
+                } catch (error) {
+                    console.error('Errore nell\'inizializzazione dell\'app:', error);
+                    showAlert(errorAlert, 'Errore di inizializzazione. Riprova più tardi.');
+                    setLoading(false);
+                }
+            }
+
+            // Carica i dati dell'utente corrente
+            async function loadCurrentUserData() {
+                try {
+                    const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                    
+                    if (userDoc.exists) {
+                        currentUserData = userDoc.data();
+                        
+                        // Aggiorna l'header
+                        headerUserName.textContent = currentUserData.displayName || currentUser.email.split('@')[0];
+                        headerUserRole.textContent = formatRole(currentUserData.role);
+                    } else {
+                        // Se non esiste il documento, reindirizza al profilo per completare la registrazione
+                        showAlert(infoAlert, 'Completa la tua registrazione nel profilo.');
+                    }
+                    
+                } catch (error) {
+                    console.error('Errore nel caricamento dei dati utente:', error);
+                }
+            }
+
+            // Verifica che l'utente sia admin
+            async function checkAdminAccess() {
+                if (!currentUserData || currentUserData.role !== 'admin') {
+                    showAlert(errorAlert, 'Accesso negato. Solo gli amministratori possono accedere a questa pagina.');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 3000);
+                    return false;
+                }
+                return true;
+            }
+
+            // Carica tutti gli utenti
+            async function loadAllUsers() {
+                try {
+                    setLoading(true);
+                    
+                    const usersSnapshot = await db.collection('users').get();
+                    allUsers = [];
+                    
+                    usersSnapshot.forEach(doc => {
+                        const userData = doc.data();
+                        allUsers.push({
+                            id: doc.id,
+                            ...userData
+                        });
+                    });
+                    
+                    renderUsersTable();
+                    updateTotalUsers();
+                    setLoading(false);
+                    
+                } catch (error) {
+                    console.error('Errore nel caricamento degli utenti:', error);
+                    showAlert(errorAlert, 'Errore nel caricamento degli utenti. Riprova più tardi.');
+                    setLoading(false);
+                }
+            }
+
+            // Renderizza la tabella degli utenti
+            function renderUsersTable() {
+                if (allUsers.length === 0) {
+                    usersTableBody.innerHTML = '';
+                    noUsersMessage.style.display = 'block';
+                    return;
+                }
+                
+                noUsersMessage.style.display = 'none';
+                
+                let tableHTML = '';
+                
+                allUsers.forEach(user => {
+                    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.displayName || 'Nome non disponibile';
+                    const statusClass = user.status === 'active' ? 'status-active' : 'status-inactive';
+                    const statusText = user.status === 'active' ? 'Attivo' : 'Inattivo';
+                    const initials = getInitials(user.firstName, user.lastName);
+                    
+                    // Non permettere di modificare l'utente corrente
+                    const isCurrentUser = user.id === currentUser.uid;
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>
+                                <div class="user-name-cell">
+                                    <div class="user-avatar-small">${initials}</div>
+                                    <div>
+                                        <div style="font-weight: 600;">${fullName}</div>
+                                        <div style="font-size: 0.9rem; color: #666;">${user.email}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${user.department || 'Non specificato'}</td>
+                            <td>
+                                ${formatRole(user.role)}
+                                <span class="role-badge ${getRoleClass(user.role)}">${user.role}</span>
+                            </td>
+                            <td><span class="${statusClass}">${statusText}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn" title="Modifica" onclick="openEditUserModal('${user.id}')" ${isCurrentUser ? 'disabled' : ''}>
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn" title="${user.status === 'active' ? 'Disabilita' : 'Attiva'}" onclick="toggleUserStatus('${user.id}', '${user.status}')" ${isCurrentUser ? 'disabled' : ''}>
+                                        <i class="fas ${user.status === 'active' ? 'fa-user-slash' : 'fa-user-check'}"></i>
+                                    </button>
+                                    <button class="action-btn" title="Elimina" onclick="deleteUser('${user.id}')" ${isCurrentUser ? 'disabled' : ''}>
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                usersTableBody.innerHTML = tableHTML;
+            }
+
+            // Aggiorna il contatore totale utenti
+            function updateTotalUsers() {
+                totalUsersSpan.textContent = allUsers.length;
+            }
+
+            // Apri il modal per modificare un utente
+            window.openEditUserModal = function(userId) {
+                const user = allUsers.find(u => u.id === userId);
+                if (user) {
+                    editUserIdInput.value = userId;
+                    editFirstNameInput.value = user.firstName || '';
+                    editLastNameInput.value = user.lastName || '';
+                    editDepartmentSelect.value = user.department || '';
+                    editRoleSelect.value = user.role || 'user';
+                    editStatusSelect.value = user.status || 'active';
+                    
+                    editUserModal.style.display = 'flex';
+                }
+            };
+
+            // Chiudi il modal di modifica
+            cancelEditBtn.addEventListener('click', function() {
+                editUserModal.style.display = 'none';
+                editUserForm.reset();
+            });
+
+            // Gestione del form di modifica utente
+            editUserForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const userId = editUserIdInput.value;
+                const firstName = editFirstNameInput.value.trim();
+                const lastName = editLastNameInput.value.trim();
+                const department = editDepartmentSelect.value;
+                const role = editRoleSelect.value;
+                const status = editStatusSelect.value;
+                
+                if (!firstName || !lastName) {
+                    showAlert(errorAlert, 'Nome e cognome sono obbligatori.');
+                    return;
+                }
+                
+                try {
+                    setLoading(true);
+                    
+                    const updateData = {
+                        firstName: firstName,
+                        lastName: lastName,
+                        displayName: `${firstName} ${lastName}`,
+                        department: department,
+                        role: role,
+                        status: status,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    await db.collection('users').doc(userId).update(updateData);
+                    
+                    // Aggiorna la lista utenti
+                    await loadAllUsers();
+                    
+                    // Chiudi il modal
+                    editUserModal.style.display = 'none';
+                    editUserForm.reset();
+                    
+                    showAlert(successAlert, 'Utente aggiornato con successo!');
+                    setLoading(false);
+                    
+                } catch (error) {
+                    console.error('Errore nell\'aggiornamento dell\'utente:', error);
+                    showAlert(errorAlert, 'Errore nell\'aggiornamento dell\'utente. Riprova più tardi.');
+                    setLoading(false);
+                }
+            });
+
+            // Cambia lo stato di un utente
+            window.toggleUserStatus = async function(userId, currentStatus) {
+                if (!confirm(`Sei sicuro di voler ${currentStatus === 'active' ? 'disabilitare' : 'attivare'} questo utente?`)) {
+                    return;
+                }
+                
+                try {
+                    setLoading(true);
+                    
+                    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+                    
+                    await db.collection('users').doc(userId).update({
+                        status: newStatus,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    // Aggiorna la lista utenti
+                    await loadAllUsers();
+                    
+                    showAlert(successAlert, `Utente ${newStatus === 'active' ? 'attivato' : 'disabilitato'} con successo!`);
+                    setLoading(false);
+                    
+                } catch (error) {
+                    console.error('Errore nel cambio di stato dell\'utente:', error);
+                    showAlert(errorAlert, 'Errore nel cambio di stato dell\'utente. Riprova più tardi.');
+                    setLoading(false);
+                }
+            };
+
+            // Elimina un utente
+            window.deleteUser = async function(userId) {
+                if (!confirm("Sei sicuro di voler eliminare questo utente? L'azione non può essere annullata.")) {
+                    return;
+                }
+                
+                try {
+                    setLoading(true);
+                    
+                    // Elimina l'utente da Firestore
+                    await db.collection('users').doc(userId).delete();
+                    
+                    // Nota: Non eliminiamo l'account da Firebase Authentication per sicurezza
+                    // In un'app reale, potresti voler disabilitare l'account invece di eliminarlo
+                    
+                    // Aggiorna la lista utenti
+                    await loadAllUsers();
+                    
+                    showAlert(successAlert, 'Utente eliminato con successo!');
+                    setLoading(false);
+                    
+                } catch (error) {
+                    console.error('Errore nell\'eliminazione dell\'utente:', error);
+                    showAlert(errorAlert, 'Errore nell\'eliminazione dell\'utente. Riprova più tardi.');
+                    setLoading(false);
+                }
+            };
+
+            // Gestione del form di registrazione
+            registrationForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Verifica che l'utente sia admin
+                if (!currentUserData || currentUserData.role !== 'admin') {
+                    showAlert(errorAlert, 'Solo gli amministratori possono registrare nuovi utenti.');
+                    return;
+                }
+                
+                // Validazioni
+                const firstName = firstNameInput.value.trim();
+                const lastName = lastNameInput.value.trim();
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                const department = departmentSelect.value;
+                const role = roleSelect.value;
+                
+                // Validazione campi obbligatori
+                if (!firstName || !lastName || !email || !password || !confirmPassword) {
+                    showAlert(errorAlert, 'Compila tutti i campi obbligatori.');
+                    return;
+                }
+                
+                // Validazione email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showAlert(errorAlert, 'Inserisci un indirizzo email valido.');
+                    emailInput.focus();
+                    return;
+                }
+                
+                // Validazione password
+                if (password.length < 8) {
+                    showAlert(errorAlert, 'La password deve avere almeno 8 caratteri.');
+                    passwordInput.focus();
+                    return;
+                }
+                
+                const passwordStrength = checkPasswordStrength(password);
+                if (passwordStrength < 2) {
+                    showAlert(errorAlert, 'La password non è abbastanza sicura. Deve essere almeno di media sicurezza.');
+                    passwordInput.focus();
+                    return;
+                }
+                
+                // Verifica che le password coincidano
+                if (password !== confirmPassword) {
+                    showAlert(errorAlert, 'Le password non coincidono.');
+                    confirmPasswordInput.focus();
+                    return;
+                }
+                
+                try {
+                    // Mostra lo stato di caricamento
+                    const originalBtnText = registerBtn.innerHTML;
+                    setButtonLoading(registerBtn, true, 'Registra Utente');
+                    
+                    // Crea l'utente in Firebase Authentication
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    const newUser = userCredential.user;
+                    
+                    // Crea il documento utente in Firestore
+                    const userData = {
+                        uid: newUser.uid,
+                        email: email,
+                        firstName: firstName,
+                        lastName: lastName,
+                        displayName: `${firstName} ${lastName}`,
+                        department: department,
+                        role: role,
+                        status: 'active',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        createdBy: currentUser.uid,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    await db.collection('users').doc(newUser.uid).set(userData);
+                    
+                    // Invia email di verifica (opzionale)
+                    // await newUser.sendEmailVerification();
+                    
+                    // Aggiorna la lista utenti
+                    await loadAllUsers();
+                    
+                    // Mostra messaggio di successo
+                    showAlert(successAlert, `Utente ${firstName} ${lastName} registrato con successo!`);
+                    
+                    // Resetta il form
+                    registrationForm.reset();
+                    strengthBar.style.width = "0%";
+                    strengthText.textContent = "Sicurezza password: molto debole";
+                    strengthText.style.color = "#666";
+                    emailAvailability.textContent = "";
+                    
+                    // Ripristina il pulsante
+                    setButtonLoading(registerBtn, false, 'Registra Utente');
+                    
+                } catch (error) {
+                    console.error('Errore nella registrazione dell\'utente:', error);
+                    
+                    let errorMsg = 'Errore durante la registrazione. Riprova.';
+                    
+                    switch (error.code) {
+                        case 'auth/email-already-in-use':
+                            errorMsg = 'Questo indirizzo email è già in uso.';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMsg = 'L\'indirizzo email non è valido.';
+                            break;
+                        case 'auth/operation-not-allowed':
+                            errorMsg = 'La registrazione con email/password non è abilitata.';
+                            break;
+                        case 'auth/weak-password':
+                            errorMsg = 'La password non è abbastanza sicura.';
+                            break;
+                        case 'auth/network-request-failed':
+                            errorMsg = 'Errore di rete. Verifica la connessione internet.';
+                            break;
+                        default:
+                            errorMsg = `Errore: ${error.message}`;
+                    }
+                    
+                    showAlert(errorAlert, errorMsg);
+                    setButtonLoading(registerBtn, false, 'Registra Utente');
+                }
+            });
+            
+            // Gestione dell'input della password
+            passwordInput.addEventListener('input', function() {
+                const password = passwordInput.value;
+                checkPasswordStrength(password);
+            });
+            
+            // Reset del form
+            resetFormBtn.addEventListener('click', function() {
+                registrationForm.reset();
+                strengthBar.style.width = "0%";
+                strengthText.textContent = "Sicurezza password: molto debole";
+                strengthText.style.color = "#666";
+                emailAvailability.textContent = "";
+                successAlert.style.display = 'none';
+                errorAlert.style.display = 'none';
+                infoAlert.style.display = 'none';
+            });
+            
+            // Logout
+            logoutBtn.addEventListener('click', async function() {
+                if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
+                    try {
+                        setLoading(true);
+                        await auth.signOut();
+                        // Reindirizza alla pagina di login
+                        window.location.href = 'index.html';
+                    } catch (error) {
+                        console.error('Errore durante il logout:', error);
+                        setLoading(false);
+                        alert('Errore durante il logout. Riprova.');
+                    }
+                }
+            });
+            
+            // Inizializza l'applicazione
+            await initializeApp();
+        });
+    </script>
+</body>
+</html>

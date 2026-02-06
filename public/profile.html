@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuffari Restauri Edili - Profilo Utente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDIwMCwgMjEwLCAyMjAsIDAuMikiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==');
+        }
+        
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: #ff9900;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            font-weight: 300;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info {
+            text-align: right;
+            margin-right: 20px;
+        }
+        
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .user-role {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .logout-btn {
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logout-btn:hover {
+            background-color: #e68a00;
+        }
+        
+        .logout-btn i {
+            margin-right: 8px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+        }
+        
+        .page-title {
+            font-size: 2.2rem;
+            color: #003366;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-title i {
+            margin-right: 15px;
+            color: #ff9900;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 992px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .profile-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            background-color: #004080;
+            color: white;
+            padding: 20px 30px;
+        }
+        
+        .card-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-header h3 i {
+            margin-right: 12px;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        .user-avatar {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #004080;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 15px;
+            border: 5px solid #e6f0ff;
+        }
+        
+        .user-details {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .detail-value {
+            color: #004080;
+            font-weight: 500;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #004080;
+            font-size: 0.95rem;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #004080;
+            box-shadow: 0 0 0 3px rgba(0, 64, 128, 0.1);
+            outline: none;
+        }
+        
+        .password-strength {
+            margin-top: 8px;
+            height: 5px;
+            border-radius: 3px;
+            background-color: #eee;
+            overflow: hidden;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .strength-text {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            color: #666;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background-color: #004080;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #003366;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn i {
+            margin-right: 10px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .footer {
+            background-color: #003366;
+            color: white;
+            padding: 25px 0;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .developer-info {
+            margin-bottom: 15px;
+        }
+        
+        .developer-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #ff9900;
+        }
+        
+        .company-info {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .copyright {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 15px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .loading-spinner {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-spinner .loading {
+            width: 40px;
+            height: 40px;
+            border-width: 4px;
+            margin: 0 auto 15px;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .user-menu {
+                margin-top: 20px;
+                flex-direction: column;
+            }
+            
+            .user-info {
+                text-align: center;
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header con logo aziendale e info utente -->
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <i class="fas fa-building logo-icon"></i>
+                <div>
+                    <div class="logo-text">Cuffari Restauri Edili</div>
+                    <div class="subtitle">Piattaforma di Management Interno</div>
+                </div>
+            </div>
+            
+            <div class="user-menu">
+                <div class="nav-menu">
+                    <a href="dashboard.html" class="nav-btn">
+                        <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+                    </a>
+                    <a href="profile.html" class="nav-btn">
+                        <i class="fas fa-user-circle"></i> <span>Profilo</span>
+                    </a>
+                    <a href="users.html" class="nav-btn">
+                        <i class="fas fa-users"></i> <span>Utenti</span>
+                    </a>
+                    <a href="construction-sites.html" class="nav-btn active">
+                        <i class="fas fa-hard-hat"></i> <span>Cantieri</span>
+                    </a>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-name" id="userName">Caricamento...</div>
+                    <div class="user-role" id="userRole">Utente</div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> <span>Esci</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Contenuto principale -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">
+                <i class="fas fa-user-circle"></i> Profilo Utente
+            </h1>
+            <p class="page-subtitle" id="pageSubtitle">Caricamento informazioni profilo...</p>
+            
+            <div class="profile-container">
+                <!-- Card informazioni profilo -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-id-card"></i> Informazioni Profilo</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="user-avatar">
+                            <div class="avatar" id="userAvatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h3 id="profileUserName">Caricamento...</h3>
+                            <p id="profileUserRole">Caricamento...</p>
+                        </div>
+                        
+                        <div class="user-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Email:</span>
+                                <span class="detail-value" id="userEmail">Caricamento...</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Ruolo:</span>
+                                <span class="detail-value" id="userRole">Caricamento...</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Ultimo Accesso:</span>
+                                <span class="detail-value" id="lastLogin">Caricamento...</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Data Registrazione:</span>
+                                <span class="detail-value" id="registrationDate">Caricamento...</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Stato Account:</span>
+                                <span class="detail-value" id="accountStatus" style="color: #28a745;">Caricamento...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card modifica password -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-key"></i> Modifica Password</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="changePasswordForm">
+                            <div class="form-group">
+                                <label for="currentPassword">Password Attuale</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="currentPassword" class="form-control" placeholder="Inserisci la password attuale" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newPassword">Nuova Password</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-key"></i>
+                                    <input type="password" id="newPassword" class="form-control" placeholder="Inserisci la nuova password" required>
+                                </div>
+                                <div class="password-strength">
+                                    <div class="strength-bar" id="strengthBar"></div>
+                                </div>
+                                <div class="strength-text" id="strengthText">Sicurezza password: molto debole</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword">Conferma Nuova Password</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="confirmPassword" class="form-control" placeholder="Conferma la nuova password" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Requisiti password -->
+                            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 20px; border-left: 4px solid #004080;">
+                                <p style="font-weight: 600; margin-bottom: 10px; color: #004080;">Requisiti password:</p>
+                                <ul style="font-size: 0.9rem; color: #555; padding-left: 20px;">
+                                    <li id="reqLength">Almeno 8 caratteri</li>
+                                    <li id="reqUppercase">Almeno una lettera maiuscola</li>
+                                    <li id="reqNumber">Almeno un numero</li>
+                                    <li id="reqSpecial">Almeno un carattere speciale</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Messaggi di successo/errore -->
+                            <div id="successAlert" class="alert alert-success">
+                                <i class="fas fa-check-circle"></i> Password aggiornata con successo!
+                            </div>
+                            
+                            <div id="errorAlert" class="alert alert-error">
+                                <i class="fas fa-exclamation-circle"></i> <span id="errorMessage">Si è verificato un errore. Controlla i dati inseriti.</span>
+                            </div>
+
+                            <div id="infoAlert" class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> <span id="infoMessage"></span>
+                            </div>
+                            
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary" id="savePasswordBtn">
+                                    <i class="fas fa-save"></i> Salva Nuova Password
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="resetFormBtn">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer con informazioni sviluppatore -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="developer-info">
+                    <h3>Sviluppatore della Piattaforma</h3>
+                    <p>Cristian Felice Cuffari</p>
+                </div>
+                
+                <div class="company-info">
+                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità</p>
+                </div>
+                
+                <div class="copyright">
+                    <p>&copy; 2023 Cuffari Restauri Edili. Tutti i diritti riservati.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="loading"></div>
+            <p>Caricamento...</p>
+        </div>
+    </div>
+
+    <!-- Script per caricare la configurazione Firebase -->
+    <script>
+        // Funzione per caricare la configurazione Firebase
+        async function loadFirebaseConfig() {
+            try {
+                const response = await fetch('firebase_config.json');
+                if (!response.ok) {
+                    throw new Error(`Errore HTTP ${response.status}: ${response.statusText}`);
+                }
+                const config = await response.json();
+                return config;
+            } catch (error) {
+                console.error('Errore nel caricamento della configurazione Firebase:', error);
+                // Configurazione di fallback (solo per sviluppo)
+                return {
+                    apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
+                    authDomain: "work-tracker-v120400.firebaseapp.n",
+                    projectId: "work-tracker-v120400",
+                    storageBucket: "work-tracker-v120400.firebasestorage.app",
+                    messagingSenderId: "437459935839",
+                    appId: "1:437459935839:web:cb0b54608314dcb25731ea",
+                    measurementId: "G-2LPKL9WREX"
+                };
+            }
+        }
+    </script>
+    
+    <script>
+        // Stato dell'applicazione
+        let firebaseApp = null;
+        let auth = null;
+        let db = null;
+        let currentUser = null;
+        let userData = null;
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Elementi UI
+            const logoutBtn = document.getElementById('logoutBtn');
+            const changePasswordForm = document.getElementById('changePasswordForm');
+            const savePasswordBtn = document.getElementById('savePasswordBtn');
+            const currentPasswordInput = document.getElementById('currentPassword');
+            const newPasswordInput = document.getElementById('newPassword');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            const infoAlert = document.getElementById('infoAlert');
+            const infoMessage = document.getElementById('infoMessage');
+            const resetFormBtn = document.getElementById('resetFormBtn');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            // Elementi dei requisiti password
+            const reqLength = document.getElementById('reqLength');
+            const reqUppercase = document.getElementById('reqUppercase');
+            const reqNumber = document.getElementById('reqNumber');
+            const reqSpecial = document.getElementById('reqSpecial');
+
+            // Funzione per mostrare messaggi
+            function showAlert(alertElement, message = '') {
+                // Nascondi tutti gli alert
+                successAlert.style.display = 'none';
+                errorAlert.style.display = 'none';
+                infoAlert.style.display = 'none';
+                
+                // Mostra l'alert specificato
+                if (message && alertElement === infoAlert) {
+                    infoMessage.textContent = message;
+                } else if (message && alertElement === errorAlert) {
+                    errorMessage.textContent = message;
+                }
+                alertElement.style.display = 'block';
+            }
+
+            // Funzione per impostare lo stato di caricamento
+            function setLoading(isLoading) {
+                if (isLoading) {
+                    loadingOverlay.style.display = 'flex';
+                    savePasswordBtn.disabled = true;
+                } else {
+                    loadingOverlay.style.display = 'none';
+                    savePasswordBtn.disabled = false;
+                }
+            }
+
+            // Analizza la forza della password
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                
+                // Lunghezza minima
+                if (password.length >= 8) strength += 1;
+                
+                // Contiene lettere maiuscole
+                if (/[A-Z]/.test(password)) strength += 1;
+                
+                // Contiene numeri
+                if (/[0-9]/.test(password)) strength += 1;
+                
+                // Contiene caratteri speciali
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+                
+                // Aggiorna la barra di forza
+                let width = 0;
+                let color = "#dc3545";
+                let text = "Molto debole";
+                
+                switch(strength) {
+                    case 1:
+                        width = 25;
+                        color = "#dc3545";
+                        text = "Debole";
+                        break;
+                    case 2:
+                        width = 50;
+                        color = "#ffc107";
+                        text = "Media";
+                        break;
+                    case 3:
+                        width = 75;
+                        color = "#28a745";
+                        text = "Forte";
+                        break;
+                    case 4:
+                        width = 100;
+                        color = "#20c997";
+                        text = "Molto forte";
+                        break;
+                    default:
+                        width = 5;
+                        color = "#dc3545";
+                        text = "Molto debole";
+                }
+                
+                strengthBar.style.width = width + "%";
+                strengthBar.style.backgroundColor = color;
+                strengthText.textContent = "Sicurezza password: " + text;
+                strengthText.style.color = color;
+            }
+            
+            // Controlla i requisiti della password
+            function checkPasswordRequirements(password) {
+                // Lunghezza minima
+                if (password.length >= 8) {
+                    reqLength.style.color = "#28a745";
+                    reqLength.innerHTML = "✓ Almeno 8 caratteri";
+                } else {
+                    reqLength.style.color = "#dc3545";
+                    reqLength.innerHTML = "✗ Almeno 8 caratteri";
+                }
+                
+                // Lettere maiuscole
+                if (/[A-Z]/.test(password)) {
+                    reqUppercase.style.color = "#28a745";
+                    reqUppercase.innerHTML = "✓ Almeno una lettera maiuscola";
+                } else {
+                    reqUppercase.style.color = "#dc3545";
+                    reqUppercase.innerHTML = "✗ Almeno una lettera maiuscola";
+                }
+                
+                // Numeri
+                if (/[0-9]/.test(password)) {
+                    reqNumber.style.color = "#28a745";
+                    reqNumber.innerHTML = "✓ Almeno un numero";
+                } else {
+                    reqNumber.style.color = "#dc3545";
+                    reqNumber.innerHTML = "✗ Almeno un numero";
+                }
+                
+                // Caratteri speciali
+                if (/[^A-Za-z0-9]/.test(password)) {
+                    reqSpecial.style.color = "#28a745";
+                    reqSpecial.innerHTML = "✓ Almeno un carattere speciale";
+                } else {
+                    reqSpecial.style.color = "#dc3545";
+                    reqSpecial.innerHTML = "✗ Almeno un carattere speciale";
+                }
+            }
+
+            // Inizializza Firebase
+            async function initializeFirebase() {
+                try {
+                    setLoading(true);
+                    
+                    // Carica la configurazione Firebase
+                    const firebaseConfig = await loadFirebaseConfig();
+                    
+                    // Inizializza Firebase
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                    auth = firebase.auth();
+                    db = firebase.firestore();
+                    
+                    // Controlla lo stato di autenticazione
+                    auth.onAuthStateChanged(async (user) => {
+                        if (user) {
+                            currentUser = user;
+                            await loadUserData();
+                            setLoading(false);
+                        } else {
+                            // Utente non autenticato, reindirizza al login
+                            window.location.href = 'index.html';
+                        }
+                    });
+                    
+                } catch (error) {
+                    console.error('Errore nell\'inizializzazione di Firebase:', error);
+                    showAlert(errorAlert, 'Errore di configurazione. Contatta l\'amministratore.');
+                    setLoading(false);
+                }
+            }
+
+            // Carica i dati dell'utente
+            async function loadUserData() {
+                try {
+                    setLoading(true);
+                    
+                    // Carica i dati dal Firestore
+                    const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                    
+                    if (userDoc.exists) {
+                        userData = userDoc.data();
+                        
+                        // Aggiorna l'UI con i dati dell'utente
+                        updateUserUI();
+                        
+                        // Aggiorna l'ultimo accesso
+                        await db.collection('users').doc(currentUser.uid).update({
+                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        
+                    } else {
+                        // Se l'utente non esiste in Firestore, crea un documento di default
+                        userData = {
+                            email: currentUser.email,
+                            displayName: currentUser.displayName || currentUser.email.split('@')[0],
+                            role: 'user',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+                        
+                        await db.collection('users').doc(currentUser.uid).set(userData);
+                        updateUserUI();
+                    }
+                    
+                    setLoading(false);
+                    
+                } catch (error) {
+                    console.error('Errore nel caricamento dei dati utente:', error);
+                    showAlert(errorAlert, 'Errore nel caricamento dei dati. Riprova.');
+                    setLoading(false);
+                }
+            }
+
+            // Aggiorna l'interfaccia utente con i dati dell'utente
+            function updateUserUI() {
+                // Header
+                document.getElementById('headerUserName').textContent = userData.displayName || currentUser.email.split('@')[0];
+                document.getElementById('headerUserRole').textContent = getRoleText(userData.role);
+                
+                // Sottotitolo pagina
+                document.getElementById('pageSubtitle').textContent = 'Gestisci le tue informazioni personali e modifica la password di accesso';
+                
+                // Avatar e nome
+                const avatarInitials = getInitials(userData.displayName || currentUser.email);
+                document.getElementById('userAvatar').innerHTML = `<span style="font-size: 2.5rem;">${avatarInitials}</span>`;
+                document.getElementById('profileUserName').textContent = userData.displayName || currentUser.email.split('@')[0];
+                document.getElementById('profileUserRole').textContent = getRoleText(userData.role);
+                
+                // Dettagli
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('userRole').textContent = getRoleText(userData.role);
+                
+                // Data ultimo accesso
+                if (userData.lastLogin) {
+                    const lastLoginDate = userData.lastLogin.toDate ? 
+                        userData.lastLogin.toDate() : 
+                        new Date(userData.lastLogin);
+                    document.getElementById('lastLogin').textContent = formatDate(lastLoginDate);
+                } else {
+                    document.getElementById('lastLogin').textContent = 'Non disponibile';
+                }
+                
+                // Data registrazione
+                if (userData.createdAt) {
+                    const createdAtDate = userData.createdAt.toDate ? 
+                        userData.createdAt.toDate() : 
+                        new Date(userData.createdAt);
+                    document.getElementById('registrationDate').textContent = formatDate(createdAtDate);
+                } else {
+                    document.getElementById('registrationDate').textContent = 'Non disponibile';
+                }
+                
+                // Stato account
+                document.getElementById('accountStatus').textContent = currentUser.emailVerified ? 'Verificato' : 'Non verificato';
+                document.getElementById('accountStatus').style.color = currentUser.emailVerified ? '#28a745' : '#ffc107';
+            }
+
+            // Funzioni di utilità
+            function getRoleText(role) {
+                switch(role) {
+                    case 'admin': return 'Amministratore';
+                    case 'manager': return 'Manager';
+                    case 'user': return 'Utente';
+                    default: return 'Utente';
+                }
+            }
+
+            function getInitials(name) {
+                return name
+                    .split(' ')
+                    .map(part => part.charAt(0).toUpperCase())
+                    .join('')
+                    .substring(0, 2);
+            }
+
+            function formatDate(date) {
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                return date.toLocaleDateString('it-IT', options);
+            }
+
+            // Gestione del cambio password
+            changePasswordForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Nascondi eventuali alert precedenti
+                showAlert(infoAlert, '');
+                
+                // Validazioni
+                const currentPassword = currentPasswordInput.value;
+                const newPassword = newPasswordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    showAlert(errorAlert, 'Compila tutti i campi.');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showAlert(errorAlert, 'Le nuove password non coincidono.');
+                    confirmPasswordInput.focus();
+                    return;
+                }
+                
+                // Verifica forza password
+                const passwordStrength = checkPasswordComplexity(newPassword);
+                if (passwordStrength < 2) {
+                    showAlert(errorAlert, 'La nuova password non è abbastanza sicura. Deve essere almeno di media sicurezza.');
+                    newPasswordInput.focus();
+                    return;
+                }
+                
+                try {
+                    setLoading(true);
+                    showAlert(infoAlert, 'Aggiornamento password in corso...');
+                    
+                    // Riautentica l'utente con la password corrente
+                    const credential = firebase.auth.EmailAuthProvider.credential(
+                        currentUser.email, 
+                        currentPassword
+                    );
+                    
+                    await currentUser.reauthenticateWithCredential(credential);
+                    
+                    // Aggiorna la password
+                    await currentUser.updatePassword(newPassword);
+                    
+                    // Mostra messaggio di successo
+                    showAlert(successAlert);
+                    
+                    // Resetta il form dopo 3 secondi
+                    setTimeout(function() {
+                        changePasswordForm.reset();
+                        strengthBar.style.width = "0%";
+                        strengthText.textContent = "Sicurezza password: molto debole";
+                        strengthText.style.color = "#666";
+                        
+                        // Reset requisiti
+                        reqLength.style.color = "#555";
+                        reqLength.innerHTML = "Almeno 8 caratteri";
+                        reqUppercase.style.color = "#555";
+                        reqUppercase.innerHTML = "Almeno una lettera maiuscola";
+                        reqNumber.style.color = "#555";
+                        reqNumber.innerHTML = "Almeno un numero";
+                        reqSpecial.style.color = "#555";
+                        reqSpecial.innerHTML = "Almeno un carattere speciale";
+                        
+                        // Nascondi l'alert di successo dopo 5 secondi
+                        setTimeout(function() {
+                            successAlert.style.display = 'none';
+                        }, 5000);
+                    }, 3000);
+                    
+                    setLoading(false);
+                    
+                } catch (error) {
+                    console.error('Errore durante il cambio password:', error);
+                    setLoading(false);
+                    
+                    // Gestione specifica degli errori
+                    let errorMsg = 'Errore durante il cambio password. Riprova.';
+                    
+                    switch (error.code) {
+                        case 'auth/wrong-password':
+                            errorMsg = 'La password attuale non è corretta.';
+                            break;
+                        case 'auth/weak-password':
+                            errorMsg = 'La nuova password non è abbastanza sicura.';
+                            break;
+                        case 'auth/requires-recent-login':
+                            errorMsg = 'Devi effettuare nuovamente il login per cambiare la password.';
+                            break;
+                        case 'auth/network-request-failed':
+                            errorMsg = 'Errore di rete. Verifica la connessione internet.';
+                            break;
+                        default:
+                            errorMsg = `Errore: ${error.message}`;
+                    }
+                    
+                    showAlert(errorAlert, errorMsg);
+                }
+            });
+            
+            // Funzione per calcolare la complessità della password
+            function checkPasswordComplexity(password) {
+                let score = 0;
+                
+                if (password.length >= 8) score += 1;
+                if (/[A-Z]/.test(password)) score += 1;
+                if (/[0-9]/.test(password)) score += 1;
+                if (/[^A-Za-z0-9]/.test(password)) score += 1;
+                
+                return score;
+            }
+            
+            // Gestione dell'input della nuova password
+            newPasswordInput.addEventListener('input', function() {
+                const password = newPasswordInput.value;
+                checkPasswordStrength(password);
+                checkPasswordRequirements(password);
+            });
+            
+            // Reset del form
+            resetFormBtn.addEventListener('click', function() {
+                changePasswordForm.reset();
+                strengthBar.style.width = "0%";
+                strengthText.textContent = "Sicurezza password: molto debole";
+                strengthText.style.color = "#666";
+                successAlert.style.display = 'none';
+                errorAlert.style.display = 'none';
+                infoAlert.style.display = 'none';
+                
+                // Reset requisiti
+                reqLength.style.color = "#555";
+                reqLength.innerHTML = "Almeno 8 caratteri";
+                reqUppercase.style.color = "#555";
+                reqUppercase.innerHTML = "Almeno una lettera maiuscola";
+                reqNumber.style.color = "#555";
+                reqNumber.innerHTML = "Almeno un numero";
+                reqSpecial.style.color = "#555";
+                reqSpecial.innerHTML = "Almeno un carattere speciale";
+            });
+            
+            // Logout
+            logoutBtn.addEventListener('click', async function() {
+                if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
+                    try {
+                        setLoading(true);
+                        await auth.signOut();
+                        // Rimuovi i dati dal localStorage
+                        localStorage.removeItem('user');
+                        localStorage.removeItem('authToken');
+                        // Reindirizza alla pagina di login
+                        window.location.href = 'index.html';
+                    } catch (error) {
+                        console.error('Errore durante il logout:', error);
+                        setLoading(false);
+                        alert('Errore durante il logout. Riprova.');
+                    }
+                }
+            });
+            
+            // Inizializza Firebase
+            await initializeFirebase();
+        });
+    </script>
+</body>
+</html>

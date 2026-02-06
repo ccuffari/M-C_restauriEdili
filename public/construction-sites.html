@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuffari Restauri Edili - Gestione Cantieri</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Reset e Base */
+        :root {
+            --primary-color: #003366;
+            --primary-dark: #002244;
+            --primary-light: #004080;
+            --secondary-color: #ff9900;
+            --secondary-dark: #e68a00;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-color: #6c757d;
+            --border-color: #dee2e6;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Container Responsive */
+        .container {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        
+        @media (min-width: 576px) {
+            .container { max-width: 540px; }
+        }
+        @media (min-width: 768px) {
+            .container { max-width: 720px; }
+        }
+        @media (min-width: 992px) {
+            .container { max-width: 960px; }
+        }
+        @media (min-width: 1200px) {
+            .container { max-width: 1140px; }
+        }
+        @media (min-width: 1400px) {
+            .container { max-width: 1320px; }
+        }
+        
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .d-none { display: none !important; }
+        .d-block { display: block !important; }
+        .d-flex { display: flex !important; }
+        .justify-content-between { justify-content: space-between; }
+        .align-items-center { align-items: center; }
+        .flex-column { flex-direction: column; }
+        .flex-wrap { flex-wrap: wrap; }
+        .gap-1 { gap: 0.5rem; }
+        .gap-2 { gap: 1rem; }
+        .gap-3 { gap: 1.5rem; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+        .p-2 { padding: 1rem; }
+        .p-3 { padding: 1.5rem; }
+        .p-4 { padding: 2rem; }
+        .w-100 { width: 100%; }
+        
+        /* Header Styles */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            color: var(--secondary-color);
+            flex-shrink: 0;
+        }
+        
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--secondary-color);
+        }
+        
+        .nav-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .user-info {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .user-role {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .logout-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        
+        .logout-btn:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .logout-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem 0;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .page-title i {
+            color: var(--secondary-color);
+        }
+        
+        .page-subtitle {
+            color: var(--gray-color);
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .page-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Stats Cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-right: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .stat-info {
+            flex: 1;
+        }
+        
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.2;
+        }
+        
+        .stat-change {
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+        
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+        
+        .stat-change.negative {
+            color: var(--danger-color);
+        }
+        
+        /* Main Content Layout */
+        .content-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 992px) {
+            .content-container {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .form-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.25rem 1.5rem;
+        }
+        
+        .card-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+        
+        .form-group.required label::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+            z-index: 1;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.25);
+            outline: none;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23343a40' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+        }
+        
+        input[type="range"].form-control {
+            padding-left: 1rem;
+            height: 2.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        
+        @media (min-width: 576px) {
+            .form-actions {
+                flex-direction: row;
+            }
+        }
+        
+        .btn-full {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success-color);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            margin-top: 0.25rem;
+        }
+        
+        /* Sites List */
+        .sites-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .sites-list:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .list-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        @media (min-width: 768px) {
+            .list-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+        
+        .list-title {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .list-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            width: 100%;
+        }
+        
+        @media (min-width: 576px) {
+            .list-controls {
+                flex-direction: row;
+                align-items: center;
+                width: auto;
+            }
+        }
+        
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.25);
+            outline: none;
+        }
+        
+        .filter-select {
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: white;
+            color: var(--dark-color);
+            font-size: 0.95rem;
+            min-width: 160px;
+            cursor: pointer;
+        }
+        
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .sites-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .sites-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .sites-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+        
+        .sites-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .sites-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .site-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .site-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            background: #e6f0ff;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .site-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .site-name {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+            word-break: break-word;
+        }
+        
+        .site-address {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .status-planning {
+            background: #e6f0ff;
+            color: var(--primary-color);
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-paused {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: nowrap;
+        }
+        
+        .action-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--gray-color);
+            transition: var(--transition);
+            padding: 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-btn:hover {
+            color: var(--primary-color);
+            background: rgba(0, 51, 102, 0.1);
+        }
+        
+        .action-btn-danger:hover {
+            color: var(--danger-color);
+            background: rgba(220, 53, 69, 0.1);
+        }
+        
+        /* No Sites Message */
+        .no-sites {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-color);
+        }
+        
+        .no-sites i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+        
+        .no-sites h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .no-sites p {
+            font-size: 1rem;
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-color);
+        }
+        
+        .loading-spinner i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .alert i {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .pagination button {
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pagination button:hover {
+            background: #f8f9fa;
+        }
+        
+        .pagination button.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+        }
+        
+        .developer-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .company-info {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+        
+        .copyright {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-color);
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .logo-container {
+                min-width: auto;
+                margin-bottom: 1rem;
+            }
+            
+            .user-menu {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-menu {
+                order: 2;
+                width: 100%;
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            
+            .page-title {
+                font-size: 1.75rem;
+            }
+            
+            .stat-card {
+                padding: 1.25rem;
+            }
+            
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                margin-right: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .card-body {
+                padding: 1.25rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .logo-container {
+                justify-content: center;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            
+            .logo-icon {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+            
+            .user-menu {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .user-info {
+                text-align: center;
+            }
+            
+            .nav-menu {
+                justify-content: center;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .page-actions {
+                justify-content: center;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn-full {
+                width: 100%;
+            }
+            
+            .list-controls {
+                flex-direction: column;
+            }
+            
+            .search-box,
+            .filter-select {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .logo-text {
+                font-size: 1.3rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+            
+            .nav-btn span {
+                display: none;
+            }
+            
+            .nav-btn i {
+                margin-right: 0;
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <i class="fas fa-building logo-icon"></i>
+                <div>
+                    <div class="logo-text">Cuffari Restauri Edili</div>
+                    <div class="subtitle">Piattaforma di Management Interno</div>
+                </div>
+            </div>
+            
+            <div class="user-menu">
+                <div class="nav-menu">
+                    <a href="dashboard.html" class="nav-btn">
+                        <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+                    </a>
+                    <a href="profile.html" class="nav-btn">
+                        <i class="fas fa-user-circle"></i> <span>Profilo</span>
+                    </a>
+                    <a href="users.html" class="nav-btn">
+                        <i class="fas fa-users"></i> <span>Utenti</span>
+                    </a>
+                    <a href="construction-sites.html" class="nav-btn active">
+                        <i class="fas fa-hard-hat"></i> <span>Cantieri</span>
+                    </a>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-name" id="userName">Caricamento...</div>
+                    <div class="user-role" id="userRole">Utente</div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> <span>Esci</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-hard-hat"></i> Gestione Cantieri
+                    </h1>
+                    <p class="page-subtitle">Gestisci tutti i cantieri attivi e pianificati dell'azienda</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-secondary" id="exportBtn">
+                        <i class="fas fa-file-export"></i> <span>Esporta</span>
+                    </button>
+                    <button class="btn btn-primary" id="addSiteBtn">
+                        <i class="fas fa-plus-circle"></i> <span>Nuovo Cantiere</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Statistics -->
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #e6f0ff; color: #004080;">
+                        <i class="fas fa-hard-hat"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-title">Cantieri Totali</div>
+                        <div class="stat-value" id="totalSites">0</div>
+                        <div class="stat-change positive" id="totalChange">Caricamento...</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #d4edda; color: #155724;">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-title">Cantieri Attivi</div>
+                        <div class="stat-value" id="activeSites">0</div>
+                        <div class="stat-change positive" id="activeChange">Caricamento...</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #fff3cd; color: #856404;">
+                        <i class="fas fa-pause-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-title">Cantieri in Pausa</div>
+                        <div class="stat-value" id="pausedSites">0</div>
+                        <div class="stat-change negative" id="pausedChange">Caricamento...</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #d1ecf1; color: #0c5460;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-title">Cantieri Completati</div>
+                        <div class="stat-value" id="completedSites">0</div>
+                        <div class="stat-change positive" id="completedChange">Caricamento...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="content-container">
+                <!-- Form Card -->
+                <div class="form-card" id="siteFormCard">
+                    <div class="card-header">
+                        <h3><i class="fas fa-plus-circle"></i> <span id="formTitle">Nuovo Cantiere</span></h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="siteForm">
+                            <input type="hidden" id="siteId" value="">
+                            
+                            <div class="form-group required">
+                                <label for="siteName">Nome Cantiere</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-hard-hat"></i>
+                                    <input type="text" id="siteName" class="form-control" placeholder="Es: Ristrutturazione Palazzo Storico" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group required">
+                                <label for="siteAddress">Indirizzo</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <input type="text" id="siteAddress" class="form-control" placeholder="Via, Civico" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="siteCity">Città</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-city"></i>
+                                        <input type="text" id="siteCity" class="form-control" placeholder="Città" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="siteZip">CAP</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-mail-bulk"></i>
+                                        <input type="text" id="siteZip" class="form-control" placeholder="CAP">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="siteManager">Responsabile</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-user-tie"></i>
+                                        <select id="siteManager" class="form-control" required>
+                                            <option value="">Caricamento responsabili...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group required">
+                                    <label for="siteStatus">Stato</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                        <select id="siteStatus" class="form-control" required>
+                                            <option value="">Seleziona stato</option>
+                                            <option value="planning">In programmazione</option>
+                                            <option value="active">In corso</option>
+                                            <option value="paused">Sospeso</option>
+                                            <option value="completed">Completato</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="startDate">Data Inizio</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <input type="date" id="startDate" class="form-control" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="endDate">Data Fine Prevista</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <input type="date" id="endDate" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="siteBudget">Budget (€)</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-euro-sign"></i>
+                                        <input type="number" id="siteBudget" class="form-control" placeholder="0" min="0" step="1000">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="siteProgress">Progresso (%)</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                        <input type="range" id="siteProgress" class="form-control" min="0" max="100" value="0">
+                                    </div>
+                                    <div class="progress-text" id="progressText">0% completato</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="siteDescription">Descrizione</label>
+                                <textarea id="siteDescription" class="form-control" placeholder="Descrizione del cantiere, lavori da eseguire, note..." rows="4"></textarea>
+                            </div>
+                            
+                            <!-- Alerts -->
+                            <div id="successAlert" class="alert alert-success d-none">
+                                <i class="fas fa-check-circle"></i>
+                                <div>Cantiere salvato con successo!</div>
+                            </div>
+                            
+                            <div id="errorAlert" class="alert alert-error d-none">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <div id="errorMessage">Si è verificato un errore. Controlla i dati inseriti.</div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-full">
+                                    <i class="fas fa-save"></i> <span id="submitBtnText">Salva Cantiere</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-full" id="cancelBtn" style="display: none;">
+                                    <i class="fas fa-times"></i> <span>Annulla</span>
+                                </button>
+                                <button type="reset" class="btn btn-secondary btn-full" id="resetFormBtn">
+                                    <i class="fas fa-redo"></i> <span>Reset</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Sites List -->
+                <div class="sites-list">
+                    <div class="list-header">
+                        <h3 class="list-title">
+                            <i class="fas fa-list"></i> Elenco Cantieri
+                        </h3>
+                        <div class="list-controls">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="search-input" id="searchInput" placeholder="Cerca cantiere...">
+                            </div>
+                            <select class="filter-select" id="statusFilter">
+                                <option value="">Tutti gli stati</option>
+                                <option value="planning">In programmazione</option>
+                                <option value="active">In corso</option>
+                                <option value="paused">Sospeso</option>
+                                <option value="completed">Completato</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="sites-table">
+                            <thead>
+                                <tr>
+                                    <th>Cantiere</th>
+                                    <th>Responsabile</th>
+                                    <th>Progresso</th>
+                                    <th>Stato</th>
+                                    <th>Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sitesTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center p-4">
+                                        <div class="loading-spinner">
+                                            <i class="fas fa-spinner fa-spin"></i>
+                                            <p>Caricamento cantieri...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div id="noSitesMessage" class="no-sites d-none">
+                            <i class="fas fa-hard-hat"></i>
+                            <h3>Nessun cantiere trovato</h3>
+                            <p>Crea il tuo primo cantiere utilizzando il form.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pagination d-none" id="pagination">
+                        <button id="prevPage"><i class="fas fa-chevron-left"></i></button>
+                        <button class="active">1</button>
+                        <button>2</button>
+                        <button>3</button>
+                        <button id="nextPage"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="developer-info">
+                    <h3>Sviluppatore della Piattaforma</h3>
+                    <p>Cristian Felice Cuffari</p>
+                </div>
+                
+                <div class="company-info">
+                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità</p>
+                </div>
+                
+                <div class="copyright">
+                    <p>&copy; 2023 Cuffari Restauri Edili. Tutti i diritti riservati.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Conferma Eliminazione</h3>
+                <button class="modal-close" id="closeDeleteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Sei sicuro di voler eliminare questo cantiere? L'azione non può essere annullata.</p>
+                <p><strong id="deleteSiteName"></strong></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelDelete">Annulla</button>
+                <button class="btn btn-danger" id="confirmDelete">Elimina</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Element references
+            const siteForm = document.getElementById('siteForm');
+            const siteIdInput = document.getElementById('siteId');
+            const siteNameInput = document.getElementById('siteName');
+            const siteAddressInput = document.getElementById('siteAddress');
+            const siteCityInput = document.getElementById('siteCity');
+            const siteZipInput = document.getElementById('siteZip');
+            const siteManagerSelect = document.getElementById('siteManager');
+            const siteStatusSelect = document.getElementById('siteStatus');
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const siteBudgetInput = document.getElementById('siteBudget');
+            const siteProgressInput = document.getElementById('siteProgress');
+            const progressText = document.getElementById('progressText');
+            const siteDescriptionInput = document.getElementById('siteDescription');
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            const resetFormBtn = document.getElementById('resetFormBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const addSiteBtn = document.getElementById('addSiteBtn');
+            const formTitle = document.getElementById('formTitle');
+            const submitBtnText = document.getElementById('submitBtnText');
+            const sitesTableBody = document.getElementById('sitesTableBody');
+            const noSitesMessage = document.getElementById('noSitesMessage');
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const exportBtn = document.getElementById('exportBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userNameElement = document.getElementById('userName');
+            const userRoleElement = document.getElementById('userRole');
+            
+            // Statistics elements
+            const totalSitesSpan = document.getElementById('totalSites');
+            const activeSitesSpan = document.getElementById('activeSites');
+            const pausedSitesSpan = document.getElementById('pausedSites');
+            const completedSitesSpan = document.getElementById('completedSites');
+            
+            // Modal elements
+            const deleteModal = document.getElementById('deleteModal');
+            const closeDeleteModal = document.getElementById('closeDeleteModal');
+            const cancelDelete = document.getElementById('cancelDelete');
+            const confirmDelete = document.getElementById('confirmDelete');
+            const deleteSiteName = document.getElementById('deleteSiteName');
+            
+            // Global variables
+            let db = null;
+            let auth = null;
+            let currentUser = null;
+            let constructionSites = [];
+            let users = [];
+            let siteToDelete = null;
+            
+            // Initialize Firebase
+            async function initializeFirebase() {
+                let firebaseConfig;
+                
+                try {
+                    // Try to load config from JSON file
+                    const response = await fetch('firebase_config.json');
+                    if (response.ok) {
+                        firebaseConfig = await response.json();
+                        console.log("Firebase config loaded from JSON file");
+                    } else {
+                        throw new Error("Config file not found");
+                    }
+                } catch (error) {
+                    console.warn("Could not load firebase_config.json, using hardcoded config:", error);
+                    
+                    // Fallback to hardcoded config
+                    firebaseConfig = {
+                        apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
+                        authDomain: "work-tracker-v120400.firebaseapp.com",
+                        projectId: "work-tracker-v120400",
+                        storageBucket: "work-tracker-v120400.firebasestorage.app",
+                        messagingSenderId: "437459935839",
+                        appId: "1:437459935839:web:cb0b54608314dcb25731ea",
+                        measurementId: "G-2LPKL9WREX"
+                    };
+                }
+                
+                try {
+                    if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
+                        firebase.initializeApp(firebaseConfig);
+                        console.log("Firebase initialized successfully");
+                        
+                        // Initialize services
+                        db = firebase.firestore();
+                        auth = firebase.auth();
+                        
+                        // Set up auth state listener
+                        auth.onAuthStateChanged(user => {
+                            if (user) {
+                                currentUser = user;
+                                updateUserInfo(user);
+                            } else {
+                                // Redirect to login page if not authenticated
+                                window.location.href = 'index.html';
+                            }
+                        });
+                        
+                        return { db, auth };
+                    } else if (typeof firebase !== 'undefined') {
+                        console.log("Firebase already initialized");
+                        db = firebase.firestore();
+                        auth = firebase.auth();
+                        return { db, auth };
+                    }
+                } catch (error) {
+                    console.error("Error initializing Firebase:", error);
+                    showErrorAlert("Errore di connessione a Firebase. I dati verranno gestiti localmente.");
+                    return null;
+                }
+            }
+            
+            // Update user info in header
+            function updateUserInfo(user) {
+                if (user) {
+                    userNameElement.textContent = user.displayName || user.email || "Utente";
+                    userRoleElement.textContent = "Amministratore";
+                    
+                    // Try to get user role from Firestore
+                    if (db) {
+                        db.collection('users').doc(user.uid).get()
+                            .then(doc => {
+                                if (doc.exists) {
+                                    const userData = doc.data();
+                                    userRoleElement.textContent = userData.role || "Utente";
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error fetching user data:", error);
+                            });
+                    }
+                }
+            }
+            
+            // Load users from Firestore
+            async function loadUsers() {
+                try {
+                    if (!db) {
+                        console.error("Database not initialized");
+                        populateUsersWithFallback();
+                        return;
+                    }
+                    
+                    const usersSnapshot = await db.collection('users').get();
+                    users = [];
+                    
+                    usersSnapshot.forEach(doc => {
+                        const userData = doc.data();
+                        users.push({
+                            id: doc.id,
+                            name: userData.name || userData.email,
+                            email: userData.email,
+                            role: userData.role
+                        });
+                    });
+                    
+                    console.log(`Loaded ${users.length} users from Firebase`);
+                    populateUserSelect();
+                    
+                } catch (error) {
+                    console.error("Error loading users:", error);
+                    populateUsersWithFallback();
+                }
+            }
+            
+            // Populate user select with fallback data
+            function populateUsersWithFallback() {
+                users = [
+                    { id: '1', name: 'Mario Rossi', role: 'Responsabile' },
+                    { id: '2', name: 'Laura Bianchi', role: 'Responsabile' },
+                    { id: '3', name: 'Giuseppe Verdi', role: 'Project Manager' },
+                    { id: '4', name: 'Anna Neri', role: 'Direttore Lavori' }
+                ];
+                populateUserSelect();
+            }
+            
+            // Populate user select dropdown
+            function populateUserSelect() {
+                siteManagerSelect.innerHTML = '<option value="">Seleziona responsabile</option>';
+                
+                // Filter users with specific roles or show all
+                const managers = users.filter(user => 
+                    ['Responsabile', 'Project Manager', 'Direttore Lavori', 'Admin', 'Administrator'].includes(user.role)
+                );
+                
+                if (managers.length === 0) {
+                    // If no specific roles found, show all users
+                    users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.name;
+                        option.textContent = user.name + (user.role ? ` (${user.role})` : '');
+                        siteManagerSelect.appendChild(option);
+                    });
+                } else {
+                    managers.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.name;
+                        option.textContent = user.name + (user.role ? ` (${user.role})` : '');
+                        siteManagerSelect.appendChild(option);
+                    });
+                }
+            }
+            
+            // Load construction sites from Firestore
+            async function loadSitesFromFirebase() {
+                try {
+                    if (!db) {
+                        console.error("Database not initialized");
+                        showLocalData();
+                        return;
+                    }
+                    
+                    const sitesSnapshot = await db.collection('constructionSites')
+                        .orderBy('createdAt', 'desc')
+                        .get();
+                    
+                    constructionSites = [];
+                    
+                    sitesSnapshot.forEach(doc => {
+                        const siteData = doc.data();
+                        constructionSites.push({
+                            id: doc.id,
+                            ...siteData
+                        });
+                    });
+                    
+                    console.log(`Loaded ${constructionSites.length} construction sites from Firebase`);
+                    renderSitesTable();
+                    updateStats();
+                    
+                } catch (error) {
+                    console.error("Error loading sites from Firebase:", error);
+                    showLocalData();
+                }
+            }
+            
+            // Show local data as fallback
+            function showLocalData() {
+                constructionSites = [
+                    {
+                        id: '1',
+                        name: "Ristrutturazione Palazzo Storico",
+                        address: "Via Roma 123",
+                        city: "Milano",
+                        zip: "20121",
+                        manager: "Mario Rossi",
+                        status: "active",
+                        startDate: "2023-03-15",
+                        endDate: "2023-10-30",
+                        budget: 250000,
+                        progress: 65,
+                        description: "Ristrutturazione completa di un palazzo storico del centro.",
+                        createdAt: "2023-03-01T00:00:00Z"
+                    },
+                    {
+                        id: '2',
+                        name: "Ampliamento Sede Aziendale",
+                        address: "Via della Libertà 45",
+                        city: "Torino",
+                        zip: "10121",
+                        manager: "Laura Bianchi",
+                        status: "active",
+                        startDate: "2023-05-10",
+                        endDate: "2023-12-20",
+                        budget: 180000,
+                        progress: 40,
+                        description: "Ampliamento della sede aziendale con nuovo padiglione.",
+                        createdAt: "2023-05-01T00:00:00Z"
+                    }
+                ];
+                
+                renderSitesTable();
+                updateStats();
+                
+                // Show warning
+                showWarningAlert("Modalità offline: i dati potrebbero non essere aggiornati.");
+            }
+            
+            // Initialize page
+            async function initPage() {
+                // Set today's date as default
+                const today = new Date().toISOString().split('T')[0];
+                startDateInput.value = today;
+                
+                // Initialize Firebase
+                await initializeFirebase();
+                
+                // Load users and sites
+                await loadUsers();
+                await loadSitesFromFirebase();
+                
+                // Setup event listeners
+                setupEventListeners();
+            }
+            
+            // Setup all event listeners
+            function setupEventListeners() {
+                // Progress bar update
+                siteProgressInput.addEventListener('input', updateProgressText);
+                
+                // Search and filter
+                searchInput.addEventListener('input', filterSites);
+                statusFilter.addEventListener('change', filterSites);
+                
+                // Form buttons
+                addSiteBtn.addEventListener('click', () => {
+                    resetForm();
+                    formTitle.textContent = "Nuovo Cantiere";
+                    submitBtnText.textContent = "Salva Cantiere";
+                    cancelBtn.style.display = 'none';
+                });
+                
+                resetFormBtn.addEventListener('click', resetForm);
+                cancelBtn.addEventListener('click', resetForm);
+                
+                // Form submission
+                siteForm.addEventListener('submit', handleFormSubmit);
+                
+                // Export button
+                exportBtn.addEventListener('click', exportData);
+                
+                // Logout button
+                logoutBtn.addEventListener('click', handleLogout);
+                
+                // Modal buttons
+                closeDeleteModal.addEventListener('click', () => deleteModal.classList.remove('show'));
+                cancelDelete.addEventListener('click', () => deleteModal.classList.remove('show'));
+                confirmDelete.addEventListener('click', confirmSiteDelete);
+                
+                // Close modal on outside click
+                deleteModal.addEventListener('click', (e) => {
+                    if (e.target === deleteModal) {
+                        deleteModal.classList.remove('show');
+                    }
+                });
+            }
+            
+            // Update progress text
+            function updateProgressText() {
+                progressText.textContent = siteProgressInput.value + "% completato";
+            }
+            
+            // Render sites table
+            function renderSitesTable(sites = constructionSites) {
+                if (sites.length === 0) {
+                    sitesTableBody.innerHTML = '';
+                    noSitesMessage.classList.remove('d-none');
+                    return;
+                }
+                
+                noSitesMessage.classList.add('d-none');
+                
+                let tableHTML = '';
+                
+                sites.forEach(site => {
+                    const statusClass = getStatusClass(site.status);
+                    const statusText = getStatusText(site.status);
+                    const siteIcon = getSiteIcon(site.name);
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>
+                                <div class="site-name-cell">
+                                    <div class="site-icon">
+                                        <i class="${siteIcon}"></i>
+                                    </div>
+                                    <div class="site-info">
+                                        <div class="site-name">${site.name}</div>
+                                        <div class="site-address">${site.address}, ${site.city}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${site.manager || 'Non assegnato'}</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${site.progress || 0}%"></div>
+                                </div>
+                                <div class="progress-text">${site.progress || 0}% completato</div>
+                            </td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn" title="Modifica" onclick="editSite('${site.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn" title="Dettagli" onclick="viewSiteDetails('${site.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-danger" title="Elimina" onclick="showDeleteModal('${site.id}', '${site.name.replace(/'/g, "\\'")}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                sitesTableBody.innerHTML = tableHTML;
+            }
+            
+            // Get status class
+            function getStatusClass(status) {
+                switch(status) {
+                    case 'planning': return 'status-planning';
+                    case 'active': return 'status-active';
+                    case 'paused': return 'status-paused';
+                    case 'completed': return 'status-completed';
+                    default: return '';
+                }
+            }
+            
+            // Get status text
+            function getStatusText(status) {
+                switch(status) {
+                    case 'planning': return 'Programmato';
+                    case 'active': return 'Attivo';
+                    case 'paused': return 'Sospeso';
+                    case 'completed': return 'Completato';
+                    default: return 'Sconosciuto';
+                }
+            }
+            
+            // Get site icon
+            function getSiteIcon(siteName) {
+                if (!siteName) return 'fas fa-hard-hat';
+                
+                const name = siteName.toLowerCase();
+                if (name.includes('ristrutturazione') || name.includes('restauro')) {
+                    return 'fas fa-monument';
+                } else if (name.includes('costruzione') || name.includes('ampliamento')) {
+                    return 'fas fa-building';
+                } else if (name.includes('copertura') || name.includes('tetto')) {
+                    return 'fas fa-home';
+                } else if (name.includes('chiesa') || name.includes('palazzo')) {
+                    return 'fas fa-landmark';
+                } else {
+                    return 'fas fa-hard-hat';
+                }
+            }
+            
+            // Filter sites
+            function filterSites() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const statusFilterValue = statusFilter.value;
+                
+                let filteredSites = constructionSites;
+                
+                if (searchTerm) {
+                    filteredSites = filteredSites.filter(site => 
+                        (site.name && site.name.toLowerCase().includes(searchTerm)) ||
+                        (site.address && site.address.toLowerCase().includes(searchTerm)) ||
+                        (site.city && site.city.toLowerCase().includes(searchTerm)) ||
+                        (site.manager && site.manager.toLowerCase().includes(searchTerm))
+                    );
+                }
+                
+                if (statusFilterValue) {
+                    filteredSites = filteredSites.filter(site => site.status === statusFilterValue);
+                }
+                
+                renderSitesTable(filteredSites);
+            }
+            
+            // Update statistics
+            function updateStats() {
+                const total = constructionSites.length;
+                const active = constructionSites.filter(site => site.status === 'active').length;
+                const paused = constructionSites.filter(site => site.status === 'paused').length;
+                const completed = constructionSites.filter(site => site.status === 'completed').length;
+                
+                totalSitesSpan.textContent = total;
+                activeSitesSpan.textContent = active;
+                pausedSitesSpan.textContent = paused;
+                completedSitesSpan.textContent = completed;
+                
+                // Update change indicators
+                document.getElementById('totalChange').textContent = `${total} totale`;
+                document.getElementById('activeChange').textContent = `${active} attivi`;
+                document.getElementById('pausedChange').textContent = `${paused} sospesi`;
+                document.getElementById('completedChange').textContent = `${completed} completati`;
+            }
+            
+            // Handle form submission
+            async function handleFormSubmit(e) {
+                e.preventDefault();
+                
+                // Hide previous alerts
+                hideAlerts();
+                
+                // Validate form
+                if (!validateForm()) {
+                    return;
+                }
+                
+                // Prepare site data
+                const siteData = {
+                    name: siteNameInput.value.trim(),
+                    address: siteAddressInput.value.trim(),
+                    city: siteCityInput.value.trim(),
+                    zip: siteZipInput.value.trim() || '',
+                    manager: siteManagerSelect.value,
+                    status: siteStatusSelect.value,
+                    startDate: startDateInput.value,
+                    endDate: endDateInput.value || '',
+                    budget: siteBudgetInput.value ? parseInt(siteBudgetInput.value) : 0,
+                    progress: parseInt(siteProgressInput.value) || 0,
+                    description: siteDescriptionInput.value.trim() || '',
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                // Add creation date if new site
+                const siteId = siteIdInput.value;
+                if (!siteId) {
+                    siteData.createdAt = new Date().toISOString();
+                    siteData.createdBy = currentUser ? currentUser.uid : 'anonymous';
+                }
+                
+                try {
+                    if (siteId) {
+                        await updateSite(siteId, siteData);
+                    } else {
+                        await createSite(siteData);
+                    }
+                    
+                    showSuccessAlert();
+                    setTimeout(resetForm, 2000);
+                    
+                } catch (error) {
+                    console.error("Error saving site:", error);
+                    showErrorAlert("Errore nel salvataggio: " + error.message);
+                }
+            }
+            
+            // Validate form
+            function validateForm() {
+                // Required fields
+                if (!siteNameInput.value.trim()) {
+                    showErrorAlert("Il nome del cantiere è obbligatorio");
+                    siteNameInput.focus();
+                    return false;
+                }
+                
+                if (!siteAddressInput.value.trim()) {
+                    showErrorAlert("L'indirizzo è obbligatorio");
+                    siteAddressInput.focus();
+                    return false;
+                }
+                
+                if (!siteCityInput.value.trim()) {
+                    showErrorAlert("La città è obbligatoria");
+                    siteCityInput.focus();
+                    return false;
+                }
+                
+                if (!siteManagerSelect.value) {
+                    showErrorAlert("Il responsabile è obbligatorio");
+                    siteManagerSelect.focus();
+                    return false;
+                }
+                
+                if (!siteStatusSelect.value) {
+                    showErrorAlert("Lo stato è obbligatorio");
+                    siteStatusSelect.focus();
+                    return false;
+                }
+                
+                if (!startDateInput.value) {
+                    showErrorAlert("La data di inizio è obbligatoria");
+                    startDateInput.focus();
+                    return false;
+                }
+                
+                // Date validation
+                if (endDateInput.value && startDateInput.value > endDateInput.value) {
+                    showErrorAlert("La data di fine non può essere precedente alla data di inizio");
+                    endDateInput.focus();
+                    return false;
+                }
+                
+                // Progress validation
+                const progress = parseInt(siteProgressInput.value);
+                if (isNaN(progress) || progress < 0 || progress > 100) {
+                    showErrorAlert("Il progresso deve essere un numero tra 0 e 100");
+                    siteProgressInput.focus();
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            // Create new site
+            async function createSite(siteData) {
+                try {
+                    if (db) {
+                        const docRef = await db.collection('constructionSites').add(siteData);
+                        console.log("Site saved to Firebase with ID:", docRef.id);
+                        
+                        // Add to local array
+                        constructionSites.unshift({
+                            id: docRef.id,
+                            ...siteData
+                        });
+                    } else {
+                        const newId = 'local_' + Date.now();
+                        constructionSites.unshift({
+                            id: newId,
+                            ...siteData
+                        });
+                    }
+                    
+                    // Update UI
+                    renderSitesTable();
+                    updateStats();
+                    filterSites();
+                    
+                } catch (error) {
+                    console.error("Error saving to Firebase:", error);
+                    throw error;
+                }
+            }
+            
+            // Update existing site
+            async function updateSite(siteId, siteData) {
+                try {
+                    if (db) {
+                        await db.collection('constructionSites').doc(siteId).update(siteData);
+                        console.log("Site updated in Firebase:", siteId);
+                    }
+                    
+                    // Update local array
+                    const index = constructionSites.findIndex(site => site.id === siteId);
+                    if (index !== -1) {
+                        constructionSites[index] = {
+                            id: siteId,
+                            ...constructionSites[index],
+                            ...siteData
+                        };
+                        
+                        // Update UI
+                        renderSitesTable();
+                        updateStats();
+                        filterSites();
+                    }
+                    
+                } catch (error) {
+                    console.error("Error updating site:", error);
+                    throw error;
+                }
+            }
+            
+            // Reset form
+            function resetForm() {
+                siteForm.reset();
+                siteIdInput.value = '';
+                cancelBtn.style.display = 'none';
+                formTitle.textContent = "Nuovo Cantiere";
+                submitBtnText.textContent = "Salva Cantiere";
+                
+                // Set default date
+                const today = new Date().toISOString().split('T')[0];
+                startDateInput.value = today;
+                
+                // Update progress text
+                updateProgressText();
+                
+                // Hide alerts
+                hideAlerts();
+            }
+            
+            // Export data
+            function exportData() {
+                if (constructionSites.length === 0) {
+                    showWarningAlert("Nessun dato da esportare");
+                    return;
+                }
+                
+                // Prepare CSV data
+                const csvData = [
+                    ['Nome', 'Indirizzo', 'Città', 'CAP', 'Responsabile', 'Stato', 'Data Inizio', 'Data Fine', 'Budget', 'Progresso', 'Descrizione']
+                ];
+                
+                constructionSites.forEach(site => {
+                    csvData.push([
+                        site.name,
+                        site.address,
+                        site.city,
+                        site.zip || '',
+                        site.manager || '',
+                        getStatusText(site.status),
+                        formatDate(site.startDate),
+                        site.endDate ? formatDate(site.endDate) : '',
+                        site.budget ? site.budget + ' €' : '0 €',
+                        (site.progress || 0) + '%',
+                        site.description || ''
+                    ]);
+                });
+                
+                // Convert to CSV string
+                const csvString = csvData.map(row => 
+                    row.map(cell => `"${cell.toString().replace(/"/g, '""')}"`).join(',')
+                ).join('\n');
+                
+                // Create download link
+                const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `cantieri_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showSuccessAlert("Esportazione completata. Il file CSV è stato scaricato.");
+            }
+            
+            // Handle logout
+            async function handleLogout() {
+                if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
+                    try {
+                        if (auth) {
+                            await auth.signOut();
+                        }
+                        // Clear local storage if any
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        
+                        // Redirect to login page
+                        window.location.href = 'index.html';
+                        
+                    } catch (error) {
+                        console.error("Error during logout:", error);
+                        showErrorAlert("Errore durante il logout: " + error.message);
+                    }
+                }
+            }
+            
+            // Show delete modal
+            window.showDeleteModal = function(siteId, siteName) {
+                siteToDelete = siteId;
+                deleteSiteName.textContent = siteName;
+                deleteModal.classList.add('show');
+            };
+            
+            // Confirm site deletion
+            async function confirmSiteDelete() {
+                if (!siteToDelete) return;
+                
+                try {
+                    if (db) {
+                        await db.collection('constructionSites').doc(siteToDelete).delete();
+                        console.log("Site deleted from Firebase:", siteToDelete);
+                    }
+                    
+                    // Remove from local array
+                    const index = constructionSites.findIndex(site => site.id === siteToDelete);
+                    if (index !== -1) {
+                        constructionSites.splice(index, 1);
+                    }
+                    
+                    // Update UI
+                    renderSitesTable();
+                    updateStats();
+                    filterSites();
+                    
+                    // Reset form if editing deleted site
+                    if (siteIdInput.value === siteToDelete) {
+                        resetForm();
+                    }
+                    
+                    // Close modal and show success message
+                    deleteModal.classList.remove('show');
+                    showSuccessAlert("Cantiere eliminato con successo");
+                    
+                } catch (error) {
+                    console.error("Error deleting site:", error);
+                    showErrorAlert("Errore nell'eliminazione: " + error.message);
+                } finally {
+                    siteToDelete = null;
+                }
+            }
+            
+            // Edit site (global function)
+            window.editSite = function(siteId) {
+                const site = constructionSites.find(s => s.id === siteId);
+                
+                if (site) {
+                    // Populate form
+                    siteIdInput.value = site.id;
+                    siteNameInput.value = site.name || '';
+                    siteAddressInput.value = site.address || '';
+                    siteCityInput.value = site.city || '';
+                    siteZipInput.value = site.zip || '';
+                    siteManagerSelect.value = site.manager || '';
+                    siteStatusSelect.value = site.status || '';
+                    startDateInput.value = site.startDate || '';
+                    endDateInput.value = site.endDate || '';
+                    siteBudgetInput.value = site.budget || '';
+                    siteProgressInput.value = site.progress || 0;
+                    siteDescriptionInput.value = site.description || '';
+                    
+                    // Update UI
+                    formTitle.textContent = "Modifica Cantiere";
+                    submitBtnText.textContent = "Aggiorna Cantiere";
+                    cancelBtn.style.display = 'block';
+                    
+                    // Update progress text
+                    updateProgressText();
+                    
+                    // Scroll to form
+                    document.getElementById('siteFormCard').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            };
+            
+            // View site details (global function)
+            window.viewSiteDetails = function(siteId) {
+                const site = constructionSites.find(s => s.id === siteId);
+                if (site) {
+                    alert(`DETTAGLI CANTIERE\n\n` +
+                          `Nome: ${site.name}\n` +
+                          `Indirizzo: ${site.address}, ${site.city} ${site.zip || ''}\n` +
+                          `Responsabile: ${site.manager || 'Non assegnato'}\n` +
+                          `Stato: ${getStatusText(site.status)}\n` +
+                          `Data inizio: ${formatDate(site.startDate)}\n` +
+                          `Data fine prevista: ${site.endDate ? formatDate(site.endDate) : "Non definita"}\n` +
+                          `Budget: ${site.budget ? site.budget.toLocaleString('it-IT') + ' €' : "Non definito"}\n` +
+                          `Progresso: ${site.progress || 0}%\n` +
+                          `Descrizione: ${site.description || "Nessuna descrizione"}`);
+                }
+            };
+            
+            // Alert functions
+            function showSuccessAlert(message = "Cantiere salvato con successo!") {
+                successAlert.querySelector('div').textContent = message;
+                successAlert.classList.remove('d-none');
+                errorAlert.classList.add('d-none');
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    successAlert.classList.add('d-none');
+                }, 5000);
+            }
+            
+            function showErrorAlert(message) {
+                errorMessage.textContent = message;
+                errorAlert.classList.remove('d-none');
+                successAlert.classList.add('d-none');
+            }
+            
+            function showWarningAlert(message) {
+                // Create temporary warning alert
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-warning';
+                alertDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i><div>${message}</div>`;
+                document.querySelector('.card-body').prepend(alertDiv);
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 5000);
+            }
+            
+            function hideAlerts() {
+                successAlert.classList.add('d-none');
+                errorAlert.classList.add('d-none');
+            }
+            
+            // Format date
+            function formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('it-IT');
+                } catch (error) {
+                    return dateString;
+                }
+            }
+            
+            // Initialize the page
+            initPage();
+        });
+    </script>
+</body>
+</html>
