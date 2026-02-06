@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marocco&Cuffari - Gestione Preventivi</title>
+    <title>Cuffari - Gestione Preventivi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/docx@7.8.0/build/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
@@ -1035,7 +1035,7 @@
             <div class="logo-container">
                 <i class="fas fa-building logo-icon"></i>
                 <div>
-                    <div class="logo-text">Marocco&Cuffari Restauri Edili</div>
+                    <div class="logo-text">Cuffari Restauri Edili</div>
                     <div class="subtitle">Piattaforma di Management Interno</div>
                 </div>
             </div>
@@ -1266,10 +1266,10 @@
                     </div>
                     <div class="card-body">
                         <div class="preview-content" id="previewContent">
-                            <div class="watermark">MAROCCO&CUFFARI</div>
+                            <div class="watermark">CUFFARI</div>
                             <div class="preview-header">
                                 <div class="company-info">
-                                    <div class="company-name">MAROCCO & CUFFARI RESTAURI EDILI SRL</div>
+                                    <div class="company-name"> CUFFARI RESTAURI EDILI SRL</div>
                                     <div class="company-details">
                                         Via Roma 123, 00100 Roma (RM) | Tel: 06 12345678 | P.IVA: 12345678901
                                     </div>
@@ -1350,7 +1350,7 @@
                             </div>
                             
                             <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--gray-color); text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
-                                Documento generato digitalmente da Marocco&Cuffari Restauri Edili SRL
+                                Documento generato digitalmente da Cuffari Restauri Edili SRL
                             </div>
                         </div>
                     </div>
@@ -1369,11 +1369,11 @@
                 </div>
                 
                 <div class="company-info">
-                    <p><strong>Marocco&Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità dal 1995</p>
+                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità dal 1995</p>
                 </div>
                 
                 <div class="copyright">
-                    <p>&copy; 2023 Marocco&Cuffari Restauri Edili. Tutti i diritti riservati.</p>
+                    <p>&copy; 2023 Cuffari Restauri Edili. Tutti i diritti riservati.</p>
                 </div>
             </div>
         </div>
@@ -1477,8 +1477,8 @@
                 // Clear form button
                 clearFormBtn.addEventListener('click', clearForm);
                 
-                // Generate DOCX button - MODIFICA QUI: sostituisci con la nuova funzione
-                generateDocxBtn.addEventListener('click', generateDocxFixed);
+                // Generate DOCX button
+                generateDocxBtn.addEventListener('click', generateProfessionalDocx);
                 
                 // Logout button
                 logoutBtn.addEventListener('click', handleLogout);
@@ -1627,6 +1627,79 @@
                 };
             }
             
+            // Validate form with detailed messages
+            function validateFormWithDetails() {
+                const errors = [];
+                
+                // Check required fields
+                if (!quoteNumberInput.value.trim()) {
+                    errors.push("Il numero preventivo è obbligatorio. Inserisci un codice identificativo come 'PREV-2023-001'.");
+                } else if (!/^[A-Za-z0-9\-_]+$/.test(quoteNumberInput.value.trim())) {
+                    errors.push("Il numero preventivo contiene caratteri non validi. Usa solo lettere, numeri, trattini e underscore.");
+                }
+                
+                if (!quoteDateInput.value) {
+                    errors.push("La data preventivo è obbligatoria. Seleziona una data valida dal calendario.");
+                }
+                
+                if (!validUntilInput.value) {
+                    errors.push("La data di validità è obbligatoria. Seleziona una data valida dal calendario.");
+                } else if (validUntilInput.value && quoteDateInput.value) {
+                    const quoteDate = new Date(quoteDateInput.value);
+                    const validUntil = new Date(validUntilInput.value);
+                    if (validUntil <= quoteDate) {
+                        errors.push("La data di validità deve essere successiva alla data del preventivo.");
+                    }
+                }
+                
+                if (!clientNameInput.value.trim()) {
+                    errors.push("Il nome cliente è obbligatorio. Inserisci il nome completo o la ragione sociale del cliente.");
+                }
+                
+                if (!clientAddressInput.value.trim()) {
+                    errors.push("L'indirizzo cliente è obbligatorio. Inserisci via, numero e città del cliente.");
+                }
+                
+                if (!siteAddressInput.value.trim()) {
+                    errors.push("L'indirizzo cantiere è obbligatorio. Inserisci l'indirizzo completo del cantiere dove verranno eseguiti i lavori.");
+                }
+                
+                // Check if there are items
+                const itemsData = getItemsData();
+                if (itemsData.length === 0) {
+                    errors.push("Aggiungi almeno una voce al preventivo. Clicca su 'Aggiungi Voce' per inserire lavori o materiali.");
+                } else {
+                    // Check if all items have valid data
+                    itemsData.forEach((item, index) => {
+                        const itemNumber = index + 1;
+                        
+                        if (!item.description || item.description.trim() === '') {
+                            errors.push(`Voce ${itemNumber}: la descrizione è obbligatoria. Descrivi chiaramente il lavoro o materiale.`);
+                        } else if (item.description.trim().length < 3) {
+                            errors.push(`Voce ${itemNumber}: la descrizione è troppo breve (minimo 3 caratteri).`);
+                        }
+                        
+                        if (item.quantity <= 0) {
+                            errors.push(`Voce ${itemNumber}: la quantità deve essere maggiore di zero (attuale: ${item.quantity}).`);
+                        } else if (item.quantity > 1000000) {
+                            errors.push(`Voce ${itemNumber}: la quantità sembra eccessiva (${item.quantity}). Verifica il valore.`);
+                        }
+                        
+                        if (item.price <= 0) {
+                            errors.push(`Voce ${itemNumber}: il prezzo unitario deve essere maggiore di zero (attuale: €${item.price}).`);
+                        } else if (item.price > 1000000) {
+                            errors.push(`Voce ${itemNumber}: il prezzo unitario sembra eccessivo (€${item.price}). Verifica il valore.`);
+                        }
+                        
+                        if (item.total > 10000000) {
+                            errors.push(`Voce ${itemNumber}: il totale della voce sembra eccessivo (€${item.total}). Verifica quantità e prezzo.`);
+                        }
+                    });
+                }
+                
+                return errors;
+            }
+            
             // Update preview
             function updatePreview() {
                 // Update basic info
@@ -1718,283 +1791,673 @@
                 }
             }
             
-            // NEW: FIXED VERSION OF generateDocx WITHOUT forEach ERROR
-            async function generateDocxFixed() {
+            // PROFESSIONAL VERSION WITH BETTER FORMATTING
+            async function generateProfessionalDocx() {
                 try {
-                    console.log("=== INIZIO GENERAZIONE DOCX FIXED ===");
+                    console.log("=== INIZIO GENERAZIONE DOCX PROFESSIONALE ===");
                     
-                    // 1. Validazione di base
-                    if (!quoteNumberInput.value.trim()) {
-                        showErrorAlert("Inserisci il numero preventivo");
+                    // Validazione dettagliata
+                    const validationErrors = validateFormWithDetails();
+                    if (validationErrors.length > 0) {
+                        const errorList = validationErrors.map(err => `• ${err}`).join('\n');
+                        showErrorAlert(`Correggi i seguenti errori:\n${errorList}`);
                         return;
                     }
                     
-                    // 2. Ottieni i dati
+                    // Ottieni i dati
                     const itemsData = getItemsData();
                     console.log("Dati articoli ottenuti:", itemsData);
                     
-                    if (!itemsData || itemsData.length === 0) {
-                        showErrorAlert("Aggiungi almeno una voce al preventivo");
-                        return;
-                    }
-                    
-                    // 3. Mostra loading
+                    // Mostra loading
                     const originalHtml = generateDocxBtn.innerHTML;
                     generateDocxBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Generazione...</span>';
                     generateDocxBtn.disabled = true;
                     
-                    // 4. Calcola totali
+                    // Calcola totali
                     const totals = calculateTotals(itemsData);
                     
-                    // 5. Crea documento con approccio semplificato
-                    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, AlignmentType, WidthType } = docx;
-                    
-                    // 6. Crea tabella con cicli for invece di forEach
-                    const tableRows = [];
-                    
-                    // Header row
-                    const headerCells = [
-                        new TableCell({ children: [new Paragraph("Descrizione")] }),
-                        new TableCell({ children: [new Paragraph("Quantità")] }),
-                        new TableCell({ children: [new Paragraph("Unità")] }),
-                        new TableCell({ children: [new Paragraph("Prezzo Unitario (€)")] }),
-                        new TableCell({ children: [new Paragraph("Totale (€)")] })
-                    ];
-                    
-                    // Applica stile alle celle dell'header
-                    for (let i = 0; i < headerCells.length; i++) {
-                        headerCells[i].shading = { fill: "003366" };
-                        const paragraph = headerCells[i].children[0];
-                        const textRun = paragraph.children[0];
-                        textRun.color = "FFFFFF";
-                        textRun.bold = true;
+                    // Verifica che la libreria docx sia caricata
+                    if (typeof docx === 'undefined') {
+                        showErrorAlert("La libreria per generare documenti Word non è stata caricata correttamente. Controlla la connessione internet e ricarica la pagina.");
+                        generateDocxBtn.innerHTML = originalHtml;
+                        generateDocxBtn.disabled = false;
+                        return;
                     }
                     
-                    const headerRow = new TableRow({ children: headerCells });
-                    tableRows.push(headerRow);
+                    const { 
+                        Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, 
+                        AlignmentType, WidthType, HeadingLevel, BorderStyle, ShadingType,
+                        VerticalAlign, TableLayoutType
+                    } = docx;
                     
-                    // Aggiungi righe degli articoli
+                    // 1. Creazione della tabella degli articoli con formattazione professionale
+                    const tableRows = [];
+                    
+                    // Intestazione della tabella - stile elegante
+                    const headerCells = [
+                        new TableCell({
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: "DESCRIZIONE", bold: true, color: "FFFFFF", size: 20 })],
+                                alignment: AlignmentType.LEFT
+                            })],
+                            shading: { type: ShadingType.SOLID, color: "003366" },
+                            margins: { top: 100, bottom: 100, left: 100, right: 100 }
+                        }),
+                        new TableCell({
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: "QUANTITÀ", bold: true, color: "FFFFFF", size: 20 })],
+                                alignment: AlignmentType.CENTER
+                            })],
+                            shading: { type: ShadingType.SOLID, color: "003366" }
+                        }),
+                        new TableCell({
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: "UNITÀ", bold: true, color: "FFFFFF", size: 20 })],
+                                alignment: AlignmentType.CENTER
+                            })],
+                            shading: { type: ShadingType.SOLID, color: "003366" }
+                        }),
+                        new TableCell({
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: "PREZZO UNITARIO", bold: true, color: "FFFFFF", size: 20 })],
+                                alignment: AlignmentType.RIGHT
+                            })],
+                            shading: { type: ShadingType.SOLID, color: "003366" }
+                        }),
+                        new TableCell({
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: "TOTALE", bold: true, color: "FFFFFF", size: 20 })],
+                                alignment: AlignmentType.RIGHT
+                            })],
+                            shading: { type: ShadingType.SOLID, color: "003366" }
+                        })
+                    ];
+                    
+                    tableRows.push(new TableRow({ children: headerCells }));
+                    
+                    // Aggiungi righe degli articoli con alternanza di colori
                     for (let i = 0; i < itemsData.length; i++) {
                         const item = itemsData[i];
+                        const bgColor = i % 2 === 0 ? "FFFFFF" : "F8F9FA";
+                        
                         const itemRow = new TableRow({
                             children: [
-                                new TableCell({ children: [new Paragraph(item.description || "")] }),
-                                new TableCell({ children: [new Paragraph(item.quantity.toString() || "")] }),
-                                new TableCell({ children: [new Paragraph(item.unit || "")] }),
-                                new TableCell({ children: [new Paragraph(formatCurrency(item.price) || "")] }),
-                                new TableCell({ children: [new Paragraph(formatCurrency(item.total) || "")] })
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: item.description || "", size: 18 })],
+                                        alignment: AlignmentType.LEFT
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: bgColor }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: item.quantity.toString() || "", size: 18 })],
+                                        alignment: AlignmentType.CENTER
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: bgColor }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: item.unit || "", size: 18 })],
+                                        alignment: AlignmentType.CENTER
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: bgColor }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: formatCurrency(item.price) || "", size: 18 })],
+                                        alignment: AlignmentType.RIGHT
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: bgColor }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: formatCurrency(item.total) || "", size: 18 })],
+                                        alignment: AlignmentType.RIGHT
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: bgColor }
+                                })
                             ]
                         });
                         tableRows.push(itemRow);
                     }
                     
-                    // Aggiungi righe dei totali
-                    // Imponibile
+                    // Aggiungi riga vuota per separazione
                     tableRows.push(new TableRow({
                         children: [
-                            new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
-                            new TableCell({ 
-                                children: [new Paragraph("Imponibile:")],
-                                shading: { fill: "F0F0F0" }
-                            }),
-                            new TableCell({ 
-                                children: [new Paragraph(formatCurrency(totals.subtotal))],
-                                shading: { fill: "F0F0F0" }
-                            })
+                            new TableCell({ children: [new Paragraph("")], columnSpan: 5 })
                         ]
                     }));
                     
-                    // IVA
-                    tableRows.push(new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
-                            new TableCell({ 
-                                children: [new Paragraph("IVA 22%:")],
-                                shading: { fill: "F0F0F0" }
-                            }),
-                            new TableCell({ 
-                                children: [new Paragraph(formatCurrency(totals.vat))],
-                                shading: { fill: "F0F0F0" }
-                            })
-                        ]
-                    }));
-                    
-                    // Totale
-                    const totalRow = new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
-                            new TableCell({ 
-                                children: [new Paragraph("TOTALE PREVENTIVO:")],
-                                shading: { fill: "003366" }
-                            }),
-                            new TableCell({ 
-                                children: [new Paragraph(formatCurrency(totals.total))],
-                                shading: { fill: "003366" }
-                            })
-                        ]
-                    });
-                    
-                    // Applica stile alle celle del totale
-                    for (let i = 3; i < totalRow.children.length; i++) {
-                        const cell = totalRow.children[i];
-                        if (cell.children && cell.children[0]) {
-                            const paragraph = cell.children[0];
-                            if (paragraph.children && paragraph.children[0]) {
-                                const textRun = paragraph.children[0];
-                                textRun.color = "FFFFFF";
-                                textRun.bold = true;
-                            }
-                        }
-                    }
-                    
-                    tableRows.push(totalRow);
-                    
-                    // 7. Crea il documento completo
-                    const doc = new Document({
-                        sections: [{
-                            properties: {},
+                    // 2. Creazione tabella dei totali
+                    const totalsRows = [
+                        new TableRow({
                             children: [
-                                // Intestazione aziendale
+                                new TableCell({ 
+                                    children: [new Paragraph("")], 
+                                    columnSpan: 3 
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: "IMPONIBILE:", bold: true, size: 20 })],
+                                        alignment: AlignmentType.RIGHT
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: "F0F0F0" }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: formatCurrency(totals.subtotal), size: 20 })],
+                                        alignment: AlignmentType.RIGHT
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: "F0F0F0" }
+                                })
+                            ]
+                        }),
+                        new TableRow({
+                            children: [
+                                new TableCell({ 
+                                    children: [new Paragraph("")], 
+                                    columnSpan: 3 
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: "IVA 22%:", bold: true, size: 20 })],
+                                        alignment: AlignmentType.RIGHT
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: "F0F0F0" }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: formatCurrency(totals.vat), size: 20 })],
+                                        alignment: AlignmentType.RIGHT
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: "F0F0F0" }
+                                })
+                            ]
+                        }),
+                        new TableRow({
+                            children: [
+                                new TableCell({ 
+                                    children: [new Paragraph("")], 
+                                    columnSpan: 3 
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: "TOTALE PREVENTIVO:", bold: true, color: "FFFFFF", size: 22 })],
+                                        alignment: AlignmentType.RIGHT
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: "003366" }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        children: [new TextRun({ text: formatCurrency(totals.total), bold: true, color: "FFFFFF", size: 22 })],
+                                        alignment: AlignmentType.RIGHT
+                                    })],
+                                    shading: { type: ShadingType.SOLID, color: "003366" }
+                                })
+                            ]
+                        })
+                    ];
+                    
+                    // Aggiungi le righe dei totali alla tabella principale
+                    totalsRows.forEach(row => tableRows.push(row));
+                    
+                    // 3. Crea il documento con layout professionale
+                    const doc = new Document({
+                        styles: {
+                            paragraphStyles: [
+                                {
+                                    id: "Title",
+                                    name: "Title",
+                                    basedOn: "Normal",
+                                    next: "Normal",
+                                    run: {
+                                        size: 48,
+                                        bold: true,
+                                        color: "003366"
+                                    },
+                                    paragraph: {
+                                        spacing: { after: 300 },
+                                        alignment: AlignmentType.CENTER
+                                    }
+                                },
+                                {
+                                    id: "Heading1",
+                                    name: "Heading 1",
+                                    basedOn: "Normal",
+                                    next: "Normal",
+                                    run: {
+                                        size: 32,
+                                        bold: true,
+                                        color: "003366"
+                                    },
+                                    paragraph: {
+                                        spacing: { before: 240, after: 120 }
+                                    }
+                                },
+                                {
+                                    id: "Heading2",
+                                    name: "Heading 2",
+                                    basedOn: "Normal",
+                                    next: "Normal",
+                                    run: {
+                                        size: 26,
+                                        bold: true,
+                                        color: "003366"
+                                    },
+                                    paragraph: {
+                                        spacing: { before: 180, after: 60 }
+                                    }
+                                },
+                                {
+                                    id: "Normal",
+                                    name: "Normal",
+                                    basedOn: "Normal",
+                                    next: "Normal",
+                                    run: {
+                                        size: 22
+                                    },
+                                    paragraph: {
+                                        spacing: { line: 276 }
+                                    }
+                                }
+                            ]
+                        },
+                        sections: [{
+                            properties: {
+                                page: {
+                                    margin: {
+                                        top: 1440,    // 2.5 cm
+                                        right: 1440,  // 2.5 cm
+                                        bottom: 1440, // 2.5 cm
+                                        left: 1440    // 2.5 cm
+                                    }
+                                }
+                            },
+                            children: [
+                                // INTESTAZIONE AZIENDALE - Centrata
                                 new Paragraph({
                                     children: [
                                         new TextRun({
-                                            text: "MAROCCO & CUFFARI RESTAURI EDILI SRL",
+                                            text: " CUFFARI",
                                             bold: true,
-                                            size: 28,
-                                            color: "003366"
-                                        }),
-                                        new TextRun({
-                                            text: "\nVia Roma 123, 00100 Roma (RM) | Tel: 06 12345678 | P.IVA: 12345678901",
-                                            size: 20,
-                                            color: "666666"
-                                        }),
-                                        new TextRun({
-                                            text: "\nEmail: info@maroccocuffari.it | www.maroccocuffari.it",
-                                            size: 20,
-                                            color: "666666"
+                                            size: 36,
+                                            color: "003366",
+                                            font: "Arial"
                                         })
                                     ],
+                                    alignment: AlignmentType.CENTER,
+                                    spacing: { after: 200 }
+                                }),
+                                
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "RESTAURI EDILI SRL",
+                                            bold: true,
+                                            size: 28,
+                                            color: "003366",
+                                            font: "Arial"
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER,
                                     spacing: { after: 400 }
                                 }),
                                 
-                                // Titolo preventivo
+                                // DETTAGLI CONTATTO
                                 new Paragraph({
                                     children: [
                                         new TextRun({
-                                            text: `PREVENTIVO N. ${quoteNumberInput.value}`,
+                                            text: "Via Roma 123, 00100 Roma (RM)",
+                                            size: 20,
+                                            color: "666666",
+                                            font: "Arial"
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER
+                                }),
+                                
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "Tel: 06 12345678 | P.IVA: 12345678901",
+                                            size: 20,
+                                            color: "666666",
+                                            font: "Arial"
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER
+                                }),
+                                
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "Email: info@maroccocuffari.it | www.maroccocuffari.it",
+                                            size: 20,
+                                            color: "666666",
+                                            font: "Arial"
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER,
+                                    spacing: { after: 600 }
+                                }),
+                                
+                                // LINEA DIVISORIA
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "____________________________________________________________",
+                                            size: 20,
+                                            color: "003366"
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER,
+                                    spacing: { after: 600 }
+                                }),
+                                
+                                // TITOLO PREVENTIVO
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "PREVENTIVO N.",
                                             bold: true,
                                             size: 32,
                                             color: "003366",
+                                            font: "Arial"
+                                        }),
+                                        new TextRun({
+                                            text: ` ${quoteNumberInput.value}`,
+                                            bold: true,
+                                            size: 32,
+                                            color: "FF9900",
+                                            font: "Arial"
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER,
+                                    spacing: { before: 200, after: 400 }
+                                }),
+                                
+                                // TABELLA DETTAGLI CLIENTE E PREVENTIVO
+                                new Table({
+                                    rows: [
+                                        new TableRow({
+                                            children: [
+                                                // Colonna sinistra - Cliente
+                                                new TableCell({
+                                                    width: { size: 50, type: WidthType.PERCENTAGE },
+                                                    children: [
+                                                        new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: "CLIENTE",
+                                                                    bold: true,
+                                                                    size: 24,
+                                                                    color: "003366",
+                                                                    font: "Arial"
+                                                                })
+                                                            ],
+                                                            spacing: { after: 200 }
+                                                        }),
+                                                        new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: clientNameInput.value,
+                                                                    size: 20,
+                                                                    font: "Arial"
+                                                                })
+                                                            ]
+                                                        }),
+                                                        clientVatInput.value ? new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: `P.IVA/CF: ${clientVatInput.value}`,
+                                                                    size: 18,
+                                                                    color: "666666",
+                                                                    font: "Arial"
+                                                                })
+                                                            ]
+                                                        }) : new Paragraph(""),
+                                                        new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: clientAddressInput.value,
+                                                                    size: 18,
+                                                                    font: "Arial"
+                                                                })
+                                                            ]
+                                                        }),
+                                                        clientPhoneInput.value ? new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: `Tel/Email: ${clientPhoneInput.value}`,
+                                                                    size: 18,
+                                                                    color: "666666",
+                                                                    font: "Arial"
+                                                                })
+                                                            ]
+                                                        }) : new Paragraph("")
+                                                    ],
+                                                    margins: { top: 100, bottom: 100, left: 100, right: 100 }
+                                                }),
+                                                // Colonna destra - Dettagli preventivo
+                                                new TableCell({
+                                                    width: { size: 50, type: WidthType.PERCENTAGE },
+                                                    children: [
+                                                        new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: "DETTAGLI PREVENTIVO",
+                                                                    bold: true,
+                                                                    size: 24,
+                                                                    color: "003366",
+                                                                    font: "Arial"
+                                                                })
+                                                            ],
+                                                            spacing: { after: 200 }
+                                                        }),
+                                                        new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: `Data: ${formatDateForDisplay(quoteDateInput.value)}`,
+                                                                    size: 18,
+                                                                    font: "Arial"
+                                                                })
+                                                            ]
+                                                        }),
+                                                        new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: `Validità: ${formatDateForDisplay(validUntilInput.value)}`,
+                                                                    size: 18,
+                                                                    font: "Arial"
+                                                                })
+                                                            ]
+                                                        }),
+                                                        new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: `Pagamento: ${paymentTermsSelect.options[paymentTermsSelect.selectedIndex].text}`,
+                                                                    size: 18,
+                                                                    font: "Arial"
+                                                                })
+                                                            ]
+                                                        }),
+                                                        new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: `Cantiere: ${siteAddressInput.value}`,
+                                                                    size: 18,
+                                                                    font: "Arial"
+                                                                })
+                                                            ]
+                                                        }),
+                                                        siteDescriptionInput.value ? new Paragraph({
+                                                            children: [
+                                                                new TextRun({
+                                                                    text: `Lavori: ${siteDescriptionInput.value}`,
+                                                                    size: 18,
+                                                                    font: "Arial"
+                                                                })
+                                                            ]
+                                                        }) : new Paragraph("")
+                                                    ],
+                                                    margins: { top: 100, bottom: 100, left: 100, right: 100 }
+                                                })
+                                            ]
+                                        })
+                                    ],
+                                    width: { size: 100, type: WidthType.PERCENTAGE },
+                                    layout: TableLayoutType.FIXED
+                                }),
+                                
+                                // SPAZIO
+                                new Paragraph({
+                                    text: "",
+                                    spacing: { before: 400, after: 400 }
+                                }),
+                                
+                                // TITOLO TABELLA ARTICOLI
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "VOCI DI PREVENTIVO",
+                                            bold: true,
+                                            size: 26,
+                                            color: "003366",
+                                            font: "Arial",
                                             underline: {}
                                         })
                                     ],
                                     alignment: AlignmentType.CENTER,
-                                    spacing: { before: 400, after: 400 }
+                                    spacing: { before: 200, after: 300 }
                                 }),
                                 
-                                // Dettagli cliente
+                                // TABELLA ARTICOLI
+                                new Table({
+                                    rows: tableRows,
+                                    width: { size: 100, type: WidthType.PERCENTAGE },
+                                    borders: {
+                                        top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
+                                        insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+                                        insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" }
+                                    },
+                                    layout: TableLayoutType.FIXED
+                                }),
+                                
+                                // SPAZIO
+                                new Paragraph({
+                                    text: "",
+                                    spacing: { before: 600, after: 200 }
+                                }),
+                                
+                                // NOTE E CONDIZIONI
                                 new Paragraph({
                                     children: [
                                         new TextRun({
-                                            text: `Data: ${formatDateForDisplay(quoteDateInput.value)} | Validità fino al: ${formatDateForDisplay(validUntilInput.value)}`,
+                                            text: "CONDIZIONI E NOTE",
                                             bold: true,
-                                            size: 22
-                                        }),
+                                            size: 24,
+                                            color: "003366",
+                                            font: "Arial"
+                                        })
+                                    ],
+                                    spacing: { before: 200, after: 200 }
+                                }),
+                                
+                                new Paragraph({
+                                    children: [
                                         new TextRun({
-                                            text: `\n\nCLIENTE: ${clientNameInput.value}`,
-                                            bold: true,
-                                            size: 22
-                                        }),
-                                        new TextRun({
-                                            text: clientVatInput.value ? `\nP.IVA/CF: ${clientVatInput.value}` : '',
-                                            size: 20
-                                        }),
-                                        new TextRun({
-                                            text: `\nIndirizzo: ${clientAddressInput.value}`,
-                                            size: 20
-                                        }),
-                                        new TextRun({
-                                            text: clientPhoneInput.value ? `\nContatti: ${clientPhoneInput.value}` : '',
-                                            size: 20
-                                        }),
-                                        new TextRun({
-                                            text: `\n\nCANTIERE: ${siteAddressInput.value}`,
-                                            bold: true,
-                                            size: 22
-                                        }),
-                                        new TextRun({
-                                            text: siteDescriptionInput.value ? `\nLavori: ${siteDescriptionInput.value}` : '',
-                                            size: 20
-                                        }),
-                                        new TextRun({
-                                            text: `\n\nTermini di pagamento: ${paymentTermsSelect.options[paymentTermsSelect.selectedIndex].text}`,
-                                            bold: true,
-                                            size: 20
+                                            text: notesInput.value || 'Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall\'accettazione.',
+                                            size: 18,
+                                            font: "Arial"
                                         })
                                     ],
                                     spacing: { after: 400 }
                                 }),
                                 
-                                // Tabella degli articoli
-                                new Table({
-                                    rows: tableRows,
-                                    width: { size: 100, type: WidthType.PERCENTAGE }
+                                // SPAZIO PER LA FIRMA
+                                new Paragraph({
+                                    text: "",
+                                    spacing: { before: 800, after: 200 }
                                 }),
                                 
-                                // Note e condizioni
+                                // LINEA PER LA FIRMA
                                 new Paragraph({
                                     children: [
                                         new TextRun({
-                                            text: "\nCONDIZIONI E NOTE",
-                                            bold: true,
-                                            size: 24,
-                                            color: "003366"
-                                        }),
-                                        new TextRun({
-                                            text: `\n${notesInput.value || 'Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall\'accettazione.'}`,
+                                            text: "_____________________________",
                                             size: 20
                                         })
-                                    ],
-                                    spacing: { before: 400, after: 400 }
+                                    ]
                                 }),
                                 
-                                // Sezione firma
                                 new Paragraph({
                                     children: [
                                         new TextRun({
-                                            text: "\n\nFirma per accettazione",
-                                            size: 20
-                                        }),
-                                        new TextRun({
-                                            text: "\n\n\n___________________________",
-                                            size: 20
-                                        }),
-                                        new TextRun({
-                                            text: "\nIl Responsabile Tecnico",
-                                            size: 20
-                                        }),
-                                        new TextRun({
-                                            text: "\nCristian Felice Cuffari",
-                                            bold: true,
-                                            size: 22
-                                        })
-                                    ],
-                                    spacing: { before: 400 }
-                                }),
-                                
-                                // Footer
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "\n\nDocumento generato digitalmente da Marocco&Cuffari Restauri Edili SRL",
-                                            italics: true,
+                                            text: "Firma per accettazione",
                                             size: 18,
+                                            italics: true,
                                             color: "666666"
-                                        }),
+                                        })
+                                    ],
+                                    spacing: { after: 400 }
+                                }),
+                                
+                                // SPAZIO
+                                new Paragraph({
+                                    text: "",
+                                    spacing: { before: 800, after: 200 }
+                                }),
+                                
+                                // RESPONSABILE TECNICO
+                                new Paragraph({
+                                    children: [
                                         new TextRun({
-                                            text: "\nPreventivo creato il: " + new Date().toLocaleDateString('it-IT'),
+                                            text: "Il Responsabile Tecnico",
+                                            size: 18,
+                                            font: "Arial"
+                                        })
+                                    ]
+                                }),
+                                
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "Cristian Felice Cuffari",
+                                            bold: true,
+                                            size: 22,
+                                            color: "003366",
+                                            font: "Arial"
+                                        })
+                                    ],
+                                    spacing: { after: 600 }
+                                }),
+                                
+                                // FOOTER
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "Documento generato digitalmente da Cuffari Restauri Edili SRL",
+                                            italics: true,
                                             size: 16,
-                                            color: "666666"
+                                            color: "999999",
+                                            font: "Arial"
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER,
+                                    spacing: { before: 600 }
+                                }),
+                                
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: `Preventivo creato il: ${new Date().toLocaleDateString('it-IT')}`,
+                                            size: 14,
+                                            color: "999999",
+                                            font: "Arial"
                                         })
                                     ],
                                     alignment: AlignmentType.CENTER
@@ -2003,25 +2466,32 @@
                         }]
                     });
                     
-                    // 8. Genera e scarica
+                    // 4. Genera e scarica il documento
                     const blob = await Packer.toBlob(doc);
                     const fileName = `Preventivo_${quoteNumberInput.value.replace(/[^a-z0-9]/gi, '_')}.docx`;
+                    
+                    // Verifica che FileSaver sia disponibile
+                    if (typeof saveAs === 'undefined') {
+                        showErrorAlert("La libreria per il download non è stata caricata correttamente. Controlla la connessione internet e ricarica la pagina.");
+                        return;
+                    }
+                    
                     saveAs(blob, fileName);
                     
                     console.log("Download completato");
                     
-                    showSuccessAlert('Preventivo generato e scaricato con successo!');
+                    showSuccessAlert('Preventivo professionale generato con successo! Il file si chiama: ' + fileName);
                     
                 } catch (error) {
-                    console.error("ERRORE CRITICO:", error);
+                    console.error("ERRORE NELLA GENERAZIONE:", error);
                     console.error("Stack trace:", error.stack);
                     
                     let userMessage = 'Errore nella generazione del documento: ';
                     
                     if (error.message.includes("Cannot read properties of undefined")) {
-                        userMessage += "C'è un problema con i dati del form. Verifica che tutti i campi siano compilati correttamente e che le voci del preventivo siano valide.";
+                        userMessage = "ERRORE: Problema con i dati del form. Verifica che tutti i campi siano compilati correttamente e ricarica la pagina.";
                     } else if (error.message.includes("docx is not defined")) {
-                        userMessage += "La libreria per generare documenti Word non è stata caricata correttamente. Ricarica la pagina.";
+                        userMessage = "ERRORE: La libreria per generare documenti Word non è stata caricata. Controlla la connessione internet.";
                     } else {
                         userMessage += error.message;
                     }
@@ -2029,83 +2499,16 @@
                     showErrorAlert(userMessage);
                     
                 } finally {
+                    // Ripristina il bottone
                     generateDocxBtn.innerHTML = '<i class="fas fa-file-word"></i> <span>Genera DOCX</span>';
                     generateDocxBtn.disabled = false;
                 }
             }
             
-            // OLD FUNCTION (keep for reference but don't use)
-            function generateDocx() {
-                // This is the old function that had the error
-                // We're replacing it with generateDocxFixed
-                generateDocxFixed();
-            }
-            
-            // Validate form
+            // Validate form (per compatibilità)
             function validateForm() {
-                // Check required fields
-                if (!quoteNumberInput.value.trim()) {
-                    showErrorAlert("Il numero preventivo è obbligatorio");
-                    quoteNumberInput.focus();
-                    return false;
-                }
-                
-                if (!quoteDateInput.value) {
-                    showErrorAlert("La data preventivo è obbligatoria");
-                    quoteDateInput.focus();
-                    return false;
-                }
-                
-                if (!validUntilInput.value) {
-                    showErrorAlert("La data di validità è obbligatoria");
-                    validUntilInput.focus();
-                    return false;
-                }
-                
-                if (!clientNameInput.value.trim()) {
-                    showErrorAlert("Il nome cliente è obbligatorio");
-                    clientNameInput.focus();
-                    return false;
-                }
-                
-                if (!clientAddressInput.value.trim()) {
-                    showErrorAlert("L'indirizzo cliente è obbligatorio");
-                    clientAddressInput.focus();
-                    return false;
-                }
-                
-                if (!siteAddressInput.value.trim()) {
-                    showErrorAlert("L'indirizzo cantiere è obbligatorio");
-                    siteAddressInput.focus();
-                    return false;
-                }
-                
-                // Check if there are items
-                const itemsData = getItemsData();
-                if (itemsData.length === 0) {
-                    showErrorAlert("Aggiungi almeno una voce al preventivo");
-                    return false;
-                }
-                
-                // Check if all items have valid data
-                for (const item of itemsData) {
-                    if (!item.description.trim()) {
-                        showErrorAlert("Tutte le voci devono avere una descrizione");
-                        return false;
-                    }
-                    
-                    if (item.quantity <= 0) {
-                        showErrorAlert("Tutte le voci devono avere una quantità maggiore di zero");
-                        return false;
-                    }
-                    
-                    if (item.price <= 0) {
-                        showErrorAlert("Tutte le voci devono avere un prezzo maggiore di zero");
-                        return false;
-                    }
-                }
-                
-                return true;
+                const errors = validateFormWithDetails();
+                return errors.length === 0;
             }
             
             // Update user info
@@ -2138,15 +2541,28 @@
                 successAlert.classList.remove('d-none');
                 errorAlert.classList.add('d-none');
                 
+                // Scroll to alert
+                successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
                 setTimeout(() => {
                     successAlert.classList.add('d-none');
-                }, 5000);
+                }, 8000);
             }
             
             function showErrorAlert(message) {
-                errorMessage.textContent = message;
+                // Sostituisci newline con <br> per HTML
+                const formattedMessage = message.replace(/\n/g, '<br>');
+                errorMessage.innerHTML = formattedMessage;
                 errorAlert.classList.remove('d-none');
                 successAlert.classList.add('d-none');
+                
+                // Scroll to alert
+                errorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+                // Auto-hide dopo 10 secondi
+                setTimeout(() => {
+                    errorAlert.classList.add('d-none');
+                }, 10000);
             }
             
             function hideAlerts() {

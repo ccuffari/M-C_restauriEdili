@@ -57,18 +57,38 @@
             margin-left: auto;
         }
         
-        @media (min-width: 576px) {
+        /* Breakpoint per xxs (molto piccolo) */
+        @media (max-width: 359.98px) {
+            .container { padding: 0 8px; }
+            html { font-size: 14px; }
+        }
+        
+        /* Breakpoint per xs (extra small) */
+        @media (min-width: 360px) and (max-width: 575.98px) {
+            .container { max-width: 100%; }
+        }
+        
+        /* Breakpoint per sm (small) */
+        @media (min-width: 576px) and (max-width: 767.98px) {
             .container { max-width: 540px; }
         }
-        @media (min-width: 768px) {
+        
+        /* Breakpoint per md (medium) */
+        @media (min-width: 768px) and (max-width: 991.98px) {
             .container { max-width: 720px; }
         }
-        @media (min-width: 992px) {
+        
+        /* Breakpoint per lg (large) */
+        @media (min-width: 992px) and (max-width: 1199.98px) {
             .container { max-width: 960px; }
         }
-        @media (min-width: 1200px) {
+        
+        /* Breakpoint per xl (extra large) */
+        @media (min-width: 1200px) and (max-width: 1399.98px) {
             .container { max-width: 1140px; }
         }
+        
+        /* Breakpoint per xxl (extra extra large) */
         @media (min-width: 1400px) {
             .container { max-width: 1320px; }
         }
@@ -80,6 +100,7 @@
         .d-none { display: none !important; }
         .d-block { display: block !important; }
         .d-flex { display: flex !important; }
+        .d-grid { display: grid !important; }
         .justify-content-between { justify-content: space-between; }
         .align-items-center { align-items: center; }
         .flex-column { flex-direction: column; }
@@ -155,6 +176,7 @@
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
+            justify-content: center;
         }
         
         .nav-btn {
@@ -315,6 +337,11 @@
             color: white;
         }
         
+        .btn-info {
+            background: var(--info-color);
+            color: white;
+        }
+        
         .btn-sm {
             padding: 0.5rem 1rem;
             font-size: 0.875rem;
@@ -323,7 +350,7 @@
         /* Stats Cards */
         .stats-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2.5rem;
         }
@@ -763,6 +790,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            min-width: 36px;
+            min-height: 36px;
         }
         
         .action-btn:hover {
@@ -1002,6 +1031,8 @@
                 width: 100%;
                 margin-top: 1rem;
                 justify-content: center;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
             }
             
             .page-title {
@@ -1025,6 +1056,11 @@
             
             .card-body {
                 padding: 1.25rem;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
         
@@ -1093,6 +1129,16 @@
             .filter-select {
                 width: 100%;
             }
+            
+            .site-name-cell {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .site-icon {
+                align-self: center;
+            }
         }
         
         @media (max-width: 360px) {
@@ -1122,6 +1168,68 @@
                 padding: 0.75rem 1rem;
                 font-size: 0.9rem;
             }
+            
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stat-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        /* Extra small devices (xxs) */
+        @media (max-width: 320px) {
+            .logo-text {
+                font-size: 1.1rem;
+            }
+            
+            .subtitle {
+                font-size: 0.8rem;
+            }
+            
+            .page-title {
+                font-size: 1.3rem;
+            }
+            
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .nav-btn {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.3rem;
+            }
+            
+            .site-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            
+            .sites-table td, .sites-table th {
+                padding: 0.75rem 0.5rem;
+            }
         }
     </style>
 </head>
@@ -1150,6 +1258,21 @@
                     </a>
                     <a href="construction-sites.html" class="nav-btn active">
                         <i class="fas fa-hard-hat"></i> <span>Cantieri</span>
+                    </a>
+                    <a href="work-days.html" class="nav-btn">
+                        <i class="fas fa-calendar-day"></i> <span>Giornate</span>
+                    </a>
+                    <a href="estimates.html" class="nav-btn">
+                        <i class="fas fa-calculator"></i> <span>Preventivi</span>
+                    </a>
+                    <a href="suppliers.html" class="nav-btn">
+                        <i class="fas fa-truck"></i> <span>Fornitori</span>
+                    </a>
+                    <a href="materials.html" class="nav-btn">
+                        <i class="fas fa-boxes"></i> <span>Materiali</span>
+                    </a>
+                    <a href="invoices.html" class="nav-btn">
+                        <i class="fas fa-file-invoice"></i> <span>Fatture</span>
                     </a>
                 </div>
                 
