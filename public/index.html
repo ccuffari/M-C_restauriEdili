@@ -3,124 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuffari Restauri Edili - Login</title>
+    <title>Cuffari Restauri Edili - Accesso Sicuro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
+        /* CSS Reset e Base */
+        :root {
+            --primary-color: #003366;
+            --primary-dark: #002244;
+            --primary-light: #004080;
+            --secondary-color: #ff9900;
+            --secondary-dark: #e68a00;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-color: #6c757d;
+            --border-color: #dee2e6;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
+            --transition: all 0.3s ease;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
         }
         
         body {
-            background-color: #f5f7fa;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDIwMCwgMjEwLCAyMjAsIDAuMikiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==');
+            background-image: 
+                linear-gradient(rgba(245, 247, 250, 0.95), rgba(245, 247, 250, 0.95)), 
+                url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDIwMCwgMjEwLCAyMjAsIDAuMikiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==');
         }
         
-        .header {
-            background-color: #003366;
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
+        /* Container Centrale */
         .container {
-            width: 90%;
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
         
         .logo-container {
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            width: 100%;
         }
         
         .logo-icon {
             font-size: 2.5rem;
-            margin-right: 15px;
-            color: #ff9900;
+            margin-right: 1rem;
+            color: var(--secondary-color);
         }
         
         .logo-text {
             font-size: 1.8rem;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            line-height: 1.2;
         }
         
         .subtitle {
-            font-size: 1rem;
-            font-weight: 300;
-            margin-top: 5px;
-            text-align: center;
+            font-size: 0.9rem;
             opacity: 0.9;
+            margin-top: 0.25rem;
         }
         
+        /* Contenuto Principale - CENTRATO */
         .main-content {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
+            padding: 2rem 1rem;
+            width: 100%;
+        }
+        
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
         }
         
         .login-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            width: 100%;
-            max-width: 450px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
         }
         
         .login-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
         
         .card-header {
-            background-color: #004080;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
             color: white;
-            padding: 25px 30px;
+            padding: 1.75rem 2rem;
             text-align: center;
+            position: relative;
         }
         
         .card-header h2 {
-            font-size: 1.8rem;
+            font-size: 1.75rem;
             font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        
-        .card-header h2 i {
-            margin-right: 12px;
+            gap: 1rem;
         }
         
         .card-body {
-            padding: 35px;
+            padding: 2.5rem;
         }
         
+        /* Form */
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 1.75rem;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
             font-weight: 600;
-            color: #004080;
+            color: var(--primary-color);
             font-size: 0.95rem;
         }
         
@@ -130,144 +185,212 @@
         
         .input-with-icon i {
             position: absolute;
-            left: 15px;
+            left: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #666;
+            color: var(--gray-color);
             font-size: 1.1rem;
+            z-index: 2;
         }
         
         .form-control {
             width: 100%;
-            padding: 14px 14px 14px 45px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            transition: var(--transition);
+            background-color: white;
+            position: relative;
         }
         
         .form-control:focus {
-            border-color: #004080;
-            box-shadow: 0 0 0 3px rgba(0, 64, 128, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
             outline: none;
         }
         
-        .login-btn {
-            background-color: #004080;
-            color: white;
+        /* Bottone - CORRETTO senza icona duplicata */
+        .btn {
+            padding: 1rem 2rem;
             border: none;
-            border-radius: 6px;
-            padding: 15px;
-            font-size: 1.1rem;
+            border-radius: 8px;
+            font-size: 1.05rem;
             font-weight: 600;
-            width: 100%;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            margin-top: 10px;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            position: relative;
         }
         
-        .login-btn i {
-            margin-right: 10px;
+        .btn i {
+            font-size: 1.1rem;
         }
         
-        .login-btn:hover {
-            background-color: #003366;
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
             transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
         
-        .login-btn:active {
-            transform: translateY(0);
-        }
-
-        .login-btn:disabled {
-            background-color: #cccccc;
+        .btn-primary:disabled {
+            background: #cccccc;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
+            opacity: 0.7;
         }
         
+        /* Password Toggle */
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-color);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem;
+            z-index: 3;
+        }
+        
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Alert */
         .alert {
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 20px;
-            text-align: center;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
             font-weight: 500;
-            display: none;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert i {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            margin-top: 0.125rem;
         }
         
         .alert-success {
-            background-color: #d4edda;
+            background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
         
         .alert-error {
-            background-color: #f8d7da;
+            background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-
+        
         .alert-info {
-            background-color: #d1ecf1;
+            background: #d1ecf1;
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
         
-        .credentials-note {
-            margin-top: 25px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 6px;
-            border-left: 4px solid #ff9900;
-            font-size: 0.9rem;
-            color: #555;
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
         }
         
-        .credentials-note strong {
-            color: #004080;
+        /* Security Info */
+        .security-info {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
         }
-
-        .loading {
+        
+        .security-info h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .security-info ul {
+            padding-left: 1.5rem;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .security-info li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        
+        /* Loading */
+        .loading-spinner {
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
         }
-
+        
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
-        .firebase-config-status {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 0.85rem;
-        }
-
-        .config-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .config-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
         }
         
+        .loading-spinner-large {
+            width: 60px;
+            height: 60px;
+            border-width: 5px;
+        }
+        
+        /* Footer */
         .footer {
-            background-color: #003366;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 25px 0;
+            padding: 2rem 0;
             margin-top: auto;
         }
         
@@ -276,45 +399,37 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-        }
-        
-        .developer-info {
-            margin-bottom: 15px;
+            gap: 1.5rem;
         }
         
         .developer-info h3 {
             font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 5px;
-            color: #ff9900;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
         }
         
         .company-info {
             font-size: 0.95rem;
             opacity: 0.9;
+            max-width: 600px;
+            line-height: 1.6;
         }
         
         .copyright {
             font-size: 0.85rem;
             opacity: 0.7;
-            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
         
+        /* Responsive */
         @media (max-width: 768px) {
-            .logo-text {
-                font-size: 1.5rem;
+            .header-container {
+                padding: 0 1rem;
             }
             
-            .card-body {
-                padding: 25px;
-            }
-            
-            .card-header {
-                padding: 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
             .logo-container {
                 flex-direction: column;
                 text-align: center;
@@ -322,88 +437,204 @@
             
             .logo-icon {
                 margin-right: 0;
-                margin-bottom: 10px;
+                margin-bottom: 0.5rem;
+                font-size: 2rem;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
             }
             
             .card-body {
-                padding: 20px;
+                padding: 2rem;
             }
+            
+            .card-header {
+                padding: 1.5rem;
+            }
+            
+            .card-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .btn {
+                padding: 0.875rem 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 1.5rem 1rem;
+            }
+            
+            .card-body {
+                padding: 1.75rem;
+            }
+            
+            .form-control {
+                padding: 0.75rem 0.75rem 0.75rem 2.75rem;
+            }
+            
+            .security-info {
+                padding: 1.25rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .logo-text {
+                font-size: 1.3rem;
+            }
+            
+            .subtitle {
+                font-size: 0.8rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Utility */
+        .d-none {
+            display: none !important;
+        }
+        
+        .d-flex {
+            display: flex !important;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-2 {
+            margin-top: 1rem;
+        }
+        
+        .mt-3 {
+            margin-top: 1.5rem;
+        }
+        
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+        
+        .w-100 {
+            width: 100%;
+        }
+        
+        .password-hint {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-top: 0.25rem;
+            display: block;
+        }
+        
+        /* Animazioni */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <!-- Header con logo aziendale -->
+    <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="logo-container">
                 <i class="fas fa-building logo-icon"></i>
                 <div>
                     <div class="logo-text">Cuffari Restauri Edili</div>
-                    <div class="subtitle">Piattaforma di Management Interno</div>
+                    <div class="subtitle">Accesso Sicuro alla Piattaforma</div>
                 </div>
             </div>
         </div>
     </header>
     
-    <!-- Contenuto principale -->
+    <!-- Contenuto Principale -->
     <main class="main-content">
-        <div class="container">
-            <div class="login-card">
-                <div class="card-header">
-                    <h2><i class="fas fa-lock"></i> Accesso alla Piattaforma</h2>
-                </div>
-                <div class="card-body">
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-envelope"></i>
-                                <input type="email" id="email" class="form-control" placeholder="Inserisci la tua email" autocomplete="email" required>
+        <div class="login-wrapper">
+            <div class="container">
+                <div class="login-container">
+                    <div class="login-card fade-in">
+                        <div class="card-header">
+                            <h2><i class="fas fa-lock"></i> Accesso Sistema</h2>
+                        </div>
+                        <div class="card-body">
+                            <form id="loginForm" autocomplete="on">
+                                <div class="form-group">
+                                    <label for="email">Indirizzo Email</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-envelope"></i>
+                                        <input type="email" id="email" class="form-control" 
+                                               placeholder="nome@azienda.it" 
+                                               autocomplete="email" 
+                                               required
+                                               autocapitalize="off"
+                                               autocorrect="off">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-key"></i>
+                                        <input type="password" id="password" class="form-control" 
+                                               placeholder="Inserisci la tua password" 
+                                               autocomplete="current-password" 
+                                               required
+                                               minlength="6">
+                                        <button type="button" class="password-toggle" id="passwordToggle">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <span class="password-hint">Minimo 6 caratteri</span>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary" id="loginButton">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <span id="loginButtonText">Accedi al Sistema</span>
+                                </button>
+                                
+                                <!-- Alert Messages -->
+                                <div id="successAlert" class="alert alert-success d-none mt-2">
+                                    <i class="fas fa-check-circle"></i> 
+                                    <div>Accesso autorizzato. Reindirizzamento in corso...</div>
+                                </div>
+                                
+                                <div id="errorAlert" class="alert alert-error d-none mt-2">
+                                    <i class="fas fa-exclamation-circle"></i> 
+                                    <div id="errorMessage">Credenziali non valide. Riprova.</div>
+                                </div>
+                                
+                                <div id="infoAlert" class="alert alert-info d-none mt-2">
+                                    <i class="fas fa-info-circle"></i> 
+                                    <div id="infoMessage"></div>
+                                </div>
+                            </form>
+                            
+                            <!-- Security Information -->
+                            <div class="security-info mt-3">
+                                <h4><i class="fas fa-shield-alt"></i> Sicurezza Accesso</h4>
+                                <ul>
+                                    <li>Utilizza solo account autorizzati dall'amministratore</li>
+                                    <li>Non condividere le tue credenziali di accesso</li>
+                                    <li>Assicurati di essere su una connessione sicura</li>
+                                    <li>Esci sempre dopo aver utilizzato il sistema</li>
+                                </ul>
                             </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-key"></i>
-                                <input type="password" id="password" class="form-control" placeholder="Inserisci la tua password" autocomplete="current-password" required>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="login-btn" id="loginButton">
-                            <i class="fas fa-sign-in-alt"></i> <span id="loginButtonText">Accedi alla Piattaforma</span>
-                        </button>
-                        
-                        <!-- Messaggi di successo/errore -->
-                        <div id="successAlert" class="alert alert-success">
-                            <i class="fas fa-check-circle"></i> Accesso effettuato con successo! Reindirizzamento in corso...
-                        </div>
-                        
-                        <div id="errorAlert" class="alert alert-error">
-                            <i class="fas fa-exclamation-circle"></i> <span id="errorMessage">Email o password non validi.</span>
-                        </div>
-
-                        <div id="infoAlert" class="alert alert-info">
-                            <i class="fas fa-info-circle"></i> <span id="infoMessage"></span>
-                        </div>
-
-                        <!-- Stato configurazione Firebase -->
-                        <div id="firebaseConfigStatus" class="firebase-config-status" style="display: none;">
-                            <!-- Il contenuto verrà popolato da JavaScript -->
-                        </div>
-                        
-                        <!-- Nota sulle credenziali -->
-                        <div class="credentials-note">
-                            <p><strong>Nota:</strong> Per accedere alla piattaforma, utilizzare le credenziali registrate su Firebase.</p>
-                            <p>Se non hai un account, contatta l'amministratore.</p>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
     
-    <!-- Footer con informazioni sviluppatore -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -418,271 +649,233 @@
                 
                 <div class="copyright">
                     <p>&copy; 2026 Cuffari Restauri Edili. Tutti i diritti riservati.</p>
+                    <p><i class="fas fa-lock"></i> Sistema Sicuro - Accesso Protetto</p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Script per caricare la configurazione Firebase -->
-    <script>
-        // Funzione per caricare la configurazione Firebase
-        async function loadFirebaseConfig() {
-            try {
-                const response = await fetch('firebase_config.json');
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP ${response.status}: ${response.statusText}`);
-                }
-                const config = await response.json();
-                return config;
-            } catch (error) {
-                console.error('Errore nel caricamento della configurazione Firebase:', error);
-                // Configurazione di fallback (solo per sviluppo)
-                return {
-                    apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
-                    authDomain: "work-tracker-v120400.firebaseapp.com",
-                    projectId: "work-tracker-v120400",
-                    storageBucket: "work-tracker-v120400.firebasestorage.app",
-                    messagingSenderId: "437459935839",
-                    appId: "1:437459935839:web:cb0b54608314dcb25731ea",
-                    measurementId: "G-2LPKL9WREX"
-                };
-            }
-        }
-    </script>
-    
-    <script>
-        // Stato dell'applicazione
-        let firebaseApp = null;
-        let firebaseInitialized = false;
-        let auth = null;
-        let db = null;
+    <!-- Loading Overlay -->
+    <div class="loading-overlay d-none" id="loadingOverlay">
+        <div class="loading-spinner loading-spinner-large"></div>
+    </div>
 
-        document.addEventListener('DOMContentLoaded', async function() {
+    <script>
+        // Configurazione Firebase - DA MODIFICARE CON I TUOI DATI
+        const firebaseConfig = {
+            apiKey: "AIzaSyD...", // Sostituisci con la tua API Key
+            authDomain: "tuoprogetto.firebaseapp.com", // Sostituisci
+            projectId: "tuoprogetto", // Sostituisci
+            storageBucket: "tuoprogetto.appspot.com", // Sostituisci
+            messagingSenderId: "123456789012", // Sostituisci
+            appId: "1:123456789012:web:abcdef..." // Sostituisci
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementi UI
             const loginForm = document.getElementById('loginForm');
             const loginButton = document.getElementById('loginButton');
             const loginButtonText = document.getElementById('loginButtonText');
+            const loginButtonIcon = loginButton.querySelector('i');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const passwordToggle = document.getElementById('passwordToggle');
             const successAlert = document.getElementById('successAlert');
             const errorAlert = document.getElementById('errorAlert');
-            const errorMessage = document.getElementById('errorMessage');
             const infoAlert = document.getElementById('infoAlert');
+            const errorMessage = document.getElementById('errorMessage');
             const infoMessage = document.getElementById('infoMessage');
-            const configStatus = document.getElementById('firebaseConfigStatus');
+            const loadingOverlay = document.getElementById('loadingOverlay');
 
-            // Funzione per mostrare messaggi
-            function showAlert(alertElement, message = '') {
-                // Nascondi tutti gli alert
-                successAlert.style.display = 'none';
-                errorAlert.style.display = 'none';
-                infoAlert.style.display = 'none';
-                
-                // Mostra l'alert specificato
-                if (message && alertElement === infoAlert) {
-                    infoMessage.textContent = message;
-                } else if (message && alertElement === errorAlert) {
-                    errorMessage.textContent = message;
-                }
-                alertElement.style.display = 'block';
-            }
-
-            // Funzione per impostare lo stato di caricamento del pulsante
-            function setLoading(isLoading) {
-                if (isLoading) {
-                    loginButton.disabled = true;
-                    loginButtonText.innerHTML = '<div class="loading"></div> Accesso in corso...';
-                } else {
-                    loginButton.disabled = false;
-                    loginButtonText.innerHTML = '<i class="fas fa-sign-in-alt"></i> Accedi alla Piattaforma';
-                }
-            }
+            // Stato
+            let isProcessing = false;
 
             // Inizializza Firebase
-            async function initializeFirebase() {
-                try {
-                    showAlert(infoAlert, 'Inizializzazione Firebase in corso...');
-                    setLoading(true);
-                    
-                    // Carica la configurazione Firebase
-                    const firebaseConfig = await loadFirebaseConfig();
-                    
-                    // Inizializza Firebase
-                    firebaseApp = firebase.initializeApp(firebaseConfig);
-                    auth = firebase.auth();
-                    db = firebase.firestore();
-                    
-                    firebaseInitialized = true;
-                    
-                    // Aggiorna lo stato della configurazione
-                    configStatus.textContent = '✓ Firebase configurato correttamente';
-                    configStatus.className = 'firebase-config-status config-success';
-                    configStatus.style.display = 'block';
-                    
-                    // Controlla se l'utente è già autenticato
-                    auth.onAuthStateChanged((user) => {
-                        if (user) {
-                            showAlert(infoAlert, 'Utente già autenticato. Reindirizzamento...');
-                            setTimeout(() => {
-                                window.location.href = 'profile.html';
-                            }, 1000);
-                        } else {
-                            showAlert(infoAlert, 'Pronto per l\'accesso. Inserisci le tue credenziali.');
-                        }
-                        setLoading(false);
-                    });
-                    
-                } catch (error) {
-                    console.error('Errore nell\'inizializzazione di Firebase:', error);
-                    configStatus.textContent = `✗ Errore nella configurazione Firebase: ${error.message}`;
-                    configStatus.className = 'firebase-config-status config-error';
-                    configStatus.style.display = 'block';
-                    
-                    showAlert(errorAlert, 'Errore di configurazione. Contatta l\'amministratore.');
-                    setLoading(false);
-                }
+            try {
+                firebase.initializeApp(firebaseConfig);
+                console.log('Firebase inizializzato correttamente');
+            } catch (error) {
+                console.error('Errore inizializzazione Firebase:', error);
+                showError('Errore di configurazione del sistema. Contatta l\'amministratore.');
+                loginButton.disabled = true;
             }
 
-            // Inizializza Firebase al caricamento della pagina
-            await initializeFirebase();
+            const auth = firebase.auth();
+            const db = firebase.firestore();
 
-            // Gestione del submit del form
+            // Mostra/Nascondi Password
+            passwordToggle.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            // Funzioni helper
+            function showLoading() {
+                isProcessing = true;
+                loadingOverlay.classList.remove('d-none');
+                loginButton.disabled = true;
+                loginButtonIcon.style.display = 'none';
+                loginButtonText.innerHTML = '<div class="loading-spinner"></div> Autenticazione...';
+            }
+
+            function hideLoading() {
+                isProcessing = false;
+                loadingOverlay.classList.add('d-none');
+                loginButton.disabled = false;
+                loginButtonIcon.style.display = 'inline-block';
+                loginButtonText.textContent = 'Accedi al Sistema';
+            }
+
+            function showSuccess(message) {
+                hideAllAlerts();
+                successAlert.querySelector('div').textContent = message;
+                successAlert.classList.remove('d-none');
+            }
+
+            function showError(message) {
+                hideAllAlerts();
+                errorMessage.textContent = message;
+                errorAlert.classList.remove('d-none');
+            }
+
+            function showInfo(message) {
+                hideAllAlerts();
+                infoMessage.textContent = message;
+                infoAlert.classList.remove('d-none');
+            }
+
+            function hideAllAlerts() {
+                successAlert.classList.add('d-none');
+                errorAlert.classList.add('d-none');
+                infoAlert.classList.add('d-none');
+            }
+
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+
+            function validatePassword(password) {
+                return password.length >= 6;
+            }
+
+            // Controlla se c'è già un utente loggato
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    console.log('Utente già autenticato:', user.email);
+                    // Reindirizza alla pagina profilo
+                    setTimeout(() => {
+                        window.location.href = 'profile.html';
+                    }, 1000);
+                }
+            });
+
+            // Gestione Submit Form
             loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
-                if (!firebaseInitialized) {
-                    showAlert(errorAlert, 'Firebase non è stato inizializzato correttamente.');
-                    return;
-                }
+                if (isProcessing) return;
                 
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
                 
-                // Nascondi eventuali alert precedenti
-                successAlert.style.display = 'none';
-                errorAlert.style.display = 'none';
-                infoAlert.style.display = 'none';
-                
-                // Validazione dei campi
+                // Validazione
                 if (!email || !password) {
-                    showAlert(errorAlert, 'Inserisci email e password.');
+                    showError('Per favore, compila tutti i campi');
                     return;
                 }
                 
-                // Mostra lo stato di caricamento
-                setLoading(true);
-                showAlert(infoAlert, 'Autenticazione in corso...');
+                if (!validateEmail(email)) {
+                    showError('Inserisci un indirizzo email valido');
+                    emailInput.focus();
+                    return;
+                }
+                
+                if (!validatePassword(password)) {
+                    showError('La password deve contenere almeno 6 caratteri');
+                    passwordInput.focus();
+                    return;
+                }
+                
+                showLoading();
+                showInfo('Autenticazione in corso...');
                 
                 try {
-                    // Effettua il login con Firebase Authentication
+                    // Tentativo di login
                     const userCredential = await auth.signInWithEmailAndPassword(email, password);
                     const user = userCredential.user;
                     
-                    // Verifica se l'email è verificata (opzionale)
-                    if (!user.emailVerified) {
-                        showAlert(infoAlert, 'La tua email non è verificata. Verifica la tua email per accedere a tutte le funzionalità.');
-                        // Puoi decidere se permettere comunque l'accesso o meno
-                        // return;
-                    }
-                    
-                    // Recupera i dati utente aggiuntivi da Firestore
+                    // Verifica se l'utente esiste nel database
                     const userDoc = await db.collection('users').doc(user.uid).get();
                     
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        
-                        // Salva i dati utente nel localStorage per usarli in altre pagine
-                        localStorage.setItem('user', JSON.stringify({
-                            uid: user.uid,
-                            email: user.email,
-                            displayName: user.displayName || userData.displayName || email.split('@')[0],
-                            role: userData.role || 'user',
-                            createdAt: userData.createdAt || new Date().toISOString()
-                        }));
-                        
-                        // Salva il token di autenticazione
-                        const token = await user.getIdToken();
-                        localStorage.setItem('authToken', token);
-                        
-                        // Mostra messaggio di successo
-                        showAlert(successAlert);
-                        setLoading(false);
-                        
-                        // Reindirizza alla Profilo dopo 2 secondi
-                        setTimeout(() => {
-                            window.location.href = 'profile.html';
-                        }, 2000);
-                        
-                    } else {
-                        // Se l'utente non esiste in Firestore, crea un documento di default
-                        await db.collection('users').doc(user.uid).set({
-                            email: user.email,
-                            displayName: email.split('@')[0],
-                            role: 'user',
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        
-                        // Salva i dati utente nel localStorage
-                        localStorage.setItem('user', JSON.stringify({
-                            uid: user.uid,
-                            email: user.email,
-                            displayName: email.split('@')[0],
-                            role: 'user',
-                            createdAt: new Date().toISOString()
-                        }));
-                        
-                        // Salva il token di autenticazione
-                        const token = await user.getIdToken();
-                        localStorage.setItem('authToken', token);
-                        
-                        // Mostra messaggio di successo
-                        showAlert(successAlert);
-                        setLoading(false);
-                        
-                        // Reindirizza alla Profilo dopo 2 secondi
-                        setTimeout(() => {
-                            window.location.href = 'profile.html';
-                        }, 2000);
+                    if (!userDoc.exists) {
+                        await auth.signOut();
+                        throw new Error('Account non trovato nel sistema');
                     }
                     
-                } catch (error) {
-                    console.error('Errore durante il login:', error);
-                    setLoading(false);
+                    const userData = userDoc.data();
                     
-                    // Gestione specifica degli errori di Firebase
-                    let errorMsg = 'Errore durante il login. Riprova.';
+                    // Verifica stato account
+                    if (userData.status === 'suspended') {
+                        await auth.signOut();
+                        throw new Error('Account sospeso. Contatta l\'amministratore.');
+                    }
+                    
+                    // Salva dati sessione
+                    sessionStorage.setItem('userSession', JSON.stringify({
+                        uid: user.uid,
+                        email: user.email,
+                        name: userData.name || user.email.split('@')[0],
+                        role: userData.role || 'user',
+                        lastLogin: new Date().toISOString()
+                    }));
+                    
+                    // Aggiorna ultimo accesso
+                    await db.collection('users').doc(user.uid).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    showSuccess('Accesso autorizzato! Reindirizzamento...');
+                    
+                    // Reindirizza dopo 1.5 secondi
+                    setTimeout(() => {
+                        window.location.href = 'profile.html';
+                    }, 1500);
+                    
+                } catch (error) {
+                    console.error('Errore di login:', error);
+                    
+                    let errorMessage = 'Errore durante l\'accesso. Riprova.';
                     
                     switch (error.code) {
                         case 'auth/invalid-email':
-                            errorMsg = 'L\'indirizzo email non è valido.';
+                            errorMessage = 'Indirizzo email non valido.';
                             break;
                         case 'auth/user-disabled':
-                            errorMsg = 'Questo account è stato disabilitato.';
+                            errorMessage = 'Account disabilitato. Contatta l\'amministratore.';
                             break;
                         case 'auth/user-not-found':
-                            errorMsg = 'Nessun account trovato con questa email.';
+                            errorMessage = 'Nessun account trovato con questa email.';
                             break;
                         case 'auth/wrong-password':
-                            errorMsg = 'Password errata. Riprova.';
+                            errorMessage = 'Password errata. Riprova.';
                             break;
                         case 'auth/too-many-requests':
-                            errorMsg = 'Troppi tentativi di accesso. Riprova più tardi.';
+                            errorMessage = 'Troppi tentativi falliti. Riprova più tardi.';
                             break;
                         case 'auth/network-request-failed':
-                            errorMsg = 'Errore di rete. Verifica la connessione internet.';
+                            errorMessage = 'Errore di connessione. Verifica la tua rete.';
                             break;
-                        default:
-                            errorMsg = `Errore: ${error.message}`;
                     }
                     
-                    showAlert(errorAlert, errorMsg);
+                    showError(errorMessage);
+                    hideLoading();
                 }
             });
-            
-            // Inserisci una email di esempio per il testing (solo in sviluppo)
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                document.getElementById('email').value = 'admin@cuffari.it';
-                document.getElementById('password').value = 'Admin123';
-                showAlert(infoAlert, 'Credenziali di test precompilate per lo sviluppo.');
-            }
+
+            // Focus sull'email al caricamento
+            emailInput.focus();
         });
     </script>
 </body>
