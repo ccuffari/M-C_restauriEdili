@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuffari Restauri Edili - Profilo Utente</title>
+    <title>Marocco&Cuffari - Gestione Preventivi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@7.8.0/build/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <style>
         /* CSS Reset e Base */
         :root {
@@ -50,7 +48,6 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDIwMCwgMjEwLCAyMjAsIDAuMikiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==');
         }
         
         /* Container Responsive */
@@ -62,40 +59,41 @@
             margin-left: auto;
         }
         
-        /* Breakpoint per xxs (molto piccolo) */
-        @media (max-width: 359.98px) {
-            .container { padding: 0 8px; }
-            html { font-size: 14px; }
+        /* Breakpoint per xxl (>=1400px) */
+        @media (min-width: 1400px) {
+            .container { max-width: 1320px; }
+            html { font-size: 17px; }
         }
         
-        /* Breakpoint per xs (extra small) */
-        @media (min-width: 360px) and (max-width: 575.98px) {
-            .container { max-width: 100%; }
-        }
-        
-        /* Breakpoint per sm (small) */
-        @media (min-width: 576px) and (max-width: 767.98px) {
-            .container { max-width: 540px; }
-        }
-        
-        /* Breakpoint per md (medium) */
-        @media (min-width: 768px) and (max-width: 991.98px) {
-            .container { max-width: 720px; }
-        }
-        
-        /* Breakpoint per lg (large) */
-        @media (min-width: 992px) and (max-width: 1199.98px) {
-            .container { max-width: 960px; }
-        }
-        
-        /* Breakpoint per xl (extra large) */
+        /* Breakpoint per xl (>=1200px) */
         @media (min-width: 1200px) and (max-width: 1399.98px) {
             .container { max-width: 1140px; }
         }
         
-        /* Breakpoint per xxl (extra extra large) */
-        @media (min-width: 1400px) {
-            .container { max-width: 1320px; }
+        /* Breakpoint per lg (>=992px) */
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            .container { max-width: 960px; }
+        }
+        
+        /* Breakpoint per md (>=768px) */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .container { max-width: 720px; }
+        }
+        
+        /* Breakpoint per sm (>=576px) */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            .container { max-width: 540px; }
+        }
+        
+        /* Breakpoint per xs (<576px) */
+        @media (max-width: 575.98px) {
+            .container { padding-right: 10px; padding-left: 10px; }
+            html { font-size: 14px; }
+        }
+        
+        /* Breakpoint per xxs (molto piccoli) */
+        @media (max-width: 359.98px) {
+            html { font-size: 13px; }
         }
         
         /* Utility Classes */
@@ -181,7 +179,6 @@
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
-            justify-content: center;
         }
         
         .nav-btn {
@@ -256,10 +253,18 @@
             padding: 2rem 0;
         }
         
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
         .page-title {
             font-size: 2rem;
             color: var(--primary-color);
-            margin-bottom: 10px;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
@@ -272,43 +277,119 @@
         
         .page-subtitle {
             color: var(--gray-color);
-            margin-bottom: 40px;
+            margin-top: 0.5rem;
             font-size: 1rem;
         }
         
-        .profile-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+        .page-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
         
-        @media (max-width: 992px) {
-            .profile-container {
-                grid-template-columns: 1fr;
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-info {
+            background: var(--info-color);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Content Layout */
+        .content-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        /* Layout responsive per lg e superiori */
+        @media (min-width: 992px) {
+            .content-container {
+                grid-template-columns: 1fr 1fr;
             }
         }
         
-        .profile-card {
-            background-color: white;
-            border-radius: 10px;
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 8px;
             box-shadow: var(--shadow-sm);
             overflow: hidden;
             transition: var(--transition);
+            height: fit-content;
         }
         
-        .profile-card:hover {
-            transform: translateY(-5px);
+        .form-card:hover {
             box-shadow: var(--shadow-md);
         }
         
         .card-header {
-            background-color: var(--primary-light);
+            background: var(--primary-color);
             color: white;
-            padding: 20px 30px;
+            padding: 1.25rem 1.5rem;
         }
         
         .card-header h3 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -316,65 +397,25 @@
         }
         
         .card-body {
-            padding: 30px;
+            padding: 1.5rem;
         }
         
-        .user-avatar {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            margin: 0 auto 15px;
-            border: 5px solid #e6f0ff;
-        }
-        
-        .user-details {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-        
-        .detail-label {
-            font-weight: 600;
-            color: #555;
-        }
-        
-        .detail-value {
-            color: var(--primary-color);
-            font-weight: 500;
-        }
-        
+        /* Form Styles */
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 1.25rem;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
             font-weight: 600;
             color: var(--primary-color);
             font-size: 0.95rem;
+        }
+        
+        .form-group.required label::after {
+            content: " *";
+            color: var(--danger-color);
         }
         
         .input-with-icon {
@@ -383,20 +424,21 @@
         
         .input-with-icon i {
             position: absolute;
-            left: 15px;
+            left: 1rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--gray-color);
-            font-size: 1.1rem;
+            z-index: 1;
         }
         
         .form-control {
             width: 100%;
-            padding: 14px 14px 14px 45px;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 4px;
             font-size: 1rem;
             transition: var(--transition);
+            background: white;
         }
         
         .form-control:focus {
@@ -405,82 +447,288 @@
             outline: none;
         }
         
-        .password-strength {
-            margin-top: 8px;
-            height: 5px;
-            border-radius: 3px;
-            background-color: #eee;
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23343a40' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        /* Form responsive */
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        
+        @media (min-width: 576px) {
+            .form-actions {
+                flex-direction: row;
+            }
+        }
+        
+        .btn-full {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* Preview Card */
+        .preview-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
             overflow: hidden;
+            transition: var(--transition);
+            height: fit-content;
+            max-height: 800px;
+            overflow-y: auto;
         }
         
-        .strength-bar {
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s, background-color 0.3s;
+        .preview-content {
+            padding: 1.5rem;
+            font-family: 'Times New Roman', Times, serif;
+            background: white;
+            position: relative;
+            min-height: 600px;
         }
         
-        .strength-text {
+        /* Preview Styles */
+        .preview-header {
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .company-info {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .company-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+        
+        .company-details {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .quote-title {
+            font-size: 2rem;
+            text-align: center;
+            color: var(--primary-color);
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+        
+        .quote-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .client-info, .quote-details {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .client-info h3, .quote-details h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            table-layout: fixed;
+        }
+        
+        .items-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--primary-dark);
+        }
+        
+        .items-table td {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .items-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .items-table .text-right {
+            text-align: right;
+        }
+        
+        .totals-section {
+            margin-top: 1.5rem;
+            border-top: 2px solid var(--border-color);
+            padding-top: 1rem;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+        }
+        
+        .total-row.final {
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
+            color: var(--primary-color);
+        }
+        
+        .terms-conditions {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
             font-size: 0.85rem;
-            margin-top: 5px;
             color: var(--gray-color);
         }
         
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
+        .terms-conditions h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
         }
         
-        .btn {
-            padding: 14px 28px;
+        .signature-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .signature-line {
+            width: 200px;
+            border-top: 1px solid var(--dark-color);
+            margin-top: 3rem;
+        }
+        
+        .watermark {
+            position: absolute;
+            opacity: 0.05;
+            font-size: 6rem;
+            transform: rotate(-45deg);
+            color: var(--primary-color);
+            pointer-events: none;
+            z-index: 1;
+            top: 30%;
+            left: 10%;
+            white-space: nowrap;
+        }
+        
+        /* Items Management */
+        .items-management {
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .items-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding: 0.75rem;
+            background: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+            min-width: 800px;
+        }
+        
+        .item-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            min-width: 800px;
+        }
+        
+        .item-input {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        .item-total-display {
+            padding: 0.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .remove-item {
+            background: var(--danger-color);
+            color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 4px;
+            width: 30px;
+            height: 30px;
             cursor: pointer;
-            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex: 1;
-        }
-        
-        .btn i {
-            margin-right: 10px;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .btn-secondary {
-            background-color: #f0f0f0;
-            color: var(--dark-color);
-        }
-        
-        .btn-secondary:hover {
-            background-color: #e0e0e0;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-            transform: none;
+            flex-shrink: 0;
         }
         
         /* Alerts */
         .alert {
             padding: 1rem;
-            border-radius: 6px;
+            border-radius: 4px;
             margin-top: 1rem;
             font-weight: 500;
             display: flex;
@@ -504,7 +752,13 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
         .alert-info {
             background: #d1ecf1;
             color: #0c5460;
@@ -527,6 +781,10 @@
             gap: 1.5rem;
         }
         
+        .developer-info {
+            margin-bottom: 15px;
+        }
+        
         .developer-info h3 {
             font-size: 1.2rem;
             font-weight: 600;
@@ -544,64 +802,128 @@
             font-size: 0.85rem;
             opacity: 0.7;
         }
-
-        /* Loading */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            display: none;
-        }
-
-        .loading-spinner {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .loading-spinner .loading {
-            width: 40px;
-            height: 40px;
-            border-width: 4px;
-            margin: 0 auto 15px;
-            display: block;
+        
+        /* Responsive Design */
+        /* Per schermi grandi (lg e superiori) */
+        @media (min-width: 992px) {
+            .item-row, .items-header {
+                min-width: 0;
+                grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+            }
         }
         
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .header-container {
+        /* Per tablet (md) */
+        @media (max-width: 991.98px) and (min-width: 768px) {
+            .item-row, .items-header {
+                min-width: 700px;
+            }
+            
+            .quote-title {
+                font-size: 1.8rem;
+            }
+            
+            .company-name {
+                font-size: 1.6rem;
+            }
+        }
+        
+        /* Per tablet piccoli e mobile (sm e xs) */
+        @media (max-width: 767.98px) {
+            .item-row, .items-header {
+                min-width: 650px;
+            }
+            
+            .quote-info {
+                flex-direction: column;
+            }
+            
+            .client-info, .quote-details {
+                min-width: 100%;
+            }
+            
+            .quote-title {
+                font-size: 1.6rem;
+            }
+            
+            .company-name {
+                font-size: 1.4rem;
+            }
+            
+            .watermark {
+                font-size: 4rem;
+                left: 5%;
+            }
+            
+            .items-table {
+                font-size: 0.8rem;
+            }
+            
+            .items-table th,
+            .items-table td {
+                padding: 0.5rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .preview-content {
+                padding: 1rem;
+            }
+        }
+        
+        /* Per mobile piccoli (xs) */
+        @media (max-width: 575.98px) {
+            .page-header {
                 flex-direction: column;
                 align-items: stretch;
             }
             
-            .logo-container {
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .page-actions {
                 justify-content: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn-full {
+                width: 100%;
+            }
+            
+            .item-row, .items-header {
+                min-width: 550px;
+            }
+            
+            .watermark {
+                font-size: 3rem;
+                top: 40%;
+            }
+            
+            .company-name {
+                font-size: 1.2rem;
+            }
+            
+            .quote-title {
+                font-size: 1.4rem;
+            }
+        }
+        
+        /* Per mobile molto piccoli (xxs) */
+        @media (max-width: 359.98px) {
+            .logo-container {
+                min-width: auto;
+                flex-direction: column;
                 text-align: center;
-                margin-bottom: 1rem;
             }
             
             .logo-icon {
@@ -612,72 +934,20 @@
             .user-menu {
                 flex-direction: column;
                 align-items: center;
-                gap: 1rem;
-            }
-            
-            .nav-menu {
-                order: 2;
                 width: 100%;
-                margin-top: 1rem;
-                justify-content: center;
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
             }
             
             .user-info {
                 text-align: center;
             }
             
-            .page-title {
-                font-size: 1.75rem;
-            }
-            
-            .card-body {
-                padding: 20px;
-            }
-            
-            .btn-group {
-                flex-direction: column;
-            }
-            
-            .avatar {
-                width: 100px;
-                height: 100px;
-                font-size: 2.5rem;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .profile-container {
-                gap: 20px;
-            }
-            
-            .btn {
-                padding: 12px 20px;
-                font-size: 0.95rem;
-            }
-            
-            .card-header {
-                padding: 15px 20px;
-            }
-            
-            .card-header h3 {
-                font-size: 1.3rem;
-            }
-        }
-        
-        @media (max-width: 360px) {
-            .logo-text {
-                font-size: 1.3rem;
-            }
-            
-            .page-title {
-                font-size: 1.5rem;
+            .nav-menu {
+                justify-content: center;
+                width: 100%;
             }
             
             .nav-btn {
                 padding: 0.5rem;
-                font-size: 0.85rem;
             }
             
             .nav-btn span {
@@ -689,56 +959,71 @@
                 font-size: 1.1rem;
             }
             
-            .btn {
-                padding: 10px 16px;
-                font-size: 0.9rem;
+            .item-row, .items-header {
+                min-width: 450px;
             }
             
-            .avatar {
-                width: 80px;
-                height: 80px;
-                font-size: 2rem;
+            .watermark {
+                font-size: 2.5rem;
             }
             
-            .detail-row {
-                flex-direction: column;
-                gap: 5px;
+            .company-name {
+                font-size: 1rem;
+            }
+            
+            .quote-title {
+                font-size: 1.2rem;
             }
         }
         
-        /* Extra small devices (xxs) */
-        @media (max-width: 320px) {
-            .logo-text {
-                font-size: 1.1rem;
-            }
-            
-            .subtitle {
-                font-size: 0.8rem;
-            }
-            
-            .page-title {
-                font-size: 1.3rem;
-            }
-            
-            .page-subtitle {
-                font-size: 0.9rem;
-            }
-            
-            .nav-btn {
-                padding: 0.4rem;
-                font-size: 0.8rem;
-            }
-            
-            .card-header h3 {
-                font-size: 1.1rem;
-            }
-            
-            .card-body {
-                padding: 15px;
-            }
-            
-            .form-control {
-                padding: 12px 12px 12px 40px;
+        /* Scrollbar personalizzata */
+        .preview-card::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .preview-card::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .preview-card::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+        
+        .preview-card::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+        
+        .items-management::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .items-management::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .items-management::-webkit-scrollbar-thumb {
+            background: var(--gray-color);
+            border-radius: 4px;
+        }
+        
+        /* Aggiustamenti per evitare overflow */
+        .form-control, .item-input, select, textarea {
+            max-width: 100%;
+        }
+        
+        /* Garantire che le tabelle siano responsive */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Miglioramenti per i select su mobile */
+        @media (max-width: 767.98px) {
+            select.form-control {
+                font-size: 16px; /* Previene lo zoom su iOS */
             }
         }
     </style>
@@ -750,17 +1035,17 @@
             <div class="logo-container">
                 <i class="fas fa-building logo-icon"></i>
                 <div>
-                    <div class="logo-text">Cuffari Restauri Edili</div>
+                    <div class="logo-text">Marocco&Cuffari Restauri Edili</div>
                     <div class="subtitle">Piattaforma di Management Interno</div>
                 </div>
             </div>
             
             <div class="user-menu">
                 <div class="nav-menu">
-                    <a href="profile.html" class="nav-btn">
-                        <i class="fas fa-tachometer-alt"></i> <span>Profilo</span>
+                    <a href="dashboard.html" class="nav-btn">
+                        <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
                     </a>
-                    <a href="profile.html" class="nav-btn active">
+                    <a href="profile.html" class="nav-btn">
                         <i class="fas fa-user-circle"></i> <span>Profilo</span>
                     </a>
                     <a href="users.html" class="nav-btn">
@@ -772,23 +1057,17 @@
                     <a href="work-days.html" class="nav-btn">
                         <i class="fas fa-calendar-day"></i> <span>Giornate</span>
                     </a>
-                    <a href="estimates.html" class="nav-btn">
-                        <i class="fas fa-calculator"></i> <span>Preventivi</span>
-                    </a>
-                    <a href="suppliers.html" class="nav-btn">
-                        <i class="fas fa-truck"></i> <span>Fornitori</span>
-                    </a>
-                    <a href="materials.html" class="nav-btn">
-                        <i class="fas fa-boxes"></i> <span>Materiali</span>
-                    </a>
                     <a href="invoices.html" class="nav-btn">
                         <i class="fas fa-file-invoice"></i> <span>Fatture</span>
+                    </a>
+                    <a href="preventivi.html" class="nav-btn active">
+                        <i class="fas fa-file-contract"></i> <span>Preventivi</span>
                     </a>
                 </div>
                 
                 <div class="user-info">
-                    <div class="user-name" id="headerUserName">Caricamento...</div>
-                    <div class="user-role" id="headerUserRole">Utente</div>
+                    <div class="user-name" id="userName">Caricamento...</div>
+                    <div class="user-role" id="userRole">Utente</div>
                 </div>
                 <button class="logout-btn" id="logoutBtn">
                     <i class="fas fa-sign-out-alt"></i> <span>Esci</span>
@@ -797,129 +1076,290 @@
         </div>
     </header>
     
-    <!-- Contenuto principale -->
+    <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <h1 class="page-title">
-                <i class="fas fa-user-circle"></i> Profilo Utente
-            </h1>
-            <p class="page-subtitle" id="pageSubtitle">Caricamento informazioni profilo...</p>
-            
-            <div class="profile-container">
-                <!-- Card informazioni profilo -->
-                <div class="profile-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-id-card"></i> Informazioni Profilo</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="user-avatar">
-                            <div class="avatar" id="userAvatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <h3 id="profileUserName">Caricamento...</h3>
-                            <p id="profileUserRole">Caricamento...</p>
-                        </div>
-                        
-                        <div class="user-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Email:</span>
-                                <span class="detail-value" id="userEmail">Caricamento...</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Ruolo:</span>
-                                <span class="detail-value" id="userRoleDetail">Caricamento...</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Ultimo Accesso:</span>
-                                <span class="detail-value" id="lastLogin">Caricamento...</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Data Registrazione:</span>
-                                <span class="detail-value" id="registrationDate">Caricamento...</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Stato Account:</span>
-                                <span class="detail-value" id="accountStatus" style="color: #28a745;">Caricamento...</span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-file-contract"></i> Gestione Preventivi
+                    </h1>
+                    <p class="page-subtitle">Crea preventivi professionali per i tuoi clienti</p>
                 </div>
-                
-                <!-- Card modifica password -->
-                <div class="profile-card">
+                <div class="page-actions">
+                    <button class="btn btn-warning" id="clearFormBtn">
+                        <i class="fas fa-broom"></i> <span>Pulisci</span>
+                    </button>
+                    <button class="btn btn-primary" id="generateDocxBtn">
+                        <i class="fas fa-file-word"></i> <span>Genera DOCX</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="content-container">
+                <!-- Form Card -->
+                <div class="form-card">
                     <div class="card-header">
-                        <h3><i class="fas fa-key"></i> Modifica Password</h3>
+                        <h3><i class="fas fa-edit"></i> Dati Preventivo</h3>
                     </div>
                     <div class="card-body">
-                        <form id="changePasswordForm">
+                        <form id="quoteForm">
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="quoteNumber">Numero Preventivo</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-hashtag"></i>
+                                        <input type="text" id="quoteNumber" class="form-control" placeholder="Es: PREV-2023-001" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group required">
+                                    <label for="quoteDate">Data Preventivo</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <input type="date" id="quoteDate" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="validUntil">Validità fino al</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <input type="date" id="validUntil" class="form-control" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="paymentTerms">Termini di Pagamento</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-money-check-alt"></i>
+                                        <select id="paymentTerms" class="form-control">
+                                            <option value="30 giorni">30 giorni dalla consegna</option>
+                                            <option value="50% anticipo">50% anticipo, 50% a consegna</option>
+                                            <option value="contanti">Contanti alla consegna</option>
+                                            <option value="bonifico">Bonifico bancario</option>
+                                            <option value="personalizzato">Personalizzato</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cliente -->
                             <div class="form-group">
-                                <label for="currentPassword">Password Attuale</label>
-                                <div class="input-with-icon">
-                                    <i class="fas fa-lock"></i>
-                                    <input type="password" id="currentPassword" class="form-control" placeholder="Inserisci la password attuale" required>
+                                <h4 style="color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                                    <i class="fas fa-user-tie"></i> Dati Cliente
+                                </h4>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="clientName">Nome Cliente/Ragione Sociale</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-building"></i>
+                                        <input type="text" id="clientName" class="form-control" placeholder="Nome completo o ragione sociale" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="clientVat">Partita IVA/Codice Fiscale</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-id-card"></i>
+                                        <input type="text" id="clientVat" class="form-control" placeholder="P. IVA o CF">
+                                    </div>
                                 </div>
                             </div>
                             
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="clientAddress">Indirizzo</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <input type="text" id="clientAddress" class="form-control" placeholder="Via, numero, città" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="clientPhone">Telefono/Email</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-phone"></i>
+                                        <input type="text" id="clientPhone" class="form-control" placeholder="Telefono o email">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cantiere -->
                             <div class="form-group">
-                                <label for="newPassword">Nuova Password</label>
-                                <div class="input-with-icon">
-                                    <i class="fas fa-key"></i>
-                                    <input type="password" id="newPassword" class="form-control" placeholder="Inserisci la nuova password" required>
-                                </div>
-                                <div class="password-strength">
-                                    <div class="strength-bar" id="strengthBar"></div>
-                                </div>
-                                <div class="strength-text" id="strengthText">Sicurezza password: molto debole</div>
+                                <h4 style="color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                                    <i class="fas fa-hard-hat"></i> Dati Cantiere
+                                </h4>
                             </div>
                             
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="siteAddress">Indirizzo Cantiere</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-map-pin"></i>
+                                        <input type="text" id="siteAddress" class="form-control" placeholder="Indirizzo del cantiere" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="siteDescription">Descrizione Lavori</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-clipboard-list"></i>
+                                        <input type="text" id="siteDescription" class="form-control" placeholder="Breve descrizione dei lavori">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Voci di Preventivo -->
                             <div class="form-group">
-                                <label for="confirmPassword">Conferma Nuova Password</label>
-                                <div class="input-with-icon">
-                                    <i class="fas fa-lock"></i>
-                                    <input type="password" id="confirmPassword" class="form-control" placeholder="Conferma la nuova password" required>
+                                <h4 style="color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                                    <i class="fas fa-list-ol"></i> Voci di Preventivo
+                                </h4>
+                            </div>
+                            
+                            <div class="items-management">
+                                <div class="items-header">
+                                    <div>Descrizione</div>
+                                    <div>Quantità</div>
+                                    <div>Unità</div>
+                                    <div>Prezzo Unitario (€)</div>
+                                    <div>Totale (€)</div>
+                                    <div>Azioni</div>
                                 </div>
+                                <div id="itemsContainer">
+                                    <!-- Items will be added here -->
+                                </div>
+                                
+                                <button type="button" class="btn btn-secondary btn-sm mt-2" id="addItemBtn">
+                                    <i class="fas fa-plus"></i> Aggiungi Voce
+                                </button>
                             </div>
                             
-                            <!-- Requisiti password -->
-                            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 20px; border-left: 4px solid var(--primary-color);">
-                                <p style="font-weight: 600; margin-bottom: 10px; color: var(--primary-color);">Requisiti password:</p>
-                                <ul style="font-size: 0.9rem; color: #555; padding-left: 20px;">
-                                    <li id="reqLength">Almeno 8 caratteri</li>
-                                    <li id="reqUppercase">Almeno una lettera maiuscola</li>
-                                    <li id="reqNumber">Almeno un numero</li>
-                                    <li id="reqSpecial">Almeno un carattere speciale</li>
-                                </ul>
+                            <!-- Note -->
+                            <div class="form-group">
+                                <label for="notes">Note Aggiuntive</label>
+                                <textarea id="notes" class="form-control" placeholder="Note, condizioni particolari, esclusioni..." rows="3"></textarea>
                             </div>
                             
-                            <!-- Messaggi di successo/errore -->
+                            <!-- Alerts -->
                             <div id="successAlert" class="alert alert-success d-none">
-                                <i class="fas fa-check-circle"></i> Password aggiornata con successo!
+                                <i class="fas fa-check-circle"></i>
+                                <div>Preventivo generato con successo!</div>
                             </div>
                             
                             <div id="errorAlert" class="alert alert-error d-none">
-                                <i class="fas fa-exclamation-circle"></i> <span id="errorMessage">Si è verificato un errore. Controlla i dati inseriti.</span>
-                            </div>
-
-                            <div id="infoAlert" class="alert alert-info d-none">
-                                <i class="fas fa-info-circle"></i> <span id="infoMessage"></span>
-                            </div>
-                            
-                            <div class="btn-group">
-                                <button type="submit" class="btn btn-primary" id="savePasswordBtn">
-                                    <i class="fas fa-save"></i> Salva Nuova Password
-                                </button>
-                                <button type="button" class="btn btn-secondary" id="resetFormBtn">
-                                    <i class="fas fa-redo"></i> Reset
-                                </button>
+                                <i class="fas fa-exclamation-circle"></i>
+                                <div id="errorMessage">Si è verificato un errore. Controlla i dati inseriti.</div>
                             </div>
                         </form>
+                    </div>
+                </div>
+                
+                <!-- Preview Card -->
+                <div class="preview-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-eye"></i> Anteprima Preventivo</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="preview-content" id="previewContent">
+                            <div class="watermark">MAROCCO&CUFFARI</div>
+                            <div class="preview-header">
+                                <div class="company-info">
+                                    <div class="company-name">MAROCCO & CUFFARI RESTAURI EDILI SRL</div>
+                                    <div class="company-details">
+                                        Via Roma 123, 00100 Roma (RM) | Tel: 06 12345678 | P.IVA: 12345678901
+                                    </div>
+                                    <div class="company-details">
+                                        Email: info@maroccocuffari.it | www.maroccocuffari.it
+                                    </div>
+                                </div>
+                                
+                                <div class="quote-title">PREVENTIVO N. <span id="previewQuoteNumber">PREV-2023-001</span></div>
+                            </div>
+                            
+                            <div class="quote-info">
+                                <div class="client-info">
+                                    <h3>CLIENTE</h3>
+                                    <div id="previewClientName">Nome Cliente</div>
+                                    <div id="previewClientVat">P.IVA: -</div>
+                                    <div id="previewClientAddress">Indirizzo</div>
+                                    <div id="previewClientPhone">Telefono/Email</div>
+                                </div>
+                                
+                                <div class="quote-details">
+                                    <h3>DETTAGLI PREVENTIVO</h3>
+                                    <div>Data: <span id="previewQuoteDate">01/01/2023</span></div>
+                                    <div>Validità: <span id="previewValidUntil">31/01/2023</span></div>
+                                    <div>Termini pagamento: <span id="previewPaymentTerms">30 giorni</span></div>
+                                    <div>Cantiere: <span id="previewSiteAddress">Indirizzo cantiere</span></div>
+                                    <div>Lavori: <span id="previewSiteDescription">Descrizione lavori</span></div>
+                                </div>
+                            </div>
+                            
+                            <table class="items-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%;">Descrizione</th>
+                                        <th style="width: 12%;">Quantità</th>
+                                        <th style="width: 12%;">Unità</th>
+                                        <th style="width: 18%;" class="text-right">Prezzo Unitario (€)</th>
+                                        <th style="width: 18%;" class="text-right">Totale (€)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="previewItems">
+                                    <tr>
+                                        <td colspan="5" class="text-center">Nessuna voce aggiunta</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <div class="totals-section">
+                                <div class="total-row">
+                                    <span>Imponibile:</span>
+                                    <span id="previewSubtotal">0,00 €</span>
+                                </div>
+                                <div class="total-row">
+                                    <span>IVA 22%:</span>
+                                    <span id="previewVat">0,00 €</span>
+                                </div>
+                                <div class="total-row final">
+                                    <span>TOTALE PREVENTIVO:</span>
+                                    <span id="previewTotal">0,00 €</span>
+                                </div>
+                            </div>
+                            
+                            <div class="terms-conditions">
+                                <h4>CONDIZIONI E NOTE</h4>
+                                <div id="previewNotes">
+                                    Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. 
+                                    I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall'accettazione.
+                                </div>
+                            </div>
+                            
+                            <div class="signature-section">
+                                <div>Firma per accettazione</div>
+                                <div class="signature-line"></div>
+                                <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                                    Il Responsabile Tecnico<br>
+                                    <strong>Cristian Felice Cuffari</strong>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--gray-color); text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                                Documento generato digitalmente da Marocco&Cuffari Restauri Edili SRL
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
     
-    <!-- Footer con informazioni sviluppatore -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -929,516 +1369,793 @@
                 </div>
                 
                 <div class="company-info">
-                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità</p>
+                    <p><strong>Marocco&Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità dal 1995</p>
                 </div>
                 
                 <div class="copyright">
-                    <p>&copy; 2026 Cuffari Restauri Edili. Tutti i diritti riservati.</p>
+                    <p>&copy; 2023 Marocco&Cuffari Restauri Edili. Tutti i diritti riservati.</p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner">
-            <div class="loading"></div>
-            <p>Caricamento...</p>
-        </div>
-    </div>
-
-    <!-- Script per caricare la configurazione Firebase -->
     <script>
-        // Funzione per caricare la configurazione Firebase
-        async function loadFirebaseConfig() {
-            try {
-                const response = await fetch('firebase_config.json');
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP ${response.status}: ${response.statusText}`);
-                }
-                const config = await response.json();
-                return config;
-            } catch (error) {
-                console.error('Errore nel caricamento della configurazione Firebase:', error);
-                // Configurazione di fallback (solo per sviluppo)
-                return {
-                    apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
-                    authDomain: "work-tracker-v120400.firebaseapp.com",
-                    projectId: "work-tracker-v120400",
-                    storageBucket: "work-tracker-v120400.firebasestorage.app",
-                    messagingSenderId: "437459935839",
-                    appId: "1:437459935839:web:cb0b54608314dcb25731ea",
-                    measurementId: "G-2LPKL9WREX"
-                };
-            }
-        }
-    </script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Elementi UI
-            const logoutBtn = document.getElementById('logoutBtn');
-            const changePasswordForm = document.getElementById('changePasswordForm');
-            const savePasswordBtn = document.getElementById('savePasswordBtn');
-            const currentPasswordInput = document.getElementById('currentPassword');
-            const newPasswordInput = document.getElementById('newPassword');
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-            const strengthBar = document.getElementById('strengthBar');
-            const strengthText = document.getElementById('strengthText');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Element references
+            const quoteForm = document.getElementById('quoteForm');
+            const quoteNumberInput = document.getElementById('quoteNumber');
+            const quoteDateInput = document.getElementById('quoteDate');
+            const validUntilInput = document.getElementById('validUntil');
+            const paymentTermsSelect = document.getElementById('paymentTerms');
+            const clientNameInput = document.getElementById('clientName');
+            const clientVatInput = document.getElementById('clientVat');
+            const clientAddressInput = document.getElementById('clientAddress');
+            const clientPhoneInput = document.getElementById('clientPhone');
+            const siteAddressInput = document.getElementById('siteAddress');
+            const siteDescriptionInput = document.getElementById('siteDescription');
+            const notesInput = document.getElementById('notes');
+            const itemsContainer = document.getElementById('itemsContainer');
+            const addItemBtn = document.getElementById('addItemBtn');
+            const clearFormBtn = document.getElementById('clearFormBtn');
+            const generateDocxBtn = document.getElementById('generateDocxBtn');
             const successAlert = document.getElementById('successAlert');
             const errorAlert = document.getElementById('errorAlert');
             const errorMessage = document.getElementById('errorMessage');
-            const infoAlert = document.getElementById('infoAlert');
-            const infoMessage = document.getElementById('infoMessage');
-            const resetFormBtn = document.getElementById('resetFormBtn');
-            const loadingOverlay = document.getElementById('loadingOverlay');
-
-            // Elementi dei requisiti password
-            const reqLength = document.getElementById('reqLength');
-            const reqUppercase = document.getElementById('reqUppercase');
-            const reqNumber = document.getElementById('reqNumber');
-            const reqSpecial = document.getElementById('reqSpecial');
-
-            // Stato dell'applicazione
-            let firebaseApp = null;
-            let auth = null;
-            let db = null;
-            let currentUser = null;
-            let userData = null;
-
-            // Funzione per mostrare messaggi
-            function showAlert(alertElement, message = '') {
-                // Nascondi tutti gli alert
-                successAlert.classList.add('d-none');
-                errorAlert.classList.add('d-none');
-                infoAlert.classList.add('d-none');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userNameElement = document.getElementById('userName');
+            const userRoleElement = document.getElementById('userRole');
+            
+            // Preview elements
+            const previewQuoteNumber = document.getElementById('previewQuoteNumber');
+            const previewQuoteDate = document.getElementById('previewQuoteDate');
+            const previewValidUntil = document.getElementById('previewValidUntil');
+            const previewPaymentTerms = document.getElementById('previewPaymentTerms');
+            const previewClientName = document.getElementById('previewClientName');
+            const previewClientVat = document.getElementById('previewClientVat');
+            const previewClientAddress = document.getElementById('previewClientAddress');
+            const previewClientPhone = document.getElementById('previewClientPhone');
+            const previewSiteAddress = document.getElementById('previewSiteAddress');
+            const previewSiteDescription = document.getElementById('previewSiteDescription');
+            const previewItems = document.getElementById('previewItems');
+            const previewSubtotal = document.getElementById('previewSubtotal');
+            const previewVat = document.getElementById('previewVat');
+            const previewTotal = document.getElementById('previewTotal');
+            const previewNotes = document.getElementById('previewNotes');
+            
+            // Global variables
+            let items = [];
+            let itemCounter = 0;
+            
+            // Initialize page
+            function initPage() {
+                // Set default dates
+                const today = new Date();
+                quoteDateInput.value = formatDateForInput(today);
                 
-                // Mostra l'alert specificato
-                if (message && alertElement === infoAlert) {
-                    infoMessage.textContent = message;
-                } else if (message && alertElement === errorAlert) {
-                    errorMessage.textContent = message;
-                }
-                alertElement.classList.remove('d-none');
-            }
-
-            // Funzione per impostare lo stato di caricamento
-            function setLoading(isLoading) {
-                if (isLoading) {
-                    loadingOverlay.style.display = 'flex';
-                    savePasswordBtn.disabled = true;
-                    savePasswordBtn.innerHTML = '<div class="loading"></div> <span>Salvataggio...</span>';
-                } else {
-                    loadingOverlay.style.display = 'none';
-                    savePasswordBtn.disabled = false;
-                    savePasswordBtn.innerHTML = '<i class="fas fa-save"></i> Salva Nuova Password';
-                }
-            }
-
-            // Analizza la forza della password
-            function checkPasswordStrength(password) {
-                let strength = 0;
+                const validUntil = new Date();
+                validUntil.setDate(today.getDate() + 30);
+                validUntilInput.value = formatDateForInput(validUntil);
                 
-                // Lunghezza minima
-                if (password.length >= 8) strength += 1;
+                // Generate quote number
+                const randomNum = Math.floor(Math.random() * 1000);
+                const formattedNum = randomNum.toString().padStart(3, '0');
+                quoteNumberInput.value = `PREV-${today.getFullYear()}-${formattedNum}`;
                 
-                // Contiene lettere maiuscole
-                if (/[A-Z]/.test(password)) strength += 1;
+                // Add first item
+                addNewItem();
                 
-                // Contiene numeri
-                if (/[0-9]/.test(password)) strength += 1;
+                // Setup event listeners
+                setupEventListeners();
                 
-                // Contiene caratteri speciali
-                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+                // Update user info
+                updateUserInfo();
                 
-                // Aggiorna la barra di forza
-                let width = 0;
-                let color = "#dc3545";
-                let text = "Molto debole";
-                
-                switch(strength) {
-                    case 1:
-                        width = 25;
-                        color = "#dc3545";
-                        text = "Debole";
-                        break;
-                    case 2:
-                        width = 50;
-                        color = "#ffc107";
-                        text = "Media";
-                        break;
-                    case 3:
-                        width = 75;
-                        color = "#28a745";
-                        text = "Forte";
-                        break;
-                    case 4:
-                        width = 100;
-                        color = "#20c997";
-                        text = "Molto forte";
-                        break;
-                    default:
-                        width = 5;
-                        color = "#dc3545";
-                        text = "Molto debole";
-                }
-                
-                strengthBar.style.width = width + "%";
-                strengthBar.style.backgroundColor = color;
-                strengthText.textContent = "Sicurezza password: " + text;
-                strengthText.style.color = color;
+                // Initial preview update
+                updatePreview();
             }
             
-            // Controlla i requisiti della password
-            function checkPasswordRequirements(password) {
-                // Lunghezza minima
-                if (password.length >= 8) {
-                    reqLength.style.color = "#28a745";
-                    reqLength.innerHTML = "✓ Almeno 8 caratteri";
-                } else {
-                    reqLength.style.color = "#dc3545";
-                    reqLength.innerHTML = "✗ Almeno 8 caratteri";
+            // Setup event listeners
+            function setupEventListeners() {
+                // Form inputs live update preview
+                const formInputs = [
+                    quoteNumberInput, quoteDateInput, validUntilInput, paymentTermsSelect,
+                    clientNameInput, clientVatInput, clientAddressInput, clientPhoneInput,
+                    siteAddressInput, siteDescriptionInput, notesInput
+                ];
+                
+                formInputs.forEach(input => {
+                    input.addEventListener('input', updatePreview);
+                    input.addEventListener('change', updatePreview);
+                });
+                
+                // Add item button
+                addItemBtn.addEventListener('click', () => {
+                    addNewItem();
+                    updatePreview();
+                });
+                
+                // Clear form button
+                clearFormBtn.addEventListener('click', clearForm);
+                
+                // Generate DOCX button - MODIFICA QUI: sostituisci con la nuova funzione
+                generateDocxBtn.addEventListener('click', generateDocxFixed);
+                
+                // Logout button
+                logoutBtn.addEventListener('click', handleLogout);
+            }
+            
+            // Format date for input (YYYY-MM-DD)
+            function formatDateForInput(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            
+            // Format date for display (DD/MM/YYYY)
+            function formatDateForDisplay(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString + 'T12:00:00');
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+            
+            // Format currency
+            function formatCurrency(amount) {
+                return new Intl.NumberFormat('it-IT', {
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimumFractionDigits: 2
+                }).format(amount);
+            }
+            
+            // Add new item row
+            function addNewItem() {
+                itemCounter++;
+                const itemId = `item-${itemCounter}`;
+                
+                const itemRow = document.createElement('div');
+                itemRow.className = 'item-row';
+                itemRow.id = itemId;
+                
+                itemRow.innerHTML = `
+                    <input type="text" class="item-input item-description" placeholder="Descrizione lavoro/materiale" data-item="description">
+                    <input type="number" class="item-input item-quantity" placeholder="1" min="0" step="0.1" value="1" data-item="quantity">
+                    <select class="item-input item-unit" data-item="unit">
+                        <option value="n">n</option>
+                        <option value="m">m</option>
+                        <option value="m²">m²</option>
+                        <option value="m³">m³</option>
+                        <option value="kg">kg</option>
+                        <option value="h">h</option>
+                        <option value="gg">gg</option>
+                        <option value="pz">pz</option>
+                        <option value="lotto">lotto</option>
+                    </select>
+                    <input type="number" class="item-input item-price" placeholder="0.00" min="0" step="0.01" value="0" data-item="price">
+                    <div class="item-total-display">0,00 €</div>
+                    <button type="button" class="remove-item" onclick="removeItem('${itemId}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                itemsContainer.appendChild(itemRow);
+                
+                // Add event listeners to new item inputs
+                const inputs = itemRow.querySelectorAll('.item-input');
+                inputs.forEach(input => {
+                    input.addEventListener('input', () => {
+                        updateItemTotal(itemId);
+                        updatePreview();
+                    });
+                });
+                
+                updateItemTotal(itemId);
+            }
+            
+            // Remove item
+            window.removeItem = function(itemId) {
+                const itemRow = document.getElementById(itemId);
+                if (itemRow) {
+                    itemRow.remove();
+                    updatePreview();
+                }
+            };
+            
+            // Update item total
+            function updateItemTotal(itemId) {
+                const itemRow = document.getElementById(itemId);
+                if (!itemRow) return;
+                
+                const quantity = parseFloat(itemRow.querySelector('.item-quantity').value) || 0;
+                const price = parseFloat(itemRow.querySelector('.item-price').value) || 0;
+                const total = quantity * price;
+                
+                itemRow.querySelector('.item-total-display').textContent = formatCurrency(total);
+            }
+            
+            // Get all items data
+            function getItemsData() {
+                const itemsData = [];
+                const itemRows = document.querySelectorAll('.item-row');
+                
+                if (!itemRows) return itemsData;
+                
+                itemRows.forEach(row => {
+                    if (row.id && row.id.startsWith('item-')) {
+                        const description = row.querySelector('.item-description').value;
+                        const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
+                        const unit = row.querySelector('.item-unit').value;
+                        const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                        const total = quantity * price;
+                        
+                        if (description && quantity > 0 && price > 0) {
+                            itemsData.push({
+                                description,
+                                quantity,
+                                unit,
+                                price,
+                                total
+                            });
+                        }
+                    }
+                });
+                
+                return itemsData;
+            }
+            
+            // Calculate totals
+            function calculateTotals(itemsData) {
+                if (!itemsData || !Array.isArray(itemsData) || itemsData.length === 0) {
+                    return {
+                        subtotal: 0,
+                        vat: 0,
+                        total: 0
+                    };
                 }
                 
-                // Lettere maiuscole
-                if (/[A-Z]/.test(password)) {
-                    reqUppercase.style.color = "#28a745";
-                    reqUppercase.innerHTML = "✓ Almeno una lettera maiuscola";
+                const subtotal = itemsData.reduce((sum, item) => sum + (item.total || 0), 0);
+                const vat = subtotal * 0.22;
+                const total = subtotal + vat;
+                
+                return {
+                    subtotal,
+                    vat,
+                    total
+                };
+            }
+            
+            // Update preview
+            function updatePreview() {
+                // Update basic info
+                previewQuoteNumber.textContent = quoteNumberInput.value || 'PREV-2023-001';
+                previewQuoteDate.textContent = formatDateForDisplay(quoteDateInput.value) || '01/01/2023';
+                previewValidUntil.textContent = formatDateForDisplay(validUntilInput.value) || '31/01/2023';
+                
+                const selectedOption = paymentTermsSelect.options[paymentTermsSelect.selectedIndex];
+                previewPaymentTerms.textContent = selectedOption ? selectedOption.text : '30 giorni dalla consegna';
+                
+                // Update client info
+                previewClientName.textContent = clientNameInput.value || 'Nome Cliente';
+                previewClientVat.textContent = clientVatInput.value ? `P.IVA: ${clientVatInput.value}` : 'P.IVA: -';
+                previewClientAddress.textContent = clientAddressInput.value || 'Indirizzo';
+                previewClientPhone.textContent = clientPhoneInput.value || 'Telefono/Email';
+                
+                // Update site info
+                previewSiteAddress.textContent = siteAddressInput.value || 'Indirizzo cantiere';
+                previewSiteDescription.textContent = siteDescriptionInput.value || 'Descrizione lavori';
+                
+                // Update items
+                const itemsData = getItemsData();
+                const totals = calculateTotals(itemsData);
+                
+                let itemsHTML = '';
+                
+                if (itemsData.length > 0) {
+                    itemsData.forEach(item => {
+                        itemsHTML += `
+                            <tr>
+                                <td>${item.description}</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.unit}</td>
+                                <td class="text-right">${formatCurrency(item.price)}</td>
+                                <td class="text-right">${formatCurrency(item.total)}</td>
+                            </tr>
+                        `;
+                    });
                 } else {
-                    reqUppercase.style.color = "#dc3545";
-                    reqUppercase.innerHTML = "✗ Almeno una lettera maiuscola";
+                    itemsHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center">Nessuna voce aggiunta</td>
+                        </tr>
+                    `;
                 }
                 
-                // Numeri
-                if (/[0-9]/.test(password)) {
-                    reqNumber.style.color = "#28a745";
-                    reqNumber.innerHTML = "✓ Almeno un numero";
-                } else {
-                    reqNumber.style.color = "#dc3545";
-                    reqNumber.innerHTML = "✗ Almeno un numero";
-                }
+                previewItems.innerHTML = itemsHTML;
                 
-                // Caratteri speciali
-                if (/[^A-Za-z0-9]/.test(password)) {
-                    reqSpecial.style.color = "#28a745";
-                    reqSpecial.innerHTML = "✓ Almeno un carattere speciale";
-                } else {
-                    reqSpecial.style.color = "#dc3545";
-                    reqSpecial.innerHTML = "✗ Almeno un carattere speciale";
+                // Update totals
+                previewSubtotal.textContent = formatCurrency(totals.subtotal);
+                previewVat.textContent = formatCurrency(totals.vat);
+                previewTotal.textContent = formatCurrency(totals.total);
+                
+                // Update notes
+                previewNotes.textContent = notesInput.value || 
+                    'Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall\'accettazione.';
+            }
+            
+            // Clear form
+            function clearForm() {
+                if (confirm('Sei sicuro di voler cancellare tutti i dati inseriti?')) {
+                    quoteForm.reset();
+                    
+                    // Clear items
+                    itemsContainer.innerHTML = '';
+                    itemCounter = 0;
+                    
+                    // Reset dates
+                    const today = new Date();
+                    quoteDateInput.value = formatDateForInput(today);
+                    
+                    const validUntil = new Date();
+                    validUntil.setDate(today.getDate() + 30);
+                    validUntilInput.value = formatDateForInput(validUntil);
+                    
+                    // Generate new quote number
+                    const randomNum = Math.floor(Math.random() * 1000);
+                    const formattedNum = randomNum.toString().padStart(3, '0');
+                    quoteNumberInput.value = `PREV-${today.getFullYear()}-${formattedNum}`;
+                    
+                    // Add first item
+                    addNewItem();
+                    
+                    // Update preview
+                    updatePreview();
+                    
+                    // Hide alerts
+                    hideAlerts();
                 }
             }
-
-            // Inizializza Firebase
-            async function initializeFirebase() {
+            
+            // NEW: FIXED VERSION OF generateDocx WITHOUT forEach ERROR
+            async function generateDocxFixed() {
                 try {
-                    setLoading(true);
+                    console.log("=== INIZIO GENERAZIONE DOCX FIXED ===");
                     
-                    // Carica la configurazione Firebase
-                    const firebaseConfig = await loadFirebaseConfig();
+                    // 1. Validazione di base
+                    if (!quoteNumberInput.value.trim()) {
+                        showErrorAlert("Inserisci il numero preventivo");
+                        return;
+                    }
                     
-                    // Inizializza Firebase
-                    firebaseApp = firebase.initializeApp(firebaseConfig);
-                    auth = firebase.auth();
-                    db = firebase.firestore();
+                    // 2. Ottieni i dati
+                    const itemsData = getItemsData();
+                    console.log("Dati articoli ottenuti:", itemsData);
                     
-                    // Controlla lo stato di autenticazione
-                    auth.onAuthStateChanged(async (user) => {
-                        if (user) {
-                            currentUser = user;
-                            await loadUserData();
-                            setLoading(false);
-                        } else {
-                            // Utente non autenticato, reindirizza al login
-                            window.location.href = 'index.html';
-                        }
+                    if (!itemsData || itemsData.length === 0) {
+                        showErrorAlert("Aggiungi almeno una voce al preventivo");
+                        return;
+                    }
+                    
+                    // 3. Mostra loading
+                    const originalHtml = generateDocxBtn.innerHTML;
+                    generateDocxBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Generazione...</span>';
+                    generateDocxBtn.disabled = true;
+                    
+                    // 4. Calcola totali
+                    const totals = calculateTotals(itemsData);
+                    
+                    // 5. Crea documento con approccio semplificato
+                    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, AlignmentType, WidthType } = docx;
+                    
+                    // 6. Crea tabella con cicli for invece di forEach
+                    const tableRows = [];
+                    
+                    // Header row
+                    const headerCells = [
+                        new TableCell({ children: [new Paragraph("Descrizione")] }),
+                        new TableCell({ children: [new Paragraph("Quantità")] }),
+                        new TableCell({ children: [new Paragraph("Unità")] }),
+                        new TableCell({ children: [new Paragraph("Prezzo Unitario (€)")] }),
+                        new TableCell({ children: [new Paragraph("Totale (€)")] })
+                    ];
+                    
+                    // Applica stile alle celle dell'header
+                    for (let i = 0; i < headerCells.length; i++) {
+                        headerCells[i].shading = { fill: "003366" };
+                        const paragraph = headerCells[i].children[0];
+                        const textRun = paragraph.children[0];
+                        textRun.color = "FFFFFF";
+                        textRun.bold = true;
+                    }
+                    
+                    const headerRow = new TableRow({ children: headerCells });
+                    tableRows.push(headerRow);
+                    
+                    // Aggiungi righe degli articoli
+                    for (let i = 0; i < itemsData.length; i++) {
+                        const item = itemsData[i];
+                        const itemRow = new TableRow({
+                            children: [
+                                new TableCell({ children: [new Paragraph(item.description || "")] }),
+                                new TableCell({ children: [new Paragraph(item.quantity.toString() || "")] }),
+                                new TableCell({ children: [new Paragraph(item.unit || "")] }),
+                                new TableCell({ children: [new Paragraph(formatCurrency(item.price) || "")] }),
+                                new TableCell({ children: [new Paragraph(formatCurrency(item.total) || "")] })
+                            ]
+                        });
+                        tableRows.push(itemRow);
+                    }
+                    
+                    // Aggiungi righe dei totali
+                    // Imponibile
+                    tableRows.push(new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
+                            new TableCell({ 
+                                children: [new Paragraph("Imponibile:")],
+                                shading: { fill: "F0F0F0" }
+                            }),
+                            new TableCell({ 
+                                children: [new Paragraph(formatCurrency(totals.subtotal))],
+                                shading: { fill: "F0F0F0" }
+                            })
+                        ]
+                    }));
+                    
+                    // IVA
+                    tableRows.push(new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
+                            new TableCell({ 
+                                children: [new Paragraph("IVA 22%:")],
+                                shading: { fill: "F0F0F0" }
+                            }),
+                            new TableCell({ 
+                                children: [new Paragraph(formatCurrency(totals.vat))],
+                                shading: { fill: "F0F0F0" }
+                            })
+                        ]
+                    }));
+                    
+                    // Totale
+                    const totalRow = new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
+                            new TableCell({ 
+                                children: [new Paragraph("TOTALE PREVENTIVO:")],
+                                shading: { fill: "003366" }
+                            }),
+                            new TableCell({ 
+                                children: [new Paragraph(formatCurrency(totals.total))],
+                                shading: { fill: "003366" }
+                            })
+                        ]
                     });
                     
+                    // Applica stile alle celle del totale
+                    for (let i = 3; i < totalRow.children.length; i++) {
+                        const cell = totalRow.children[i];
+                        if (cell.children && cell.children[0]) {
+                            const paragraph = cell.children[0];
+                            if (paragraph.children && paragraph.children[0]) {
+                                const textRun = paragraph.children[0];
+                                textRun.color = "FFFFFF";
+                                textRun.bold = true;
+                            }
+                        }
+                    }
+                    
+                    tableRows.push(totalRow);
+                    
+                    // 7. Crea il documento completo
+                    const doc = new Document({
+                        sections: [{
+                            properties: {},
+                            children: [
+                                // Intestazione aziendale
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "MAROCCO & CUFFARI RESTAURI EDILI SRL",
+                                            bold: true,
+                                            size: 28,
+                                            color: "003366"
+                                        }),
+                                        new TextRun({
+                                            text: "\nVia Roma 123, 00100 Roma (RM) | Tel: 06 12345678 | P.IVA: 12345678901",
+                                            size: 20,
+                                            color: "666666"
+                                        }),
+                                        new TextRun({
+                                            text: "\nEmail: info@maroccocuffari.it | www.maroccocuffari.it",
+                                            size: 20,
+                                            color: "666666"
+                                        })
+                                    ],
+                                    spacing: { after: 400 }
+                                }),
+                                
+                                // Titolo preventivo
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: `PREVENTIVO N. ${quoteNumberInput.value}`,
+                                            bold: true,
+                                            size: 32,
+                                            color: "003366",
+                                            underline: {}
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER,
+                                    spacing: { before: 400, after: 400 }
+                                }),
+                                
+                                // Dettagli cliente
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: `Data: ${formatDateForDisplay(quoteDateInput.value)} | Validità fino al: ${formatDateForDisplay(validUntilInput.value)}`,
+                                            bold: true,
+                                            size: 22
+                                        }),
+                                        new TextRun({
+                                            text: `\n\nCLIENTE: ${clientNameInput.value}`,
+                                            bold: true,
+                                            size: 22
+                                        }),
+                                        new TextRun({
+                                            text: clientVatInput.value ? `\nP.IVA/CF: ${clientVatInput.value}` : '',
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: `\nIndirizzo: ${clientAddressInput.value}`,
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: clientPhoneInput.value ? `\nContatti: ${clientPhoneInput.value}` : '',
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: `\n\nCANTIERE: ${siteAddressInput.value}`,
+                                            bold: true,
+                                            size: 22
+                                        }),
+                                        new TextRun({
+                                            text: siteDescriptionInput.value ? `\nLavori: ${siteDescriptionInput.value}` : '',
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: `\n\nTermini di pagamento: ${paymentTermsSelect.options[paymentTermsSelect.selectedIndex].text}`,
+                                            bold: true,
+                                            size: 20
+                                        })
+                                    ],
+                                    spacing: { after: 400 }
+                                }),
+                                
+                                // Tabella degli articoli
+                                new Table({
+                                    rows: tableRows,
+                                    width: { size: 100, type: WidthType.PERCENTAGE }
+                                }),
+                                
+                                // Note e condizioni
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "\nCONDIZIONI E NOTE",
+                                            bold: true,
+                                            size: 24,
+                                            color: "003366"
+                                        }),
+                                        new TextRun({
+                                            text: `\n${notesInput.value || 'Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall\'accettazione.'}`,
+                                            size: 20
+                                        })
+                                    ],
+                                    spacing: { before: 400, after: 400 }
+                                }),
+                                
+                                // Sezione firma
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "\n\nFirma per accettazione",
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: "\n\n\n___________________________",
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: "\nIl Responsabile Tecnico",
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: "\nCristian Felice Cuffari",
+                                            bold: true,
+                                            size: 22
+                                        })
+                                    ],
+                                    spacing: { before: 400 }
+                                }),
+                                
+                                // Footer
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "\n\nDocumento generato digitalmente da Marocco&Cuffari Restauri Edili SRL",
+                                            italics: true,
+                                            size: 18,
+                                            color: "666666"
+                                        }),
+                                        new TextRun({
+                                            text: "\nPreventivo creato il: " + new Date().toLocaleDateString('it-IT'),
+                                            size: 16,
+                                            color: "666666"
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER
+                                })
+                            ]
+                        }]
+                    });
+                    
+                    // 8. Genera e scarica
+                    const blob = await Packer.toBlob(doc);
+                    const fileName = `Preventivo_${quoteNumberInput.value.replace(/[^a-z0-9]/gi, '_')}.docx`;
+                    saveAs(blob, fileName);
+                    
+                    console.log("Download completato");
+                    
+                    showSuccessAlert('Preventivo generato e scaricato con successo!');
+                    
                 } catch (error) {
-                    console.error('Errore nell\'inizializzazione di Firebase:', error);
-                    showAlert(errorAlert, 'Errore di configurazione. Contatta l\'amministratore.');
-                    setLoading(false);
-                }
-            }
-
-            // Carica i dati dell'utente
-            async function loadUserData() {
-                try {
-                    setLoading(true);
+                    console.error("ERRORE CRITICO:", error);
+                    console.error("Stack trace:", error.stack);
                     
-                    // Carica i dati dal Firestore
-                    const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                    let userMessage = 'Errore nella generazione del documento: ';
                     
-                    if (userDoc.exists) {
-                        userData = userDoc.data();
-                        
-                        // Aggiorna l'UI con i dati dell'utente
-                        updateUserUI();
-                        
-                        // Aggiorna l'ultimo accesso
-                        await db.collection('users').doc(currentUser.uid).update({
-                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        
+                    if (error.message.includes("Cannot read properties of undefined")) {
+                        userMessage += "C'è un problema con i dati del form. Verifica che tutti i campi siano compilati correttamente e che le voci del preventivo siano valide.";
+                    } else if (error.message.includes("docx is not defined")) {
+                        userMessage += "La libreria per generare documenti Word non è stata caricata correttamente. Ricarica la pagina.";
                     } else {
-                        // Se l'utente non esiste in Firestore, crea un documento di default
-                        userData = {
-                            email: currentUser.email,
-                            name: currentUser.displayName || currentUser.email.split('@')[0],
-                            role: 'user',
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                        };
-                        
-                        await db.collection('users').doc(currentUser.uid).set(userData);
-                        updateUserUI();
+                        userMessage += error.message;
                     }
                     
-                    setLoading(false);
+                    showErrorAlert(userMessage);
                     
-                } catch (error) {
-                    console.error('Errore nel caricamento dei dati utente:', error);
-                    showAlert(errorAlert, 'Errore nel caricamento dei dati. Riprova.');
-                    setLoading(false);
+                } finally {
+                    generateDocxBtn.innerHTML = '<i class="fas fa-file-word"></i> <span>Genera DOCX</span>';
+                    generateDocxBtn.disabled = false;
                 }
-            }
-
-            // Aggiorna l'interfaccia utente con i dati dell'utente
-            function updateUserUI() {
-                // Header
-                document.getElementById('headerUserName').textContent = userData.name || currentUser.email.split('@')[0];
-                document.getElementById('headerUserRole').textContent = getRoleText(userData.role);
-                
-                // Sottotitolo pagina
-                document.getElementById('pageSubtitle').textContent = 'Gestisci le tue informazioni personali e modifica la password di accesso';
-                
-                // Avatar e nome
-                const avatarInitials = getInitials(userData.name || currentUser.email);
-                document.getElementById('userAvatar').innerHTML = `<span style="font-size: 2.5rem;">${avatarInitials}</span>`;
-                document.getElementById('profileUserName').textContent = userData.name || currentUser.email.split('@')[0];
-                document.getElementById('profileUserRole').textContent = getRoleText(userData.role);
-                
-                // Dettagli
-                document.getElementById('userEmail').textContent = currentUser.email;
-                document.getElementById('userRoleDetail').textContent = getRoleText(userData.role);
-                
-                // Data ultimo accesso
-                if (userData.lastLogin) {
-                    const lastLoginDate = userData.lastLogin.toDate ? 
-                        userData.lastLogin.toDate() : 
-                        new Date(userData.lastLogin);
-                    document.getElementById('lastLogin').textContent = formatDate(lastLoginDate);
-                } else {
-                    document.getElementById('lastLogin').textContent = 'Non disponibile';
-                }
-                
-                // Data registrazione
-                if (userData.createdAt) {
-                    const createdAtDate = userData.createdAt.toDate ? 
-                        userData.createdAt.toDate() : 
-                        new Date(userData.createdAt);
-                    document.getElementById('registrationDate').textContent = formatDate(createdAtDate);
-                } else {
-                    document.getElementById('registrationDate').textContent = 'Non disponibile';
-                }
-                
-                // Stato account
-                document.getElementById('accountStatus').textContent = currentUser.emailVerified ? 'Verificato' : 'Non verificato';
-                document.getElementById('accountStatus').style.color = currentUser.emailVerified ? '#28a745' : '#ffc107';
-            }
-
-            // Funzioni di utilità
-            function getRoleText(role) {
-                switch(role) {
-                    case 'admin': return 'Amministratore';
-                    case 'manager': return 'Manager';
-                    case 'user': return 'Utente';
-                    default: return 'Utente';
-                }
-            }
-
-            function getInitials(name) {
-                return name
-                    .split(' ')
-                    .map(part => part.charAt(0).toUpperCase())
-                    .join('')
-                    .substring(0, 2);
-            }
-
-            function formatDate(date) {
-                const options = { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                };
-                return date.toLocaleDateString('it-IT', options);
-            }
-
-            // Funzione per calcolare la complessità della password
-            function checkPasswordComplexity(password) {
-                let score = 0;
-                
-                if (password.length >= 8) score += 1;
-                if (/[A-Z]/.test(password)) score += 1;
-                if (/[0-9]/.test(password)) score += 1;
-                if (/[^A-Za-z0-9]/.test(password)) score += 1;
-                
-                return score;
             }
             
-            // Gestione dell'input della nuova password
-            newPasswordInput.addEventListener('input', function() {
-                const password = newPasswordInput.value;
-                checkPasswordStrength(password);
-                checkPasswordRequirements(password);
-            });
+            // OLD FUNCTION (keep for reference but don't use)
+            function generateDocx() {
+                // This is the old function that had the error
+                // We're replacing it with generateDocxFixed
+                generateDocxFixed();
+            }
             
-            // Gestione del cambio password
-            changePasswordForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                // Nascondi eventuali alert precedenti
-                showAlert(infoAlert, '');
-                
-                // Validazioni
-                const currentPassword = currentPasswordInput.value;
-                const newPassword = newPasswordInput.value;
-                const confirmPassword = confirmPasswordInput.value;
-                
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    showAlert(errorAlert, 'Compila tutti i campi.');
-                    return;
+            // Validate form
+            function validateForm() {
+                // Check required fields
+                if (!quoteNumberInput.value.trim()) {
+                    showErrorAlert("Il numero preventivo è obbligatorio");
+                    quoteNumberInput.focus();
+                    return false;
                 }
                 
-                if (newPassword !== confirmPassword) {
-                    showAlert(errorAlert, 'Le nuove password non coincidono.');
-                    confirmPasswordInput.focus();
-                    return;
+                if (!quoteDateInput.value) {
+                    showErrorAlert("La data preventivo è obbligatoria");
+                    quoteDateInput.focus();
+                    return false;
                 }
                 
-                // Verifica forza password
-                const passwordStrength = checkPasswordComplexity(newPassword);
-                if (passwordStrength < 2) {
-                    showAlert(errorAlert, 'La nuova password non è abbastanza sicura. Deve essere almeno di media sicurezza.');
-                    newPasswordInput.focus();
-                    return;
+                if (!validUntilInput.value) {
+                    showErrorAlert("La data di validità è obbligatoria");
+                    validUntilInput.focus();
+                    return false;
                 }
                 
-                try {
-                    setLoading(true);
-                    showAlert(infoAlert, 'Aggiornamento password in corso...');
-                    
-                    // Riautentica l'utente con la password corrente
-                    const credential = firebase.auth.EmailAuthProvider.credential(
-                        currentUser.email, 
-                        currentPassword
-                    );
-                    
-                    await currentUser.reauthenticateWithCredential(credential);
-                    
-                    // Aggiorna la password
-                    await currentUser.updatePassword(newPassword);
-                    
-                    // Mostra messaggio di successo
-                    showAlert(successAlert);
-                    
-                    // Resetta il form dopo 3 secondi
-                    setTimeout(function() {
-                        changePasswordForm.reset();
-                        strengthBar.style.width = "0%";
-                        strengthText.textContent = "Sicurezza password: molto debole";
-                        strengthText.style.color = "#666";
-                        
-                        // Reset requisiti
-                        reqLength.style.color = "#555";
-                        reqLength.innerHTML = "Almeno 8 caratteri";
-                        reqUppercase.style.color = "#555";
-                        reqUppercase.innerHTML = "Almeno una lettera maiuscola";
-                        reqNumber.style.color = "#555";
-                        reqNumber.innerHTML = "Almeno un numero";
-                        reqSpecial.style.color = "#555";
-                        reqSpecial.innerHTML = "Almeno un carattere speciale";
-                        
-                        // Nascondi l'alert di successo dopo 5 secondi
-                        setTimeout(function() {
-                            successAlert.classList.add('d-none');
-                        }, 5000);
-                    }, 3000);
-                    
-                    setLoading(false);
-                    
-                } catch (error) {
-                    console.error('Errore durante il cambio password:', error);
-                    setLoading(false);
-                    
-                    // Gestione specifica degli errori
-                    let errorMsg = 'Errore durante il cambio password. Riprova.';
-                    
-                    switch (error.code) {
-                        case 'auth/wrong-password':
-                            errorMsg = 'La password attuale non è corretta.';
-                            break;
-                        case 'auth/weak-password':
-                            errorMsg = 'La nuova password non è abbastanza sicura.';
-                            break;
-                        case 'auth/requires-recent-login':
-                            errorMsg = 'Devi effettuare nuovamente il login per cambiare la password.';
-                            break;
-                        case 'auth/network-request-failed':
-                            errorMsg = 'Errore di rete. Verifica la connessione internet.';
-                            break;
-                        default:
-                            errorMsg = `Errore: ${error.message}`;
+                if (!clientNameInput.value.trim()) {
+                    showErrorAlert("Il nome cliente è obbligatorio");
+                    clientNameInput.focus();
+                    return false;
+                }
+                
+                if (!clientAddressInput.value.trim()) {
+                    showErrorAlert("L'indirizzo cliente è obbligatorio");
+                    clientAddressInput.focus();
+                    return false;
+                }
+                
+                if (!siteAddressInput.value.trim()) {
+                    showErrorAlert("L'indirizzo cantiere è obbligatorio");
+                    siteAddressInput.focus();
+                    return false;
+                }
+                
+                // Check if there are items
+                const itemsData = getItemsData();
+                if (itemsData.length === 0) {
+                    showErrorAlert("Aggiungi almeno una voce al preventivo");
+                    return false;
+                }
+                
+                // Check if all items have valid data
+                for (const item of itemsData) {
+                    if (!item.description.trim()) {
+                        showErrorAlert("Tutte le voci devono avere una descrizione");
+                        return false;
                     }
                     
-                    showAlert(errorAlert, errorMsg);
+                    if (item.quantity <= 0) {
+                        showErrorAlert("Tutte le voci devono avere una quantità maggiore di zero");
+                        return false;
+                    }
+                    
+                    if (item.price <= 0) {
+                        showErrorAlert("Tutte le voci devono avere un prezzo maggiore di zero");
+                        return false;
+                    }
                 }
-            });
+                
+                return true;
+            }
             
-            // Reset del form
-            resetFormBtn.addEventListener('click', function() {
-                changePasswordForm.reset();
-                strengthBar.style.width = "0%";
-                strengthText.textContent = "Sicurezza password: molto debole";
-                strengthText.style.color = "#666";
+            // Update user info
+            function updateUserInfo() {
+                // Try to get user from localStorage
+                const userData = localStorage.getItem('user');
+                if (userData) {
+                    try {
+                        const user = JSON.parse(userData);
+                        userNameElement.textContent = user.displayName || user.email || "Utente";
+                        userRoleElement.textContent = user.role || "Utente";
+                    } catch (e) {
+                        console.error("Error parsing user data:", e);
+                    }
+                }
+            }
+            
+            // Handle logout
+            function handleLogout() {
+                if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = 'index.html';
+                }
+            }
+            
+            // Alert functions
+            function showSuccessAlert(message) {
+                successAlert.querySelector('div').textContent = message;
+                successAlert.classList.remove('d-none');
+                errorAlert.classList.add('d-none');
+                
+                setTimeout(() => {
+                    successAlert.classList.add('d-none');
+                }, 5000);
+            }
+            
+            function showErrorAlert(message) {
+                errorMessage.textContent = message;
+                errorAlert.classList.remove('d-none');
+                successAlert.classList.add('d-none');
+            }
+            
+            function hideAlerts() {
                 successAlert.classList.add('d-none');
                 errorAlert.classList.add('d-none');
-                infoAlert.classList.add('d-none');
-                
-                // Reset requisiti
-                reqLength.style.color = "#555";
-                reqLength.innerHTML = "Almeno 8 caratteri";
-                reqUppercase.style.color = "#555";
-                reqUppercase.innerHTML = "Almeno una lettera maiuscola";
-                reqNumber.style.color = "#555";
-                reqNumber.innerHTML = "Almeno un numero";
-                reqSpecial.style.color = "#555";
-                reqSpecial.innerHTML = "Almeno un carattere speciale";
-            });
+            }
             
-            // Logout
-            logoutBtn.addEventListener('click', async function() {
-                if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
-                    try {
-                        setLoading(true);
-                        await auth.signOut();
-                        // Rimuovi i dati dal localStorage
-                        localStorage.removeItem('user');
-                        localStorage.removeItem('authToken');
-                        // Reindirizza alla pagina di login
-                        window.location.href = 'index.html';
-                    } catch (error) {
-                        console.error('Errore durante il logout:', error);
-                        setLoading(false);
-                        alert('Errore durante il logout. Riprova.');
-                    }
-                }
-            });
-            
-            // Inizializza Firebase
-            await initializeFirebase();
+            // Initialize the page
+            initPage();
         });
     </script>
 </body>
