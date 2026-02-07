@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuffari Restauri Edili - Gestione Preventivi</title>
+    <title>Cuffari Restauri Edili - Profilo Utente</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -276,182 +276,19 @@
             font-size: 1rem;
         }
         
-        /* Page Header with Actions */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        
-        .page-actions {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        /* Button Styles */
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-        
-        .btn i {
-            margin-right: 10px;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .btn-secondary {
-            background-color: #f0f0f0;
-            color: var(--dark-color);
-        }
-        
-        .btn-secondary:hover {
-            background-color: #e0e0e0;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .btn-success {
-            background-color: var(--success-color);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .btn-warning {
-            background-color: var(--warning-color);
-            color: #212529;
-        }
-        
-        .btn-warning:hover {
-            background-color: #e0a800;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background-color: #c82333;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 0.875rem;
-        }
-        
-        /* Stats Cards */
-        .stats-cards {
+        .profile-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-        
-        .stat-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: var(--shadow-sm);
-            padding: 25px;
-            display: flex;
-            align-items: center;
-            transition: var(--transition);
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            margin-right: 20px;
-            flex-shrink: 0;
-        }
-        
-        .stat-info {
-            flex: 1;
-        }
-        
-        .stat-title {
-            font-size: 0.95rem;
-            color: var(--gray-color);
-            margin-bottom: 5px;
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            line-height: 1.2;
-        }
-        
-        .stat-change {
-            font-size: 0.85rem;
-            margin-top: 5px;
-        }
-        
-        .stat-change.positive {
-            color: var(--success-color);
-        }
-        
-        .stat-change.negative {
-            color: var(--danger-color);
-        }
-        
-        /* Main Container Layout */
-        .main-container {
-            display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 30px;
         }
         
-        @media (min-width: 1200px) {
-            .main-container {
-                grid-template-columns: 1fr 1fr;
+        @media (max-width: 992px) {
+            .profile-container {
+                grid-template-columns: 1fr;
             }
         }
         
-        /* Form Card */
-        .form-card {
+        .profile-card {
             background-color: white;
             border-radius: 10px;
             box-shadow: var(--shadow-sm);
@@ -459,7 +296,7 @@
             transition: var(--transition);
         }
         
-        .form-card:hover {
+        .profile-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-md);
         }
@@ -482,7 +319,52 @@
             padding: 30px;
         }
         
-        /* Form Styles */
+        .user-avatar {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 15px;
+            border: 5px solid #e6f0ff;
+        }
+        
+        .user-details {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .detail-value {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
         .form-group {
             margin-bottom: 25px;
         }
@@ -493,11 +375,6 @@
             font-weight: 600;
             color: var(--primary-color);
             font-size: 0.95rem;
-        }
-        
-        .form-group.required label::after {
-            content: " *";
-            color: var(--danger-color);
         }
         
         .input-with-icon {
@@ -528,199 +405,76 @@
             outline: none;
         }
         
-        textarea.form-control {
-            min-height: 120px;
-            resize: vertical;
+        .password-strength {
+            margin-top: 8px;
+            height: 5px;
+            border-radius: 3px;
+            background-color: #eee;
+            overflow: hidden;
         }
         
-        select.form-control {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23343a40' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 12px;
-            padding-right: 45px;
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
         }
         
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
+        .strength-text {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            color: var(--gray-color);
         }
         
-        @media (min-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        .form-actions {
+        .btn-group {
             display: flex;
             gap: 15px;
             margin-top: 30px;
         }
         
-        /* Items Table */
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        .items-table th {
-            background-color: #f8f9fa;
-            padding: 15px;
-            text-align: left;
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--border-color);
-        }
-        
-        .items-table td {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-        }
-        
-        .items-table tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .items-table tr:hover {
-            background-color: #f8f9fa;
-        }
-        
-        /* Status Badges */
-        .status-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: inline-block;
-            text-align: center;
-        }
-        
-        .status-draft {
-            background-color: #e9ecef;
-            color: #495057;
-        }
-        
-        .status-sent {
-            background-color: #d1ecf1;
-            color: #0c5460;
-        }
-        
-        .status-accepted {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        
-        .status-rejected {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        
-        .status-expired {
-            background-color: #f8f9fa;
-            color: #6c757d;
-            border: 1px solid #dee2e6;
-        }
-        
-        /* Table Card */
-        .table-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: var(--shadow-sm);
-            overflow: hidden;
+            cursor: pointer;
             transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
         }
         
-        .table-card:hover {
-            transform: translateY(-5px);
+        .btn i {
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
         
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 30px;
-            border-bottom: 1px solid var(--border-color);
-            background-color: #f8f9fa;
-        }
-        
-        .table-header h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .table-controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        .search-box {
-            position: relative;
-        }
-        
-        .search-box i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray-color);
-        }
-        
-        .search-input {
-            padding: 10px 15px 10px 40px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            width: 250px;
-            font-size: 0.95rem;
-            transition: var(--transition);
-        }
-        
-        .search-input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.25);
-            outline: none;
-        }
-        
-        .table-body {
-            padding: 0;
-        }
-        
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        /* No Data Message */
-        .no-data {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--gray-color);
-        }
-        
-        .no-data i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            color: #e9ecef;
-        }
-        
-        .no-data h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+        .btn-secondary {
+            background-color: #f0f0f0;
             color: var(--dark-color);
         }
         
-        .no-data p {
-            font-size: 1rem;
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
         }
         
         /* Alerts */
@@ -878,49 +632,23 @@
                 font-size: 1.75rem;
             }
             
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .page-actions {
-                width: 100%;
-            }
-            
             .card-body {
                 padding: 20px;
             }
             
-            .form-actions {
+            .btn-group {
                 flex-direction: column;
             }
             
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .table-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            
-            .table-controls {
-                width: 100%;
-            }
-            
-            .search-input {
-                width: 100%;
-            }
-            
-            .stats-cards {
-                grid-template-columns: 1fr;
+            .avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
             }
         }
         
         @media (max-width: 576px) {
-            .main-container {
+            .profile-container {
                 gap: 20px;
             }
             
@@ -935,21 +663,6 @@
             
             .card-header h3 {
                 font-size: 1.3rem;
-            }
-            
-            .stat-card {
-                padding: 20px;
-            }
-            
-            .stat-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-                margin-right: 15px;
-            }
-            
-            .stat-value {
-                font-size: 1.8rem;
             }
         }
         
@@ -979,6 +692,17 @@
             .btn {
                 padding: 10px 16px;
                 font-size: 0.9rem;
+            }
+            
+            .avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+                gap: 5px;
             }
         }
         
@@ -1036,7 +760,7 @@
                     <a href="profile.html" class="nav-btn">
                         <i class="fas fa-tachometer-alt"></i> <span>Profilo</span>
                     </a>
-                    <a href="profile.html" class="nav-btn">
+                    <a href="profile.html" class="nav-btn active">
                         <i class="fas fa-user-circle"></i> <span>Profilo</span>
                     </a>
                     <a href="users.html" class="nav-btn">
@@ -1048,7 +772,7 @@
                     <a href="work-days.html" class="nav-btn">
                         <i class="fas fa-calendar-day"></i> <span>Giornate</span>
                     </a>
-                    <a href="estimates.html" class="nav-btn active">
+                    <a href="estimates.html" class="nav-btn">
                         <i class="fas fa-calculator"></i> <span>Preventivi</span>
                     </a>
                     <a href="suppliers.html" class="nav-btn">
@@ -1076,219 +800,100 @@
     <!-- Contenuto principale -->
     <main class="main-content">
         <div class="container">
-            <div class="page-header">
-                <div>
-                    <h1 class="page-title">
-                        <i class="fas fa-calculator"></i> Gestione Preventivi
-                    </h1>
-                    <p class="page-subtitle">Crea e gestisci i preventivi per i clienti</p>
-                </div>
-                <div class="page-actions">
-                    <button class="btn btn-secondary" id="exportBtn">
-                        <i class="fas fa-file-export"></i> <span>Esporta</span>
-                    </button>
-                    <button class="btn btn-primary" id="newEstimateBtn">
-                        <i class="fas fa-plus-circle"></i> <span>Nuovo Preventivo</span>
-                    </button>
-                </div>
-            </div>
+            <h1 class="page-title">
+                <i class="fas fa-user-circle"></i> Profilo Utente
+            </h1>
+            <p class="page-subtitle" id="pageSubtitle">Caricamento informazioni profilo...</p>
             
-            <!-- Statistiche -->
-            <div class="stats-cards">
-                <div class="stat-card">
-                    <div class="stat-icon" style="background-color: #e6f0ff; color: #004080;">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-title">Preventivi Totali</div>
-                        <div class="stat-value" id="totalEstimates">0</div>
-                        <div class="stat-change positive" id="totalChange">Totale</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon" style="background-color: #fff3cd; color: #856404;">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-title">In Attesa</div>
-                        <div class="stat-value" id="pendingEstimates">0</div>
-                        <div class="stat-change positive" id="pendingChange">In attesa</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon" style="background-color: #d4edda; color: #155724;">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-title">Accettati</div>
-                        <div class="stat-value" id="acceptedEstimates">0</div>
-                        <div class="stat-change positive" id="acceptedChange">Accettati</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon" style="background-color: #f8d7da; color: #721c24;">
-                        <i class="fas fa-times-circle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-title">Rifiutati</div>
-                        <div class="stat-value" id="rejectedEstimates">0</div>
-                        <div class="stat-change negative" id="rejectedChange">Rifiutati</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Container principale -->
-            <div class="main-container">
-                <!-- Form Card -->
-                <div class="form-card">
+            <div class="profile-container">
+                <!-- Card informazioni profilo -->
+                <div class="profile-card">
                     <div class="card-header">
-                        <h3><i class="fas fa-plus-circle"></i> <span id="formTitle">Nuovo Preventivo</span></h3>
+                        <h3><i class="fas fa-id-card"></i> Informazioni Profilo</h3>
                     </div>
                     <div class="card-body">
-                        <form id="estimateForm">
-                            <input type="hidden" id="estimateId" value="">
-                            
-                            <div class="form-row">
-                                <div class="form-group required">
-                                    <label for="clientName">Cliente</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-user"></i>
-                                        <input type="text" id="clientName" class="form-control" placeholder="Nome cliente" required>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group required">
-                                    <label for="estimateNumber">Numero Preventivo</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-hashtag"></i>
-                                        <input type="text" id="estimateNumber" class="form-control" placeholder="Es: PREV-2024-001" required>
-                                    </div>
-                                </div>
+                        <div class="user-avatar">
+                            <div class="avatar" id="userAvatar">
+                                <i class="fas fa-user"></i>
                             </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group required">
-                                    <label for="estimateDate">Data Preventivo</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        <input type="date" id="estimateDate" class="form-control" required>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group required">
-                                    <label for="expiryDate">Data Scadenza</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-calendar-times"></i>
-                                        <input type="date" id="expiryDate" class="form-control" required>
-                                    </div>
-                                </div>
+                            <h3 id="profileUserName">Caricamento...</h3>
+                            <p id="profileUserRole">Caricamento...</p>
+                        </div>
+                        
+                        <div class="user-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Email:</span>
+                                <span class="detail-value" id="userEmail">Caricamento...</span>
                             </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="clientEmail">Email Cliente</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-envelope"></i>
-                                        <input type="email" id="clientEmail" class="form-control" placeholder="email@cliente.it">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="clientPhone">Telefono Cliente</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-phone"></i>
-                                        <input type="tel" id="clientPhone" class="form-control" placeholder="+39 012 3456789">
-                                    </div>
-                                </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Ruolo:</span>
+                                <span class="detail-value" id="userRoleDetail">Caricamento...</span>
                             </div>
-                            
+                            <div class="detail-row">
+                                <span class="detail-label">Ultimo Accesso:</span>
+                                <span class="detail-value" id="lastLogin">Caricamento...</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Data Registrazione:</span>
+                                <span class="detail-value" id="registrationDate">Caricamento...</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Stato Account:</span>
+                                <span class="detail-value" id="accountStatus" style="color: #28a745;">Caricamento...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card modifica password -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-key"></i> Modifica Password</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="changePasswordForm">
                             <div class="form-group">
-                                <label for="projectTitle">Titolo Progetto</label>
+                                <label for="currentPassword">Password Attuale</label>
                                 <div class="input-with-icon">
-                                    <i class="fas fa-project-diagram"></i>
-                                    <input type="text" id="projectTitle" class="form-control" placeholder="Titolo del progetto">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="currentPassword" class="form-control" placeholder="Inserisci la password attuale" required>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label for="description">Descrizione Lavori</label>
-                                <textarea id="description" class="form-control" placeholder="Descrizione dettagliata dei lavori..." rows="4"></textarea>
+                                <label for="newPassword">Nuova Password</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-key"></i>
+                                    <input type="password" id="newPassword" class="form-control" placeholder="Inserisci la nuova password" required>
+                                </div>
+                                <div class="password-strength">
+                                    <div class="strength-bar" id="strengthBar"></div>
+                                </div>
+                                <div class="strength-text" id="strengthText">Sicurezza password: molto debole</div>
                             </div>
                             
-                            <!-- Items Table -->
                             <div class="form-group">
-                                <label>Voci di Preventivo</label>
-                                <table class="items-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Descrizione</th>
-                                            <th>Quantità</th>
-                                            <th>Prezzo Unitario</th>
-                                            <th>Totale</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="itemsTableBody">
-                                        <!-- Items will be added here -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="5" class="text-center">
-                                                <button type="button" class="btn btn-secondary btn-sm" id="addItemBtn">
-                                                    <i class="fas fa-plus"></i> Aggiungi Voce
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                            
-                            <!-- Totals -->
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Subtotale</label>
-                                    <div class="form-control" style="font-weight: 600; text-align: right;" id="subtotal">0.00 €</div>
-                                </div>
-                                <div class="form-group">
-                                    <label>IVA (22%)</label>
-                                    <div class="form-control" style="font-weight: 600; text-align: right;" id="vatAmount">0.00 €</div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Totale</label>
-                                    <div class="form-control" style="font-weight: 600; text-align: right; color: var(--primary-color);" id="totalAmount">0.00 €</div>
+                                <label for="confirmPassword">Conferma Nuova Password</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="confirmPassword" class="form-control" placeholder="Conferma la nuova password" required>
                                 </div>
                             </div>
                             
-                            <div class="form-row">
-                                <div class="form-group required">
-                                    <label for="status">Stato</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-info-circle"></i>
-                                        <select id="status" class="form-control" required>
-                                            <option value="draft">Bozza</option>
-                                            <option value="sent">Inviato</option>
-                                            <option value="accepted">Accettato</option>
-                                            <option value="rejected">Rifiutato</option>
-                                            <option value="expired">Scaduto</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="notes">Note</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-sticky-note"></i>
-                                        <input type="text" id="notes" class="form-control" placeholder="Note aggiuntive">
-                                    </div>
-                                </div>
+                            <!-- Requisiti password -->
+                            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 20px; border-left: 4px solid var(--primary-color);">
+                                <p style="font-weight: 600; margin-bottom: 10px; color: var(--primary-color);">Requisiti password:</p>
+                                <ul style="font-size: 0.9rem; color: #555; padding-left: 20px;">
+                                    <li id="reqLength">Almeno 8 caratteri</li>
+                                    <li id="reqUppercase">Almeno una lettera maiuscola</li>
+                                    <li id="reqNumber">Almeno un numero</li>
+                                    <li id="reqSpecial">Almeno un carattere speciale</li>
+                                </ul>
                             </div>
                             
-                            <!-- Alerts -->
+                            <!-- Messaggi di successo/errore -->
                             <div id="successAlert" class="alert alert-success d-none">
-                                <i class="fas fa-check-circle"></i> <span id="successMessage">Preventivo salvato con successo!</span>
+                                <i class="fas fa-check-circle"></i> Password aggiornata con successo!
                             </div>
                             
                             <div id="errorAlert" class="alert alert-error d-none">
@@ -1299,69 +904,15 @@
                                 <i class="fas fa-info-circle"></i> <span id="infoMessage"></span>
                             </div>
                             
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary" id="saveBtn">
-                                    <i class="fas fa-save"></i> <span id="saveBtnText">Salva Preventivo</span>
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary" id="savePasswordBtn">
+                                    <i class="fas fa-save"></i> Salva Nuova Password
                                 </button>
-                                <button type="button" class="btn btn-secondary" id="resetBtn">
+                                <button type="button" class="btn btn-secondary" id="resetFormBtn">
                                     <i class="fas fa-redo"></i> Reset
-                                </button>
-                                <button type="button" class="btn btn-danger" id="cancelBtn" style="display: none;">
-                                    <i class="fas fa-times"></i> Annulla
                                 </button>
                             </div>
                         </form>
-                    </div>
-                </div>
-                
-                <!-- Table Card -->
-                <div class="table-card">
-                    <div class="table-header">
-                        <h3><i class="fas fa-list"></i> Elenco Preventivi</h3>
-                        <div class="table-controls">
-                            <div class="search-box">
-                                <i class="fas fa-search"></i>
-                                <input type="text" class="search-input" id="searchInput" placeholder="Cerca cliente...">
-                            </div>
-                            <select class="form-control" id="statusFilter" style="width: 150px;">
-                                <option value="">Tutti gli stati</option>
-                                <option value="draft">Bozza</option>
-                                <option value="sent">Inviato</option>
-                                <option value="accepted">Accettato</option>
-                                <option value="rejected">Rifiutato</option>
-                                <option value="expired">Scaduto</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="table-body">
-                        <div class="table-responsive">
-                            <table class="items-table">
-                                <thead>
-                                    <tr>
-                                        <th>Numero</th>
-                                        <th>Cliente</th>
-                                        <th>Data</th>
-                                        <th>Importo</th>
-                                        <th>Stato</th>
-                                        <th>Azioni</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="estimatesTableBody">
-                                    <tr>
-                                        <td colspan="6" class="text-center p-4">
-                                            <div class="loading" style="margin: 0 auto;"></div>
-                                            <p>Caricamento preventivi...</p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <div id="noEstimatesMessage" class="no-data d-none">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                            <h3>Nessun preventivo trovato</h3>
-                            <p>Crea il primo preventivo utilizzando il form.</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1427,45 +978,26 @@
         document.addEventListener('DOMContentLoaded', async function() {
             // Elementi UI
             const logoutBtn = document.getElementById('logoutBtn');
-            const estimateForm = document.getElementById('estimateForm');
-            const saveBtn = document.getElementById('saveBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const cancelBtn = document.getElementById('cancelBtn');
-            const newEstimateBtn = document.getElementById('newEstimateBtn');
-            const exportBtn = document.getElementById('exportBtn');
-            const addItemBtn = document.getElementById('addItemBtn');
-            const searchInput = document.getElementById('searchInput');
-            const statusFilter = document.getElementById('statusFilter');
+            const changePasswordForm = document.getElementById('changePasswordForm');
+            const savePasswordBtn = document.getElementById('savePasswordBtn');
+            const currentPasswordInput = document.getElementById('currentPassword');
+            const newPasswordInput = document.getElementById('newPassword');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
             const successAlert = document.getElementById('successAlert');
             const errorAlert = document.getElementById('errorAlert');
-            const infoAlert = document.getElementById('infoAlert');
-            const successMessage = document.getElementById('successMessage');
             const errorMessage = document.getElementById('errorMessage');
+            const infoAlert = document.getElementById('infoAlert');
             const infoMessage = document.getElementById('infoMessage');
+            const resetFormBtn = document.getElementById('resetFormBtn');
             const loadingOverlay = document.getElementById('loadingOverlay');
 
-            // Form fields
-            const estimateId = document.getElementById('estimateId');
-            const clientName = document.getElementById('clientName');
-            const estimateNumber = document.getElementById('estimateNumber');
-            const estimateDate = document.getElementById('estimateDate');
-            const expiryDate = document.getElementById('expiryDate');
-            const clientEmail = document.getElementById('clientEmail');
-            const clientPhone = document.getElementById('clientPhone');
-            const projectTitle = document.getElementById('projectTitle');
-            const description = document.getElementById('description');
-            const status = document.getElementById('status');
-            const notes = document.getElementById('notes');
-            
-            // Totals
-            const subtotal = document.getElementById('subtotal');
-            const vatAmount = document.getElementById('vatAmount');
-            const totalAmount = document.getElementById('totalAmount');
-            
-            // Tables
-            const itemsTableBody = document.getElementById('itemsTableBody');
-            const estimatesTableBody = document.getElementById('estimatesTableBody');
-            const noEstimatesMessage = document.getElementById('noEstimatesMessage');
+            // Elementi dei requisiti password
+            const reqLength = document.getElementById('reqLength');
+            const reqUppercase = document.getElementById('reqUppercase');
+            const reqNumber = document.getElementById('reqNumber');
+            const reqSpecial = document.getElementById('reqSpecial');
 
             // Stato dell'applicazione
             let firebaseApp = null;
@@ -1473,9 +1005,6 @@
             let db = null;
             let currentUser = null;
             let userData = null;
-            let estimates = [];
-            let estimateItems = [];
-            let isEditing = false;
 
             // Funzione per mostrare messaggi
             function showAlert(alertElement, message = '') {
@@ -1489,8 +1018,6 @@
                     infoMessage.textContent = message;
                 } else if (message && alertElement === errorAlert) {
                     errorMessage.textContent = message;
-                } else if (message && alertElement === successAlert) {
-                    successMessage.textContent = message;
                 }
                 alertElement.classList.remove('d-none');
             }
@@ -1499,12 +1026,105 @@
             function setLoading(isLoading) {
                 if (isLoading) {
                     loadingOverlay.style.display = 'flex';
-                    saveBtn.disabled = true;
-                    saveBtn.innerHTML = '<div class="loading"></div> <span>Salvataggio...</span>';
+                    savePasswordBtn.disabled = true;
+                    savePasswordBtn.innerHTML = '<div class="loading"></div> <span>Salvataggio...</span>';
                 } else {
                     loadingOverlay.style.display = 'none';
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = '<i class="fas fa-save"></i> <span id="saveBtnText">Salva Preventivo</span>';
+                    savePasswordBtn.disabled = false;
+                    savePasswordBtn.innerHTML = '<i class="fas fa-save"></i> Salva Nuova Password';
+                }
+            }
+
+            // Analizza la forza della password
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                
+                // Lunghezza minima
+                if (password.length >= 8) strength += 1;
+                
+                // Contiene lettere maiuscole
+                if (/[A-Z]/.test(password)) strength += 1;
+                
+                // Contiene numeri
+                if (/[0-9]/.test(password)) strength += 1;
+                
+                // Contiene caratteri speciali
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+                
+                // Aggiorna la barra di forza
+                let width = 0;
+                let color = "#dc3545";
+                let text = "Molto debole";
+                
+                switch(strength) {
+                    case 1:
+                        width = 25;
+                        color = "#dc3545";
+                        text = "Debole";
+                        break;
+                    case 2:
+                        width = 50;
+                        color = "#ffc107";
+                        text = "Media";
+                        break;
+                    case 3:
+                        width = 75;
+                        color = "#28a745";
+                        text = "Forte";
+                        break;
+                    case 4:
+                        width = 100;
+                        color = "#20c997";
+                        text = "Molto forte";
+                        break;
+                    default:
+                        width = 5;
+                        color = "#dc3545";
+                        text = "Molto debole";
+                }
+                
+                strengthBar.style.width = width + "%";
+                strengthBar.style.backgroundColor = color;
+                strengthText.textContent = "Sicurezza password: " + text;
+                strengthText.style.color = color;
+            }
+            
+            // Controlla i requisiti della password
+            function checkPasswordRequirements(password) {
+                // Lunghezza minima
+                if (password.length >= 8) {
+                    reqLength.style.color = "#28a745";
+                    reqLength.innerHTML = "✓ Almeno 8 caratteri";
+                } else {
+                    reqLength.style.color = "#dc3545";
+                    reqLength.innerHTML = "✗ Almeno 8 caratteri";
+                }
+                
+                // Lettere maiuscole
+                if (/[A-Z]/.test(password)) {
+                    reqUppercase.style.color = "#28a745";
+                    reqUppercase.innerHTML = "✓ Almeno una lettera maiuscula";
+                } else {
+                    reqUppercase.style.color = "#dc3545";
+                    reqUppercase.innerHTML = "✗ Almeno una lettera maiuscula";
+                }
+                
+                // Numeri
+                if (/[0-9]/.test(password)) {
+                    reqNumber.style.color = "#28a745";
+                    reqNumber.innerHTML = "✓ Almeno un numero";
+                } else {
+                    reqNumber.style.color = "#dc3545";
+                    reqNumber.innerHTML = "✗ Almeno un numero";
+                }
+                
+                // Caratteri speciali
+                if (/[^A-Za-z0-9]/.test(password)) {
+                    reqSpecial.style.color = "#28a745";
+                    reqSpecial.innerHTML = "✓ Almeno un carattere speciale";
+                } else {
+                    reqSpecial.style.color = "#dc3545";
+                    reqSpecial.innerHTML = "✗ Almeno un carattere speciale";
                 }
             }
 
@@ -1554,20 +1174,10 @@
                         // Aggiorna l'UI con i dati dell'utente
                         updateUserUI();
                         
-                        // Carica i preventivi
-                        await loadEstimates();
-                        
-                        // Imposta la data di oggi come default
-                        const today = new Date().toISOString().split('T')[0];
-                        const nextWeek = new Date();
-                        nextWeek.setDate(nextWeek.getDate() + 7);
-                        const nextWeekStr = nextWeek.toISOString().split('T')[0];
-                        
-                        estimateDate.value = today;
-                        expiryDate.value = nextWeekStr;
-                        
-                        // Genera un numero preventivo automatico
-                        generateEstimateNumber();
+                        // Aggiorna l'ultimo accesso
+                        await db.collection('users').doc(currentUser.uid).update({
+                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                        });
                         
                     } else {
                         // Se l'utente non esiste in Firestore, crea un documento di default
@@ -1581,7 +1191,6 @@
                         
                         await db.collection('users').doc(currentUser.uid).set(userData);
                         updateUserUI();
-                        await loadEstimates();
                     }
                     
                     setLoading(false);
@@ -1598,6 +1207,43 @@
                 // Header
                 document.getElementById('headerUserName').textContent = userData.name || currentUser.email.split('@')[0];
                 document.getElementById('headerUserRole').textContent = getRoleText(userData.role);
+                
+                // Sottotitolo pagina
+                document.getElementById('pageSubtitle').textContent = 'Gestisci le tue informazioni personali e modifica la password di accesso';
+                
+                // Avatar e nome
+                const avatarInitials = getInitials(userData.name || currentUser.email);
+                document.getElementById('userAvatar').innerHTML = `<span style="font-size: 2.5rem;">${avatarInitials}</span>`;
+                document.getElementById('profileUserName').textContent = userData.name || currentUser.email.split('@')[0];
+                document.getElementById('profileUserRole').textContent = getRoleText(userData.role);
+                
+                // Dettagli
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('userRoleDetail').textContent = getRoleText(userData.role);
+                
+                // Data ultimo accesso
+                if (userData.lastLogin) {
+                    const lastLoginDate = userData.lastLogin.toDate ? 
+                        userData.lastLogin.toDate() : 
+                        new Date(userData.lastLogin);
+                    document.getElementById('lastLogin').textContent = formatDate(lastLoginDate);
+                } else {
+                    document.getElementById('lastLogin').textContent = 'Non disponibile';
+                }
+                
+                // Data registrazione
+                if (userData.createdAt) {
+                    const createdAtDate = userData.createdAt.toDate ? 
+                        userData.createdAt.toDate() : 
+                        new Date(userData.createdAt);
+                    document.getElementById('registrationDate').textContent = formatDate(createdAtDate);
+                } else {
+                    document.getElementById('registrationDate').textContent = 'Non disponibile';
+                }
+                
+                // Stato account
+                document.getElementById('accountStatus').textContent = currentUser.emailVerified ? 'Verificato' : 'Non verificato';
+                document.getElementById('accountStatus').style.color = currentUser.emailVerified ? '#28a745' : '#ffc107';
             }
 
             // Funzioni di utilità
@@ -1610,607 +1256,189 @@
                 }
             }
 
-            function getStatusText(status) {
-                switch(status) {
-                    case 'draft': return 'Bozza';
-                    case 'sent': return 'Inviato';
-                    case 'accepted': return 'Accettato';
-                    case 'rejected': return 'Rifiutato';
-                    case 'expired': return 'Scaduto';
-                    default: return 'Sconosciuto';
-                }
+            function getInitials(name) {
+                return name
+                    .split(' ')
+                    .map(part => part.charAt(0).toUpperCase())
+                    .join('')
+                    .substring(0, 2);
             }
 
-            function getStatusClass(status) {
-                switch(status) {
-                    case 'draft': return 'status-draft';
-                    case 'sent': return 'status-sent';
-                    case 'accepted': return 'status-accepted';
-                    case 'rejected': return 'status-rejected';
-                    case 'expired': return 'status-expired';
-                    default: return '';
-                }
-            }
-
-            function formatCurrency(amount) {
-                return parseFloat(amount).toFixed(2).replace('.', ',') + ' €';
-            }
-
-            function formatDate(dateString) {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('it-IT');
-            }
-
-            // Genera un numero preventivo automatico
-            function generateEstimateNumber() {
-                if (estimateNumber.value) return;
-                
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                const count = estimates.length + 1;
-                
-                estimateNumber.value = `PREV-${year}-${count.toString().padStart(3, '0')}`;
-            }
-
-            // Aggiunge una voce al preventivo
-            function addItemToTable(item = null) {
-                const itemId = item ? item.id : Date.now().toString();
-                const itemDesc = item ? item.description : '';
-                const itemQty = item ? item.quantity : '1';
-                const itemPrice = item ? item.price : '0';
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><input type="text" class="form-control item-desc" value="${itemDesc}" placeholder="Descrizione lavoro/materiale"></td>
-                    <td><input type="number" class="form-control item-qty" value="${itemQty}" min="0" step="0.01" placeholder="Quantità"></td>
-                    <td><input type="number" class="form-control item-price" value="${itemPrice}" min="0" step="0.01" placeholder="Prezzo unitario"></td>
-                    <td class="item-total">${formatCurrency(itemQty * itemPrice)}</td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm remove-item-btn">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                
-                // Aggiungi event listener per calcolare il totale quando cambiano i valori
-                const descInput = row.querySelector('.item-desc');
-                const qtyInput = row.querySelector('.item-qty');
-                const priceInput = row.querySelector('.item-price');
-                
-                const updateTotal = () => {
-                    const qty = parseFloat(qtyInput.value) || 0;
-                    const price = parseFloat(priceInput.value) || 0;
-                    const total = qty * price;
-                    row.querySelector('.item-total').textContent = formatCurrency(total);
-                    updateEstimateTotals();
+            function formatDate(date) {
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
                 };
-                
-                qtyInput.addEventListener('input', updateTotal);
-                priceInput.addEventListener('input', updateTotal);
-                
-                // Aggiungi event listener per rimuovere la riga
-                row.querySelector('.remove-item-btn').addEventListener('click', function() {
-                    row.remove();
-                    updateEstimateTotals();
-                });
-                
-                itemsTableBody.appendChild(row);
-                
-                // Se è un nuovo elemento, aggiungilo all'array
-                if (!item) {
-                    estimateItems.push({
-                        id: itemId,
-                        description: '',
-                        quantity: 1,
-                        price: 0,
-                        total: 0
-                    });
-                }
-                
-                updateEstimateTotals();
+                return date.toLocaleDateString('it-IT', options);
             }
 
-            // Aggiorna i totali del preventivo
-            function updateEstimateTotals() {
-                let subtotalVal = 0;
+            // Funzione per calcolare la complessità della password
+            function checkPasswordComplexity(password) {
+                let score = 0;
                 
-                // Calcola il subtotale dalle voci della tabella
-                const rows = itemsTableBody.querySelectorAll('tr');
-                rows.forEach(row => {
-                    const qtyInput = row.querySelector('.item-qty');
-                    const priceInput = row.querySelector('.item-price');
-                    
-                    if (qtyInput && priceInput) {
-                        const qty = parseFloat(qtyInput.value) || 0;
-                        const price = parseFloat(priceInput.value) || 0;
-                        subtotalVal += qty * price;
-                    }
-                });
+                if (password.length >= 8) score += 1;
+                if (/[A-Z]/.test(password)) score += 1;
+                if (/[0-9]/.test(password)) score += 1;
+                if (/[^A-Za-z0-9]/.test(password)) score += 1;
                 
-                // Calcola IVA (22%)
-                const vatVal = subtotalVal * 0.22;
-                const totalVal = subtotalVal + vatVal;
-                
-                // Aggiorna l'UI
-                subtotal.textContent = formatCurrency(subtotalVal);
-                vatAmount.textContent = formatCurrency(vatVal);
-                totalAmount.textContent = formatCurrency(totalVal);
+                return score;
             }
-
-            // Carica i preventivi dal database
-            async function loadEstimates() {
-                try {
-                    setLoading(true);
-                    
-                    const estimatesSnapshot = await db.collection('estimates')
-                        .orderBy('estimateDate', 'desc')
-                        .get();
-                    
-                    estimates = [];
-                    estimatesSnapshot.forEach(doc => {
-                        estimates.push({
-                            id: doc.id,
-                            ...doc.data()
-                        });
-                    });
-                    
-                    renderEstimatesTable();
-                    updateStatistics();
-                    
-                    setLoading(false);
-                    
-                } catch (error) {
-                    console.error('Errore nel caricamento dei preventivi:', error);
-                    showAlert(errorAlert, 'Errore nel caricamento dei preventivi. Riprova.');
-                    setLoading(false);
-                }
-            }
-
-            // Renderizza la tabella dei preventivi
-            function renderEstimatesTable(filteredEstimates = estimates) {
-                if (filteredEstimates.length === 0) {
-                    estimatesTableBody.innerHTML = '';
-                    noEstimatesMessage.classList.remove('d-none');
-                    return;
-                }
-                
-                noEstimatesMessage.classList.add('d-none');
-                
-                let tableHTML = '';
-                
-                filteredEstimates.forEach(estimate => {
-                    const statusText = getStatusText(estimate.status);
-                    const statusClass = getStatusClass(estimate.status);
-                    
-                    // Calcola il totale se non è già presente
-                    const total = estimate.totalAmount || 
-                        (estimate.subtotal ? 
-                            (parseFloat(estimate.subtotal) + (parseFloat(estimate.subtotal) * 0.22)) : 
-                            0);
-                    
-                    tableHTML += `
-                        <tr>
-                            <td><strong>${estimate.estimateNumber}</strong></td>
-                            <td>${estimate.clientName}</td>
-                            <td>${formatDate(estimate.estimateDate)}</td>
-                            <td><strong>${formatCurrency(total)}</strong></td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                            <td>
-                                <div style="display: flex; gap: 5px;">
-                                    <button class="btn btn-secondary btn-sm view-estimate-btn" data-id="${estimate.id}">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-primary btn-sm edit-estimate-btn" data-id="${estimate.id}">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-danger btn-sm delete-estimate-btn" data-id="${estimate.id}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-                
-                estimatesTableBody.innerHTML = tableHTML;
-                
-                // Aggiungi event listener ai bottoni
-                document.querySelectorAll('.view-estimate-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = this.getAttribute('data-id');
-                        viewEstimate(id);
-                    });
-                });
-                
-                document.querySelectorAll('.edit-estimate-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = this.getAttribute('data-id');
-                        editEstimate(id);
-                    });
-                });
-                
-                document.querySelectorAll('.delete-estimate-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = this.getAttribute('data-id');
-                        deleteEstimate(id);
-                    });
-                });
-            }
-
-            // Aggiorna le statistiche
-            function updateStatistics() {
-                const total = estimates.length;
-                const pending = estimates.filter(e => e.status === 'sent').length;
-                const accepted = estimates.filter(e => e.status === 'accepted').length;
-                const rejected = estimates.filter(e => e.status === 'rejected').length;
-                
-                document.getElementById('totalEstimates').textContent = total;
-                document.getElementById('pendingEstimates').textContent = pending;
-                document.getElementById('acceptedEstimates').textContent = accepted;
-                document.getElementById('rejectedEstimates').textContent = rejected;
-            }
-
-            // Visualizza un preventivo
-            function viewEstimate(id) {
-                const estimate = estimates.find(e => e.id === id);
-                if (estimate) {
-                    alert(`Visualizzazione preventivo:\n\nNumero: ${estimate.estimateNumber}\nCliente: ${estimate.clientName}\nData: ${formatDate(estimate.estimateDate)}\nTotale: ${formatCurrency(estimate.totalAmount || 0)}\nStato: ${getStatusText(estimate.status)}`);
-                }
-            }
-
-            // Modifica un preventivo
-            async function editEstimate(id) {
-                try {
-                    setLoading(true);
-                    
-                    const estimate = estimates.find(e => e.id === id);
-                    if (!estimate) {
-                        showAlert(errorAlert, 'Preventivo non trovato.');
-                        return;
-                    }
-                    
-                    // Popola il form
-                    estimateId.value = estimate.id;
-                    clientName.value = estimate.clientName || '';
-                    estimateNumber.value = estimate.estimateNumber || '';
-                    estimateDate.value = estimate.estimateDate || '';
-                    expiryDate.value = estimate.expiryDate || '';
-                    clientEmail.value = estimate.clientEmail || '';
-                    clientPhone.value = estimate.clientPhone || '';
-                    projectTitle.value = estimate.projectTitle || '';
-                    description.value = estimate.description || '';
-                    status.value = estimate.status || 'draft';
-                    notes.value = estimate.notes || '';
-                    
-                    // Pulisci la tabella delle voci
-                    itemsTableBody.innerHTML = '';
-                    estimateItems = [];
-                    
-                    // Aggiungi le voci del preventivo
-                    if (estimate.items && estimate.items.length > 0) {
-                        estimate.items.forEach(item => {
-                            addItemToTable(item);
-                        });
-                    } else {
-                        // Se non ci sono voci, aggiungi una riga vuota
-                        addItemToTable();
-                    }
-                    
-                    // Aggiorna i totali
-                    updateEstimateTotals();
-                    
-                    // Cambia stato del form
-                    isEditing = true;
-                    document.getElementById('formTitle').textContent = 'Modifica Preventivo';
-                    document.getElementById('saveBtnText').textContent = 'Aggiorna Preventivo';
-                    cancelBtn.style.display = 'block';
-                    
-                    // Scorri fino al form
-                    estimateForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    
-                    setLoading(false);
-                    
-                } catch (error) {
-                    console.error('Errore nel caricamento del preventivo:', error);
-                    showAlert(errorAlert, 'Errore nel caricamento del preventivo. Riprova.');
-                    setLoading(false);
-                }
-            }
-
-            // Elimina un preventivo
-            async function deleteEstimate(id) {
-                if (!confirm('Sei sicuro di voler eliminare questo preventivo?')) {
-                    return;
-                }
-                
-                try {
-                    setLoading(true);
-                    
-                    await db.collection('estimates').doc(id).delete();
-                    
-                    // Rimuovi dalla lista locale
-                    estimates = estimates.filter(e => e.id !== id);
-                    
-                    // Se stiamo modificando il preventivo eliminato, resetta il form
-                    if (estimateId.value === id) {
-                        resetForm();
-                    }
-                    
-                    // Aggiorna l'UI
-                    renderEstimatesTable();
-                    updateStatistics();
-                    
-                    showAlert(successAlert, 'Preventivo eliminato con successo!');
-                    
-                    // Nascondi l'alert dopo 3 secondi
-                    setTimeout(() => {
-                        successAlert.classList.add('d-none');
-                    }, 3000);
-                    
-                    setLoading(false);
-                    
-                } catch (error) {
-                    console.error('Errore nell\'eliminazione del preventivo:', error);
-                    showAlert(errorAlert, 'Errore nell\'eliminazione del preventivo. Riprova.');
-                    setLoading(false);
-                }
-            }
-
-            // Filtra i preventivi
-            function filterEstimates() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const statusFilterValue = statusFilter.value;
-                
-                let filtered = estimates;
-                
-                // Filtra per stato
-                if (statusFilterValue) {
-                    filtered = filtered.filter(e => e.status === statusFilterValue);
-                }
-                
-                // Filtra per termine di ricerca
-                if (searchTerm) {
-                    filtered = filtered.filter(e => 
-                        (e.clientName && e.clientName.toLowerCase().includes(searchTerm)) ||
-                        (e.estimateNumber && e.estimateNumber.toLowerCase().includes(searchTerm)) ||
-                        (e.projectTitle && e.projectTitle.toLowerCase().includes(searchTerm))
-                    );
-                }
-                
-                renderEstimatesTable(filtered);
-            }
-
-            // Resetta il form
-            function resetForm() {
-                estimateForm.reset();
-                estimateId.value = '';
-                itemsTableBody.innerHTML = '';
-                estimateItems = [];
-                
-                // Reimposta le date
-                const today = new Date().toISOString().split('T')[0];
-                const nextWeek = new Date();
-                nextWeek.setDate(nextWeek.getDate() + 7);
-                const nextWeekStr = nextWeek.toISOString().split('T')[0];
-                
-                estimateDate.value = today;
-                expiryDate.value = nextWeekStr;
-                
-                // Genera un nuovo numero preventivo
-                generateEstimateNumber();
-                
-                // Reimposta lo stato
-                status.value = 'draft';
-                
-                // Aggiungi una riga vuota
-                addItemToTable();
-                
-                // Reimposta lo stato del form
-                isEditing = false;
-                document.getElementById('formTitle').textContent = 'Nuovo Preventivo';
-                document.getElementById('saveBtnText').textContent = 'Salva Preventivo';
-                cancelBtn.style.display = 'none';
-                
-                // Nascondi gli alert
-                successAlert.classList.add('d-none');
-                errorAlert.classList.add('d-none');
-                infoAlert.classList.add('d-none');
-            }
-
-            // Gestione del form
-            estimateForm.addEventListener('submit', async function(e) {
+            
+            // Gestione dell'input della nuova password
+            newPasswordInput.addEventListener('input', function() {
+                const password = newPasswordInput.value;
+                checkPasswordStrength(password);
+                checkPasswordRequirements(password);
+            });
+            
+            // Gestione del cambio password
+            changePasswordForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 // Nascondi eventuali alert precedenti
                 showAlert(infoAlert, '');
                 
                 // Validazioni
-                if (!clientName.value.trim()) {
-                    showAlert(errorAlert, 'Il nome del cliente è obbligatorio.');
-                    clientName.focus();
+                const currentPassword = currentPasswordInput.value;
+                const newPassword = newPasswordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    showAlert(errorAlert, 'Compila tutti i campi.');
                     return;
                 }
                 
-                if (!estimateNumber.value.trim()) {
-                    showAlert(errorAlert, 'Il numero preventivo è obbligatorio.');
-                    estimateNumber.focus();
+                if (newPassword !== confirmPassword) {
+                    showAlert(errorAlert, 'Le nuove password non coincidono.');
+                    confirmPasswordInput.focus();
                     return;
                 }
                 
-                if (!estimateDate.value) {
-                    showAlert(errorAlert, 'La data preventivo è obbligatoria.');
-                    estimateDate.focus();
+                // Verifica forza password
+                const passwordStrength = checkPasswordComplexity(newPassword);
+                if (passwordStrength < 2) {
+                    showAlert(errorAlert, 'La nuova password non è abbastanza sicura. Deve essere almeno di media sicurezza.');
+                    newPasswordInput.focus();
                     return;
                 }
-                
-                if (!expiryDate.value) {
-                    showAlert(errorAlert, 'La data scadenza è obbligatoria.');
-                    expiryDate.focus();
-                    return;
-                }
-                
-                // Raccogli le voci del preventivo
-                const items = [];
-                const rows = itemsTableBody.querySelectorAll('tr');
-                let hasValidItems = false;
-                
-                rows.forEach(row => {
-                    const descInput = row.querySelector('.item-desc');
-                    const qtyInput = row.querySelector('.item-qty');
-                    const priceInput = row.querySelector('.item-price');
-                    
-                    if (descInput && qtyInput && priceInput) {
-                        const description = descInput.value.trim();
-                        const quantity = parseFloat(qtyInput.value) || 0;
-                        const price = parseFloat(priceInput.value) || 0;
-                        
-                        if (description && quantity > 0 && price > 0) {
-                            items.push({
-                                description,
-                                quantity,
-                                price,
-                                total: quantity * price
-                            });
-                            hasValidItems = true;
-                        }
-                    }
-                });
-                
-                if (!hasValidItems) {
-                    showAlert(errorAlert, 'Aggiungi almeno una voce valida al preventivo.');
-                    return;
-                }
-                
-                // Calcola i totali
-                const subtotalVal = items.reduce((sum, item) => sum + item.total, 0);
-                const vatVal = subtotalVal * 0.22;
-                const totalVal = subtotalVal + vatVal;
                 
                 try {
                     setLoading(true);
-                    showAlert(infoAlert, 'Salvataggio preventivo in corso...');
+                    showAlert(infoAlert, 'Aggiornamento password in corso...');
                     
-                    const estimateData = {
-                        clientName: clientName.value.trim(),
-                        estimateNumber: estimateNumber.value.trim(),
-                        estimateDate: estimateDate.value,
-                        expiryDate: expiryDate.value,
-                        clientEmail: clientEmail.value.trim() || '',
-                        clientPhone: clientPhone.value.trim() || '',
-                        projectTitle: projectTitle.value.trim() || '',
-                        description: description.value.trim() || '',
-                        status: status.value,
-                        notes: notes.value.trim() || '',
-                        items: items,
-                        subtotal: subtotalVal,
-                        vat: vatVal,
-                        totalAmount: totalVal,
-                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-                        updatedBy: currentUser.uid
-                    };
+                    // Riautentica l'utente con la password corrente
+                    const credential = firebase.auth.EmailAuthProvider.credential(
+                        currentUser.email, 
+                        currentPassword
+                    );
                     
-                    if (isEditing) {
-                        // Aggiorna preventivo esistente
-                        await db.collection('estimates').doc(estimateId.value).update(estimateData);
-                        
-                        // Aggiorna la lista locale
-                        const index = estimates.findIndex(e => e.id === estimateId.value);
-                        if (index !== -1) {
-                            estimates[index] = {
-                                id: estimateId.value,
-                                ...estimateData
-                            };
-                        }
-                        
-                        showAlert(successAlert, 'Preventivo aggiornato con successo!');
-                    } else {
-                        // Crea nuovo preventivo
-                        estimateData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                        estimateData.createdBy = currentUser.uid;
-                        
-                        const docRef = await db.collection('estimates').add(estimateData);
-                        
-                        // Aggiungi alla lista locale
-                        estimates.unshift({
-                            id: docRef.id,
-                            ...estimateData
-                        });
-                        
-                        showAlert(successAlert, 'Preventivo creato con successo!');
-                    }
+                    await currentUser.reauthenticateWithCredential(credential);
                     
-                    // Aggiorna l'UI
-                    renderEstimatesTable();
-                    updateStatistics();
+                    // Aggiorna la password
+                    await currentUser.updatePassword(newPassword);
                     
-                    // Resetta il form dopo il salvataggio (solo se non stiamo modificando)
-                    if (!isEditing) {
-                        setTimeout(() => {
-                            resetForm();
-                        }, 2000);
-                    } else {
-                        // Se stiamo modificando, rimani in modalità modifica
-                        isEditing = false;
-                        cancelBtn.style.display = 'none';
-                        document.getElementById('formTitle').textContent = 'Nuovo Preventivo';
-                        document.getElementById('saveBtnText').textContent = 'Salva Preventivo';
-                    }
+                    // Mostra messaggio di successo
+                    showAlert(successAlert);
                     
-                    // Nascondi l'alert di successo dopo 3 secondi
-                    setTimeout(() => {
-                        successAlert.classList.add('d-none');
+                    // Resetta il form dopo 3 secondi
+                    setTimeout(function() {
+                        changePasswordForm.reset();
+                        strengthBar.style.width = "0%";
+                        strengthText.textContent = "Sicurezza password: molto debole";
+                        strengthText.style.color = "#666";
+                        
+                        // Reset requisiti
+                        reqLength.style.color = "#555";
+                        reqLength.innerHTML = "Almeno 8 caratteri";
+                        reqUppercase.style.color = "#555";
+                        reqUppercase.innerHTML = "Almeno una lettera maiuscula";
+                        reqNumber.style.color = "#555";
+                        reqNumber.innerHTML = "Almeno un numero";
+                        reqSpecial.style.color = "#555";
+                        reqSpecial.innerHTML = "Almeno un carattere speciale";
+                        
+                        // Nascondi l'alert di successo dopo 5 secondi
+                        setTimeout(function() {
+                            successAlert.classList.add('d-none');
+                        }, 5000);
                     }, 3000);
                     
                     setLoading(false);
                     
                 } catch (error) {
-                    console.error('Errore nel salvataggio del preventivo:', error);
-                    showAlert(errorAlert, `Errore nel salvataggio: ${error.message}`);
+                    console.error('Errore durante il cambio password:', error);
                     setLoading(false);
+                    
+                    // Gestione specifica degli errori
+                    let errorMsg = 'Errore durante il cambio password. Riprova.';
+                    
+                    switch (error.code) {
+                        case 'auth/wrong-password':
+                            errorMsg = 'La password attuale non è corretta.';
+                            break;
+                        case 'auth/weak-password':
+                            errorMsg = 'La nuova password non è abbastanza sicura.';
+                            break;
+                        case 'auth/requires-recent-login':
+                            errorMsg = 'Devi effettuare nuovamente il login per cambiare la password.';
+                            break;
+                        case 'auth/network-request-failed':
+                            errorMsg = 'Errore di rete. Verifica la connessione internet.';
+                            break;
+                        default:
+                            errorMsg = `Errore: ${error.message}`;
+                    }
+                    
+                    showAlert(errorAlert, errorMsg);
                 }
             });
-
-            // Inizializza l'applicazione
-            async function init() {
-                // Aggiungi event listener
-                addItemBtn.addEventListener('click', () => addItemToTable());
-                resetBtn.addEventListener('click', resetForm);
-                cancelBtn.addEventListener('click', resetForm);
-                newEstimateBtn.addEventListener('click', resetForm);
+            
+            // Reset del form
+            resetFormBtn.addEventListener('click', function() {
+                changePasswordForm.reset();
+                strengthBar.style.width = "0%";
+                strengthText.textContent = "Sicurezza password: molto debole";
+                strengthText.style.color = "#666";
+                successAlert.classList.add('d-none');
+                errorAlert.classList.add('d-none');
+                infoAlert.classList.add('d-none');
                 
-                searchInput.addEventListener('input', filterEstimates);
-                statusFilter.addEventListener('change', filterEstimates);
-                
-                logoutBtn.addEventListener('click', async function() {
-                    if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
-                        try {
-                            setLoading(true);
-                            await auth.signOut();
-                            window.location.href = 'index.html';
-                        } catch (error) {
-                            console.error('Errore durante il logout:', error);
-                            setLoading(false);
-                            alert('Errore durante il logout. Riprova.');
-                        }
+                // Reset requisiti
+                reqLength.style.color = "#555";
+                reqLength.innerHTML = "Almeno 8 caratteri";
+                reqUppercase.style.color = "#555";
+                reqUppercase.innerHTML = "Almeno una lettera maiuscula";
+                reqNumber.style.color = "#555";
+                reqNumber.innerHTML = "Almeno un numero";
+                reqSpecial.style.color = "#555";
+                reqSpecial.innerHTML = "Almeno un carattere speciale";
+            });
+            
+            // Logout
+            logoutBtn.addEventListener('click', async function() {
+                if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
+                    try {
+                        setLoading(true);
+                        await auth.signOut();
+                        // Rimuovi i dati dal localStorage
+                        localStorage.removeItem('user');
+                        localStorage.removeItem('authToken');
+                        // Reindirizza alla pagina di login
+                        window.location.href = 'index.html';
+                    } catch (error) {
+                        console.error('Errore durante il logout:', error);
+                        setLoading(false);
+                        alert('Errore durante il logout. Riprova.');
                     }
-                });
-                
-                exportBtn.addEventListener('click', function() {
-                    // Implementa l'esportazione qui
-                    alert('Funzionalità di esportazione in sviluppo...');
-                });
-                
-                // Inizializza Firebase
-                await initializeFirebase();
-                
-                // Aggiungi una riga iniziale alla tabella delle voci
-                addItemToTable();
-            }
-
-            // Avvia l'applicazione
-            init();
+                }
+            });
+            
+            // Inizializza Firebase
+            await initializeFirebase();
         });
     </script>
 </body>
