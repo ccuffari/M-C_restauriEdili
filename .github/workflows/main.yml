@@ -3,7 +3,15 @@ name: Firebase Hosting Deploy
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:  # Permette di eseguire manualmente
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Tag/Version da deployare (es: v1.0.0, main, o commit SHA)'
+        required: true
+        default: 'main'
+        type: string
 
 jobs:
   deploy:
@@ -12,6 +20,10 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.version || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && github.ref) || github.ref }}
+        fetch-depth: 0
+        token: ${{ secrets.GH_PAT }}  # ← Usa il PAT qui
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -22,16 +34,6 @@ jobs:
       run: |
         echo "Installing Firebase CLI..."
         npm install -g firebase-tools
-        echo "Firebase CLI version:"
-        firebase --version
-
-    - name: Debug - Check Firebase Config
-      run: |
-        echo "Checking Firebase configuration..."
-        ls -la | grep -E "(firebase|\.firebaserc)" || echo "No Firebase config files found"
-        echo ""
-        echo "Current directory structure:"
-        find . -name "firebase.json" -o -name ".firebaserc" 2>/dev/null || true
 
     - name: Deploy to Firebase
       env:
@@ -39,19 +41,11 @@ jobs:
       run: |
         echo "Starting Firebase deployment..."
         
-        # Verifica che il token sia presente
         if [ -z "$FIREBASE_TOKEN" ]; then
           echo "❌ ERRORE: FIREBASE_TOKEN non configurato!"
-          echo "Vai in Settings → Secrets and variables → Actions"
-          echo "Aggiungi un secret chiamato FIREBASE_TOKEN con il token da: firebase login:ci"
           exit 1
         fi
         
-        # Mostra info (senza esporre il token completo)
-        TOKEN_PREFIX=$(echo "$FIREBASE_TOKEN" | cut -c1-10)
-        echo "Token configurato: ${TOKEN_PREFIX}..."
-        
-        # Comando di deploy
         firebase deploy \
           --token "$FIREBASE_TOKEN" \
           --only hosting \
@@ -59,12 +53,32 @@ jobs:
         
         echo "✅ Deploy completato con successo!"
 
+    - name: Create and Push Git Tag (solo per deploy su main)
+      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      env:
+        GH_TOKEN: ${{ secrets.GH_PAT }}  # ← Usa il PAT anche qui
+      run: |
+        # Genera un numero di versione basato sulla data
+        VERSION="v$(date +'%Y.%m.%d.%H%M%S')"
+        
+        # Configura git
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        
+        # Crea il tag
+        git tag -a "$VERSION" -m "Release $VERSION - Commit: ${{ github.sha }}"
+        
+        # Push del tag usando il PAT
+        git push origin "$VERSION"
+        
+        echo "✅ Tag $VERSION creato e pushato"
+
     - name: Success Message
       if: success()
       run: |
         echo "=========================================="
         echo "🎉 Deploy completato con successo!"
-        echo "Branch: ${{ github.ref }}"
+        echo "Branch/Tag: ${{ github.ref }}"
         echo "Commit: ${{ github.sha }}"
         echo "Data: $(date)"
         echo "=========================================="
