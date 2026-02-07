@@ -3,15 +3,7 @@ name: Firebase Hosting Deploy
 on:
   push:
     branches: [ main ]
-    tags:
-      - 'v*.*.*'  # Permette di triggerare il deploy per tag versionati
   workflow_dispatch:  # Permette di eseguire manualmente
-    inputs:
-      version:
-        description: 'Tag/Version da deployare (es: v1.0.0, main, o commit SHA)'
-        required: true
-        default: 'main'
-        type: string
 
 jobs:
   deploy:
@@ -20,12 +12,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-      with:
-        # Se siamo in workflow_dispatch, usa l'input version
-        # Altrimenti se è un push su tag, usa il tag
-        # Altrimenti usa il branch/ref normale
-        ref: ${{ github.event.inputs.version || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && github.ref) || github.ref }}
-        fetch-depth: 0  # Importante: scarica tutto l'history per i tag
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -46,10 +32,6 @@ jobs:
         echo ""
         echo "Current directory structure:"
         find . -name "firebase.json" -o -name ".firebaserc" 2>/dev/null || true
-        echo ""
-        echo "Current ref: ${{ github.ref }}"
-        echo "Tag: ${{ github.ref_name }}"
-        echo "Commit SHA: ${{ github.sha }}"
 
     - name: Deploy to Firebase
       env:
@@ -60,6 +42,8 @@ jobs:
         # Verifica che il token sia presente
         if [ -z "$FIREBASE_TOKEN" ]; then
           echo "❌ ERRORE: FIREBASE_TOKEN non configurato!"
+          echo "Vai in Settings → Secrets and variables → Actions"
+          echo "Aggiungi un secret chiamato FIREBASE_TOKEN con il token da: firebase login:ci"
           exit 1
         fi
         
@@ -75,79 +59,12 @@ jobs:
         
         echo "✅ Deploy completato con successo!"
 
-    - name: Create Git Tag (solo per deploy su main non-tag)
-      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: |
-        # Genera un numero di versione basato sulla data e commit
-        VERSION="v$(date +'%Y.%m.%d.%H%M%S')"
-        
-        # Crea il tag
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        git tag -a "$VERSION" -m "Release $VERSION - Commit: ${{ github.sha }}"
-        
-        # Push del tag
-        git push origin "$VERSION"
-        echo "✅ Tag $VERSION creato e pushato"
-
-    - name: Create GitHub Release (opzionale)
-      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: "v$(date +'%Y.%m.%d.%H%M%S')"
-        name: "Release $(date +'%Y-%m-%d %H:%M:%S')"
-        body: |
-          **Deploy automatico da main branch**
-          
-          - **Commit:** ${{ github.sha }}
-          - **Data:** $(date)
-          - **Build:** ${{ github.run_id }}
-          
-          Per ri-deployare questa versione, usa il tag sopra nella sezione "Run workflow".
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Success Message
       if: success()
       run: |
         echo "=========================================="
         echo "🎉 Deploy completato con successo!"
-        echo "Branch/Tag: ${{ github.ref }}"
+        echo "Branch: ${{ github.ref }}"
         echo "Commit: ${{ github.sha }}"
         echo "Data: $(date)"
-        echo "Run ID: ${{ github.run_id }}"
         echo "=========================================="
-
-  # Job aggiuntivo per listare le releases disponibili (opzionale)
-  list-releases:
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    needs: []  # Esegue indipendentemente
-    outputs:
-      available_tags: ${{ steps.get-tags.outputs.tags }}
-    
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    
-    - name: List Available Tags
-      id: get-tags
-      run: |
-        # Ottieni gli ultimi 10 tag
-        TAGS=$(git tag --sort=-creatordate | head -10)
-        echo "Ultime 10 releases disponibili:"
-        echo "$TAGS"
-        
-        # Salva come output per uso futuro
-        echo "tags=$TAGS" >> $GITHUB_OUTPUT
-        
-        echo ""
-        echo "Per deployare una versione precedente:"
-        echo "1. Vai in Actions → Firebase Hosting Deploy"
-        echo "2. Clicca 'Run workflow'"
-        echo "3. Inserisci il nome del tag (es: v2024.01.15.143022)"
-        echo "4. Clicca 'Run workflow'"
