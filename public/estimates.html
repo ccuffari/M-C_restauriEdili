@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuffari - Gestione Preventivi</title>
+    <title>Cuffari Restauri Edili - Gestione Preventivi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/docx@7.8.0/build/index.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         /* CSS Reset e Base */
         :root {
@@ -48,6 +50,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDIwMCwgMjEwLCAyMjAsIDAuMikiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==');
         }
         
         /* Container Responsive */
@@ -59,41 +62,40 @@
             margin-left: auto;
         }
         
-        /* Breakpoint per xxl (>=1400px) */
-        @media (min-width: 1400px) {
-            .container { max-width: 1320px; }
-            html { font-size: 17px; }
+        /* Breakpoint per xxs (molto piccolo) */
+        @media (max-width: 359.98px) {
+            .container { padding: 0 8px; }
+            html { font-size: 14px; }
         }
         
-        /* Breakpoint per xl (>=1200px) */
-        @media (min-width: 1200px) and (max-width: 1399.98px) {
-            .container { max-width: 1140px; }
+        /* Breakpoint per xs (extra small) */
+        @media (min-width: 360px) and (max-width: 575.98px) {
+            .container { max-width: 100%; }
         }
         
-        /* Breakpoint per lg (>=992px) */
-        @media (min-width: 992px) and (max-width: 1199.98px) {
-            .container { max-width: 960px; }
-        }
-        
-        /* Breakpoint per md (>=768px) */
-        @media (min-width: 768px) and (max-width: 991.98px) {
-            .container { max-width: 720px; }
-        }
-        
-        /* Breakpoint per sm (>=576px) */
+        /* Breakpoint per sm (small) */
         @media (min-width: 576px) and (max-width: 767.98px) {
             .container { max-width: 540px; }
         }
         
-        /* Breakpoint per xs (<576px) */
-        @media (max-width: 575.98px) {
-            .container { padding-right: 10px; padding-left: 10px; }
-            html { font-size: 14px; }
+        /* Breakpoint per md (medium) */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .container { max-width: 720px; }
         }
         
-        /* Breakpoint per xxs (molto piccoli) */
-        @media (max-width: 359.98px) {
-            html { font-size: 13px; }
+        /* Breakpoint per lg (large) */
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            .container { max-width: 960px; }
+        }
+        
+        /* Breakpoint per xl (extra large) */
+        @media (min-width: 1200px) and (max-width: 1399.98px) {
+            .container { max-width: 1140px; }
+        }
+        
+        /* Breakpoint per xxl (extra extra large) */
+        @media (min-width: 1400px) {
+            .container { max-width: 1320px; }
         }
         
         /* Utility Classes */
@@ -179,6 +181,7 @@
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
+            justify-content: center;
         }
         
         .nav-btn {
@@ -253,18 +256,10 @@
             padding: 2rem 0;
         }
         
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
         .page-title {
             font-size: 2rem;
             color: var(--primary-color);
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
@@ -277,21 +272,31 @@
         
         .page-subtitle {
             color: var(--gray-color);
-            margin-top: 0.5rem;
+            margin-bottom: 40px;
             font-size: 1rem;
+        }
+        
+        /* Page Header with Actions */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
         }
         
         .page-actions {
             display: flex;
-            gap: 0.75rem;
+            gap: 15px;
             flex-wrap: wrap;
         }
         
         /* Button Styles */
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 14px 28px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -304,92 +309,169 @@
         }
         
         .btn i {
-            margin-right: 0.5rem;
+            margin-right: 10px;
         }
         
         .btn-primary {
-            background: var(--primary-color);
+            background-color: var(--primary-color);
             color: white;
         }
         
         .btn-primary:hover {
-            background: var(--primary-dark);
+            background-color: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
         
         .btn-secondary {
-            background: #e9ecef;
+            background-color: #f0f0f0;
             color: var(--dark-color);
         }
         
         .btn-secondary:hover {
-            background: #dee2e6;
+            background-color: #e0e0e0;
             transform: translateY(-2px);
             box-shadow: var(--shadow-sm);
         }
         
         .btn-success {
-            background: var(--success-color);
+            background-color: var(--success-color);
             color: white;
         }
         
-        .btn-danger {
-            background: var(--danger-color);
-            color: white;
-        }
-        
-        .btn-info {
-            background: var(--info-color);
-            color: white;
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
         
         .btn-warning {
-            background: var(--warning-color);
-            color: var(--dark-color);
+            background-color: var(--warning-color);
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
         
         .btn-sm {
-            padding: 0.5rem 1rem;
+            padding: 8px 16px;
             font-size: 0.875rem;
         }
         
-        /* Content Layout */
-        .content-container {
+        /* Stats Cards */
+        .stats-cards {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
         
-        /* Layout responsive per lg e superiori */
-        @media (min-width: 992px) {
-            .content-container {
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .stat-info {
+            flex: 1;
+        }
+        
+        .stat-title {
+            font-size: 0.95rem;
+            color: var(--gray-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.2;
+        }
+        
+        .stat-change {
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+        
+        .stat-change.negative {
+            color: var(--danger-color);
+        }
+        
+        /* Main Container Layout */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        @media (min-width: 1200px) {
+            .main-container {
                 grid-template-columns: 1fr 1fr;
             }
         }
         
         /* Form Card */
         .form-card {
-            background: white;
-            border-radius: 8px;
+            background-color: white;
+            border-radius: 10px;
             box-shadow: var(--shadow-sm);
             overflow: hidden;
             transition: var(--transition);
-            height: fit-content;
         }
         
         .form-card:hover {
+            transform: translateY(-5px);
             box-shadow: var(--shadow-md);
         }
         
         .card-header {
-            background: var(--primary-color);
+            background-color: var(--primary-light);
             color: white;
-            padding: 1.25rem 1.5rem;
+            padding: 20px 30px;
         }
         
         .card-header h3 {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -397,17 +479,17 @@
         }
         
         .card-body {
-            padding: 1.5rem;
+            padding: 30px;
         }
         
         /* Form Styles */
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 25px;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 8px;
             font-weight: 600;
             color: var(--primary-color);
             font-size: 0.95rem;
@@ -424,21 +506,20 @@
         
         .input-with-icon i {
             position: absolute;
-            left: 1rem;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--gray-color);
-            z-index: 1;
+            font-size: 1.1rem;
         }
         
         .form-control {
             width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            padding: 14px 14px 14px 45px;
             border: 1px solid var(--border-color);
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 1rem;
             transition: var(--transition);
-            background: white;
         }
         
         .form-control:focus {
@@ -456,279 +537,196 @@
             appearance: none;
             background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23343a40' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 16px 12px;
-            padding-right: 2.5rem;
+            background-position: right 15px center;
+            background-size: 12px;
+            padding-right: 45px;
         }
         
         .form-row {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1rem;
+            gap: 20px;
         }
         
-        /* Form responsive */
         @media (min-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr 1fr;
             }
         }
         
-        @media (max-width: 767.98px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-        
         .form-actions {
             display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-top: 2rem;
+            gap: 15px;
+            margin-top: 30px;
         }
         
-        @media (min-width: 576px) {
-            .form-actions {
-                flex-direction: row;
-            }
-        }
-        
-        .btn-full {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        /* Preview Card */
-        .preview-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: var(--shadow-sm);
-            overflow: hidden;
-            transition: var(--transition);
-            height: fit-content;
-            max-height: 800px;
-            overflow-y: auto;
-        }
-        
-        .preview-content {
-            padding: 1.5rem;
-            font-family: 'Times New Roman', Times, serif;
-            background: white;
-            position: relative;
-            min-height: 600px;
-        }
-        
-        /* Preview Styles */
-        .preview-header {
-            border-bottom: 3px solid var(--primary-color);
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .company-info {
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        
-        .company-name {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 0.25rem;
-        }
-        
-        .company-details {
-            color: var(--gray-color);
-            font-size: 0.9rem;
-        }
-        
-        .quote-title {
-            font-size: 2rem;
-            text-align: center;
-            color: var(--primary-color);
-            margin: 1rem 0;
-            font-weight: bold;
-        }
-        
-        .quote-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .client-info, .quote-details {
-            flex: 1;
-            min-width: 250px;
-        }
-        
-        .client-info h3, .quote-details h3 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-        
+        /* Items Table */
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: 0.9rem;
-            table-layout: fixed;
+            margin-top: 20px;
         }
         
         .items-table th {
-            background: var(--primary-color);
-            color: white;
-            padding: 0.75rem;
+            background-color: #f8f9fa;
+            padding: 15px;
             text-align: left;
             font-weight: 600;
-            border: 1px solid var(--primary-dark);
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
         }
         
         .items-table td {
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            word-wrap: break-word;
-            overflow-wrap: break-word;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
         }
         
-        .items-table tr:nth-child(even) {
-            background: #f8f9fa;
+        .items-table tr:last-child td {
+            border-bottom: none;
         }
         
-        .items-table .text-right {
-            text-align: right;
+        .items-table tr:hover {
+            background-color: #f8f9fa;
         }
         
-        .totals-section {
-            margin-top: 1.5rem;
-            border-top: 2px solid var(--border-color);
-            padding-top: 1rem;
-        }
-        
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-            padding: 0.25rem 0;
-        }
-        
-        .total-row.final {
-            font-weight: bold;
-            font-size: 1.1rem;
-            border-top: 1px solid var(--border-color);
-            padding-top: 0.75rem;
-            margin-top: 0.75rem;
-            color: var(--primary-color);
-        }
-        
-        .terms-conditions {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
             font-size: 0.85rem;
-            color: var(--gray-color);
-        }
-        
-        .terms-conditions h4 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .signature-section {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-        }
-        
-        .signature-line {
-            width: 200px;
-            border-top: 1px solid var(--dark-color);
-            margin-top: 3rem;
-        }
-        
-        .watermark {
-            position: absolute;
-            opacity: 0.05;
-            font-size: 6rem;
-            transform: rotate(-45deg);
-            color: var(--primary-color);
-            pointer-events: none;
-            z-index: 1;
-            top: 30%;
-            left: 10%;
-            white-space: nowrap;
-        }
-        
-        /* Items Management */
-        .items-management {
-            margin: 1.5rem 0;
-            overflow-x: auto;
-        }
-        
-        .items-header {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
-            gap: 0.5rem;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            padding: 0.75rem;
-            background: var(--primary-color);
-            color: white;
-            font-weight: bold;
-            border-radius: 4px;
-            min-width: 800px;
-        }
-        
-        .item-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
-            gap: 0.5rem;
-            align-items: center;
-            margin-bottom: 0.75rem;
-            padding: 0.75rem;
-            background: #f8f9fa;
-            border-radius: 4px;
-            min-width: 800px;
-        }
-        
-        .item-input {
-            padding: 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 0.9rem;
-            width: 100%;
-        }
-        
-        .item-total-display {
-            padding: 0.5rem;
-            font-weight: bold;
+            font-weight: 600;
+            display: inline-block;
             text-align: center;
         }
         
-        .remove-item {
-            background: var(--danger-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
+        .status-draft {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        
+        .status-sent {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-accepted {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-expired {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+        
+        /* Table Card */
+        .table-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .table-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #f8f9fa;
+        }
+        
+        .table-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
             display: flex;
             align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
+            gap: 0.75rem;
+        }
+        
+        .table-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+        
+        .search-input {
+            padding: 10px 15px 10px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 250px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.25);
+            outline: none;
+        }
+        
+        .table-body {
+            padding: 0;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* No Data Message */
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-color);
+        }
+        
+        .no-data i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #e9ecef;
+        }
+        
+        .no-data h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .no-data p {
+            font-size: 1rem;
         }
         
         /* Alerts */
         .alert {
             padding: 1rem;
-            border-radius: 4px;
+            border-radius: 6px;
             margin-top: 1rem;
             font-weight: 500;
             display: flex;
@@ -752,13 +750,7 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        
-        .alert-warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-        
+
         .alert-info {
             background: #d1ecf1;
             color: #0c5460;
@@ -781,10 +773,6 @@
             gap: 1.5rem;
         }
         
-        .developer-info {
-            margin-bottom: 15px;
-        }
-        
         .developer-info h3 {
             font-size: 1.2rem;
             font-weight: 600;
@@ -802,128 +790,64 @@
             font-size: 0.85rem;
             opacity: 0.7;
         }
-        
-        /* Responsive Design */
-        /* Per schermi grandi (lg e superiori) */
-        @media (min-width: 992px) {
-            .item-row, .items-header {
-                min-width: 0;
-                grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
-            }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .loading-spinner {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .loading-spinner .loading {
+            width: 40px;
+            height: 40px;
+            border-width: 4px;
+            margin: 0 auto 15px;
+            display: block;
         }
         
-        /* Per tablet (md) */
-        @media (max-width: 991.98px) and (min-width: 768px) {
-            .item-row, .items-header {
-                min-width: 700px;
-            }
-            
-            .quote-title {
-                font-size: 1.8rem;
-            }
-            
-            .company-name {
-                font-size: 1.6rem;
-            }
-        }
-        
-        /* Per tablet piccoli e mobile (sm e xs) */
-        @media (max-width: 767.98px) {
-            .item-row, .items-header {
-                min-width: 650px;
-            }
-            
-            .quote-info {
-                flex-direction: column;
-            }
-            
-            .client-info, .quote-details {
-                min-width: 100%;
-            }
-            
-            .quote-title {
-                font-size: 1.6rem;
-            }
-            
-            .company-name {
-                font-size: 1.4rem;
-            }
-            
-            .watermark {
-                font-size: 4rem;
-                left: 5%;
-            }
-            
-            .items-table {
-                font-size: 0.8rem;
-            }
-            
-            .items-table th,
-            .items-table td {
-                padding: 0.5rem;
-            }
-            
-            .card-body {
-                padding: 1rem;
-            }
-            
-            .preview-content {
-                padding: 1rem;
-            }
-        }
-        
-        /* Per mobile piccoli (xs) */
-        @media (max-width: 575.98px) {
-            .page-header {
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header-container {
                 flex-direction: column;
                 align-items: stretch;
             }
             
-            .page-title {
-                font-size: 1.5rem;
-            }
-            
-            .page-actions {
-                justify-content: center;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .form-actions {
-                flex-direction: column;
-            }
-            
-            .btn-full {
-                width: 100%;
-            }
-            
-            .item-row, .items-header {
-                min-width: 550px;
-            }
-            
-            .watermark {
-                font-size: 3rem;
-                top: 40%;
-            }
-            
-            .company-name {
-                font-size: 1.2rem;
-            }
-            
-            .quote-title {
-                font-size: 1.4rem;
-            }
-        }
-        
-        /* Per mobile molto piccoli (xxs) */
-        @media (max-width: 359.98px) {
             .logo-container {
-                min-width: auto;
-                flex-direction: column;
+                justify-content: center;
                 text-align: center;
+                margin-bottom: 1rem;
             }
             
             .logo-icon {
@@ -934,20 +858,113 @@
             .user-menu {
                 flex-direction: column;
                 align-items: center;
+                gap: 1rem;
+            }
+            
+            .nav-menu {
+                order: 2;
                 width: 100%;
+                margin-top: 1rem;
+                justify-content: center;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
             }
             
             .user-info {
                 text-align: center;
             }
             
-            .nav-menu {
-                justify-content: center;
+            .page-title {
+                font-size: 1.75rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .page-actions {
                 width: 100%;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .table-controls {
+                width: 100%;
+            }
+            
+            .search-input {
+                width: 100%;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-container {
+                gap: 20px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.95rem;
+            }
+            
+            .card-header {
+                padding: 15px 20px;
+            }
+            
+            .card-header h3 {
+                font-size: 1.3rem;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                margin-right: 15px;
+            }
+            
+            .stat-value {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .logo-text {
+                font-size: 1.3rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
             }
             
             .nav-btn {
                 padding: 0.5rem;
+                font-size: 0.85rem;
             }
             
             .nav-btn span {
@@ -959,71 +976,45 @@
                 font-size: 1.1rem;
             }
             
-            .item-row, .items-header {
-                min-width: 450px;
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Extra small devices (xxs) */
+        @media (max-width: 320px) {
+            .logo-text {
+                font-size: 1.1rem;
             }
             
-            .watermark {
-                font-size: 2.5rem;
+            .subtitle {
+                font-size: 0.8rem;
             }
             
-            .company-name {
-                font-size: 1rem;
+            .page-title {
+                font-size: 1.3rem;
             }
             
-            .quote-title {
-                font-size: 1.2rem;
+            .page-subtitle {
+                font-size: 0.9rem;
             }
-        }
-        
-        /* Scrollbar personalizzata */
-        .preview-card::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .preview-card::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-        
-        .preview-card::-webkit-scrollbar-thumb {
-            background: var(--primary-light);
-            border-radius: 4px;
-        }
-        
-        .preview-card::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-color);
-        }
-        
-        .items-management::-webkit-scrollbar {
-            height: 6px;
-        }
-        
-        .items-management::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-        
-        .items-management::-webkit-scrollbar-thumb {
-            background: var(--gray-color);
-            border-radius: 4px;
-        }
-        
-        /* Aggiustamenti per evitare overflow */
-        .form-control, .item-input, select, textarea {
-            max-width: 100%;
-        }
-        
-        /* Garantire che le tabelle siano responsive */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        /* Miglioramenti per i select su mobile */
-        @media (max-width: 767.98px) {
-            select.form-control {
-                font-size: 16px; /* Previene lo zoom su iOS */
+            
+            .nav-btn {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+            
+            .card-header h3 {
+                font-size: 1.1rem;
+            }
+            
+            .card-body {
+                padding: 15px;
+            }
+            
+            .form-control {
+                padding: 12px 12px 12px 40px;
             }
         }
     </style>
@@ -1057,17 +1048,23 @@
                     <a href="work-days.html" class="nav-btn">
                         <i class="fas fa-calendar-day"></i> <span>Giornate</span>
                     </a>
+                    <a href="estimates.html" class="nav-btn active">
+                        <i class="fas fa-calculator"></i> <span>Preventivi</span>
+                    </a>
+                    <a href="suppliers.html" class="nav-btn">
+                        <i class="fas fa-truck"></i> <span>Fornitori</span>
+                    </a>
+                    <a href="materials.html" class="nav-btn">
+                        <i class="fas fa-boxes"></i> <span>Materiali</span>
+                    </a>
                     <a href="invoices.html" class="nav-btn">
                         <i class="fas fa-file-invoice"></i> <span>Fatture</span>
-                    </a>
-                    <a href="preventivi.html" class="nav-btn active">
-                        <i class="fas fa-file-contract"></i> <span>Preventivi</span>
                     </a>
                 </div>
                 
                 <div class="user-info">
-                    <div class="user-name" id="userName">Caricamento...</div>
-                    <div class="user-role" id="userRole">Utente</div>
+                    <div class="user-name" id="headerUserName">Caricamento...</div>
+                    <div class="user-role" id="headerUserRole">Utente</div>
                 </div>
                 <button class="logout-btn" id="logoutBtn">
                     <i class="fas fa-sign-out-alt"></i> <span>Esci</span>
@@ -1076,282 +1073,294 @@
         </div>
     </header>
     
-    <!-- Main Content -->
+    <!-- Contenuto principale -->
     <main class="main-content">
         <div class="container">
             <div class="page-header">
                 <div>
                     <h1 class="page-title">
-                        <i class="fas fa-file-contract"></i> Gestione Preventivi
+                        <i class="fas fa-calculator"></i> Gestione Preventivi
                     </h1>
-                    <p class="page-subtitle">Crea preventivi professionali per i tuoi clienti</p>
+                    <p class="page-subtitle">Crea e gestisci i preventivi per i clienti</p>
                 </div>
                 <div class="page-actions">
-                    <button class="btn btn-warning" id="clearFormBtn">
-                        <i class="fas fa-broom"></i> <span>Pulisci</span>
+                    <button class="btn btn-secondary" id="exportBtn">
+                        <i class="fas fa-file-export"></i> <span>Esporta</span>
                     </button>
-                    <button class="btn btn-primary" id="generateDocxBtn">
-                        <i class="fas fa-file-word"></i> <span>Genera DOCX</span>
+                    <button class="btn btn-primary" id="newEstimateBtn">
+                        <i class="fas fa-plus-circle"></i> <span>Nuovo Preventivo</span>
                     </button>
                 </div>
             </div>
             
-            <div class="content-container">
+            <!-- Statistiche -->
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #e6f0ff; color: #004080;">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-title">Preventivi Totali</div>
+                        <div class="stat-value" id="totalEstimates">0</div>
+                        <div class="stat-change positive" id="totalChange">Totale</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #fff3cd; color: #856404;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-title">In Attesa</div>
+                        <div class="stat-value" id="pendingEstimates">0</div>
+                        <div class="stat-change positive" id="pendingChange">In attesa</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #d4edda; color: #155724;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-title">Accettati</div>
+                        <div class="stat-value" id="acceptedEstimates">0</div>
+                        <div class="stat-change positive" id="acceptedChange">Accettati</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #f8d7da; color: #721c24;">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-title">Rifiutati</div>
+                        <div class="stat-value" id="rejectedEstimates">0</div>
+                        <div class="stat-change negative" id="rejectedChange">Rifiutati</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Container principale -->
+            <div class="main-container">
                 <!-- Form Card -->
                 <div class="form-card">
                     <div class="card-header">
-                        <h3><i class="fas fa-edit"></i> Dati Preventivo</h3>
+                        <h3><i class="fas fa-plus-circle"></i> <span id="formTitle">Nuovo Preventivo</span></h3>
                     </div>
                     <div class="card-body">
-                        <form id="quoteForm">
+                        <form id="estimateForm">
+                            <input type="hidden" id="estimateId" value="">
+                            
                             <div class="form-row">
                                 <div class="form-group required">
-                                    <label for="quoteNumber">Numero Preventivo</label>
+                                    <label for="clientName">Cliente</label>
                                     <div class="input-with-icon">
-                                        <i class="fas fa-hashtag"></i>
-                                        <input type="text" id="quoteNumber" class="form-control" placeholder="Es: PREV-2023-001" required>
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" id="clientName" class="form-control" placeholder="Nome cliente" required>
                                     </div>
                                 </div>
                                 
                                 <div class="form-group required">
-                                    <label for="quoteDate">Data Preventivo</label>
+                                    <label for="estimateNumber">Numero Preventivo</label>
                                     <div class="input-with-icon">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        <input type="date" id="quoteDate" class="form-control" required>
+                                        <i class="fas fa-hashtag"></i>
+                                        <input type="text" id="estimateNumber" class="form-control" placeholder="Es: PREV-2024-001" required>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="form-row">
                                 <div class="form-group required">
-                                    <label for="validUntil">Validità fino al</label>
+                                    <label for="estimateDate">Data Preventivo</label>
                                     <div class="input-with-icon">
-                                        <i class="fas fa-calendar-check"></i>
-                                        <input type="date" id="validUntil" class="form-control" required>
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <input type="date" id="estimateDate" class="form-control" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group required">
+                                    <label for="expiryDate">Data Scadenza</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-calendar-times"></i>
+                                        <input type="date" id="expiryDate" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="clientEmail">Email Cliente</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-envelope"></i>
+                                        <input type="email" id="clientEmail" class="form-control" placeholder="email@cliente.it">
                                     </div>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="paymentTerms">Termini di Pagamento</label>
+                                    <label for="clientPhone">Telefono Cliente</label>
                                     <div class="input-with-icon">
-                                        <i class="fas fa-money-check-alt"></i>
-                                        <select id="paymentTerms" class="form-control">
-                                            <option value="30 giorni">30 giorni dalla consegna</option>
-                                            <option value="50% anticipo">50% anticipo, 50% a consegna</option>
-                                            <option value="contanti">Contanti alla consegna</option>
-                                            <option value="bonifico">Bonifico bancario</option>
-                                            <option value="personalizzato">Personalizzato</option>
+                                        <i class="fas fa-phone"></i>
+                                        <input type="tel" id="clientPhone" class="form-control" placeholder="+39 012 3456789">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="projectTitle">Titolo Progetto</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-project-diagram"></i>
+                                    <input type="text" id="projectTitle" class="form-control" placeholder="Titolo del progetto">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="description">Descrizione Lavori</label>
+                                <textarea id="description" class="form-control" placeholder="Descrizione dettagliata dei lavori..." rows="4"></textarea>
+                            </div>
+                            
+                            <!-- Items Table -->
+                            <div class="form-group">
+                                <label>Voci di Preventivo</label>
+                                <table class="items-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Descrizione</th>
+                                            <th>Quantità</th>
+                                            <th>Prezzo Unitario</th>
+                                            <th>Totale</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemsTableBody">
+                                        <!-- Items will be added here -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="5" class="text-center">
+                                                <button type="button" class="btn btn-secondary btn-sm" id="addItemBtn">
+                                                    <i class="fas fa-plus"></i> Aggiungi Voce
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            
+                            <!-- Totals -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Subtotale</label>
+                                    <div class="form-control" style="font-weight: 600; text-align: right;" id="subtotal">0.00 €</div>
+                                </div>
+                                <div class="form-group">
+                                    <label>IVA (22%)</label>
+                                    <div class="form-control" style="font-weight: 600; text-align: right;" id="vatAmount">0.00 €</div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Totale</label>
+                                    <div class="form-control" style="font-weight: 600; text-align: right; color: var(--primary-color);" id="totalAmount">0.00 €</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="status">Stato</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                        <select id="status" class="form-control" required>
+                                            <option value="draft">Bozza</option>
+                                            <option value="sent">Inviato</option>
+                                            <option value="accepted">Accettato</option>
+                                            <option value="rejected">Rifiutato</option>
+                                            <option value="expired">Scaduto</option>
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <!-- Cliente -->
-                            <div class="form-group">
-                                <h4 style="color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                                    <i class="fas fa-user-tie"></i> Dati Cliente
-                                </h4>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group required">
-                                    <label for="clientName">Nome Cliente/Ragione Sociale</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-building"></i>
-                                        <input type="text" id="clientName" class="form-control" placeholder="Nome completo o ragione sociale" required>
-                                    </div>
-                                </div>
                                 
                                 <div class="form-group">
-                                    <label for="clientVat">Partita IVA/Codice Fiscale</label>
+                                    <label for="notes">Note</label>
                                     <div class="input-with-icon">
-                                        <i class="fas fa-id-card"></i>
-                                        <input type="text" id="clientVat" class="form-control" placeholder="P. IVA o CF">
+                                        <i class="fas fa-sticky-note"></i>
+                                        <input type="text" id="notes" class="form-control" placeholder="Note aggiuntive">
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group required">
-                                    <label for="clientAddress">Indirizzo</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <input type="text" id="clientAddress" class="form-control" placeholder="Via, numero, città" required>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="clientPhone">Telefono/Email</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-phone"></i>
-                                        <input type="text" id="clientPhone" class="form-control" placeholder="Telefono o email">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Cantiere -->
-                            <div class="form-group">
-                                <h4 style="color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                                    <i class="fas fa-hard-hat"></i> Dati Cantiere
-                                </h4>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group required">
-                                    <label for="siteAddress">Indirizzo Cantiere</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-map-pin"></i>
-                                        <input type="text" id="siteAddress" class="form-control" placeholder="Indirizzo del cantiere" required>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="siteDescription">Descrizione Lavori</label>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-clipboard-list"></i>
-                                        <input type="text" id="siteDescription" class="form-control" placeholder="Breve descrizione dei lavori">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Voci di Preventivo -->
-                            <div class="form-group">
-                                <h4 style="color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                                    <i class="fas fa-list-ol"></i> Voci di Preventivo
-                                </h4>
-                            </div>
-                            
-                            <div class="items-management">
-                                <div class="items-header">
-                                    <div>Descrizione</div>
-                                    <div>Quantità</div>
-                                    <div>Unità</div>
-                                    <div>Prezzo Unitario (€)</div>
-                                    <div>Totale (€)</div>
-                                    <div>Azioni</div>
-                                </div>
-                                <div id="itemsContainer">
-                                    <!-- Items will be added here -->
-                                </div>
-                                
-                                <button type="button" class="btn btn-secondary btn-sm mt-2" id="addItemBtn">
-                                    <i class="fas fa-plus"></i> Aggiungi Voce
-                                </button>
-                            </div>
-                            
-                            <!-- Note -->
-                            <div class="form-group">
-                                <label for="notes">Note Aggiuntive</label>
-                                <textarea id="notes" class="form-control" placeholder="Note, condizioni particolari, esclusioni..." rows="3"></textarea>
                             </div>
                             
                             <!-- Alerts -->
                             <div id="successAlert" class="alert alert-success d-none">
-                                <i class="fas fa-check-circle"></i>
-                                <div>Preventivo generato con successo!</div>
+                                <i class="fas fa-check-circle"></i> <span id="successMessage">Preventivo salvato con successo!</span>
                             </div>
                             
                             <div id="errorAlert" class="alert alert-error d-none">
-                                <i class="fas fa-exclamation-circle"></i>
-                                <div id="errorMessage">Si è verificato un errore. Controlla i dati inseriti.</div>
+                                <i class="fas fa-exclamation-circle"></i> <span id="errorMessage">Si è verificato un errore. Controlla i dati inseriti.</span>
+                            </div>
+
+                            <div id="infoAlert" class="alert alert-info d-none">
+                                <i class="fas fa-info-circle"></i> <span id="infoMessage"></span>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="saveBtn">
+                                    <i class="fas fa-save"></i> <span id="saveBtnText">Salva Preventivo</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="resetBtn">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                                <button type="button" class="btn btn-danger" id="cancelBtn" style="display: none;">
+                                    <i class="fas fa-times"></i> Annulla
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
                 
-                <!-- Preview Card -->
-                <div class="preview-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-eye"></i> Anteprima Preventivo</h3>
+                <!-- Table Card -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-list"></i> Elenco Preventivi</h3>
+                        <div class="table-controls">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="search-input" id="searchInput" placeholder="Cerca cliente...">
+                            </div>
+                            <select class="form-control" id="statusFilter" style="width: 150px;">
+                                <option value="">Tutti gli stati</option>
+                                <option value="draft">Bozza</option>
+                                <option value="sent">Inviato</option>
+                                <option value="accepted">Accettato</option>
+                                <option value="rejected">Rifiutato</option>
+                                <option value="expired">Scaduto</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="preview-content" id="previewContent">
-                            <div class="watermark">CUFFARI</div>
-                            <div class="preview-header">
-                                <div class="company-info">
-                                    <div class="company-name"> Cuffari Restauri Edili</div>
-                                    <div class="company-details">
-                                        Via Guido Capelli, 3 | Tel: 3896393389 | P.IVA: --TBD---
-                                    </div>
-                                    <div class="company-details">
-                                        Email: c.ignazio2009@libero.it | www.cuffarirestairiedili.com
-                                    </div>
-                                </div>
-                                
-                                <div class="quote-title">PREVENTIVO N. <span id="previewQuoteNumber">PREV-2023-001</span></div>
-                            </div>
-                            
-                            <div class="quote-info">
-                                <div class="client-info">
-                                    <h3>CLIENTE</h3>
-                                    <div id="previewClientName">Nome Cliente</div>
-                                    <div id="previewClientVat">P.IVA: -</div>
-                                    <div id="previewClientAddress">Indirizzo</div>
-                                    <div id="previewClientPhone">Telefono/Email</div>
-                                </div>
-                                
-                                <div class="quote-details">
-                                    <h3>DETTAGLI PREVENTIVO</h3>
-                                    <div>Data: <span id="previewQuoteDate">01/01/2023</span></div>
-                                    <div>Validità: <span id="previewValidUntil">31/01/2023</span></div>
-                                    <div>Termini pagamento: <span id="previewPaymentTerms">30 giorni</span></div>
-                                    <div>Cantiere: <span id="previewSiteAddress">Indirizzo cantiere</span></div>
-                                    <div>Lavori: <span id="previewSiteDescription">Descrizione lavori</span></div>
-                                </div>
-                            </div>
-                            
+                    <div class="table-body">
+                        <div class="table-responsive">
                             <table class="items-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 40%;">Descrizione</th>
-                                        <th style="width: 12%;">Quantità</th>
-                                        <th style="width: 12%;">Unità</th>
-                                        <th style="width: 18%;" class="text-right">Prezzo Unitario (€)</th>
-                                        <th style="width: 18%;" class="text-right">Totale (€)</th>
+                                        <th>Numero</th>
+                                        <th>Cliente</th>
+                                        <th>Data</th>
+                                        <th>Importo</th>
+                                        <th>Stato</th>
+                                        <th>Azioni</th>
                                     </tr>
                                 </thead>
-                                <tbody id="previewItems">
+                                <tbody id="estimatesTableBody">
                                     <tr>
-                                        <td colspan="5" class="text-center">Nessuna voce aggiunta</td>
+                                        <td colspan="6" class="text-center p-4">
+                                            <div class="loading" style="margin: 0 auto;"></div>
+                                            <p>Caricamento preventivi...</p>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            
-                            <div class="totals-section">
-                                <div class="total-row">
-                                    <span>Imponibile:</span>
-                                    <span id="previewSubtotal">0,00 €</span>
-                                </div>
-                                <div class="total-row">
-                                    <span>IVA 22%:</span>
-                                    <span id="previewVat">0,00 €</span>
-                                </div>
-                                <div class="total-row final">
-                                    <span>TOTALE PREVENTIVO:</span>
-                                    <span id="previewTotal">0,00 €</span>
-                                </div>
-                            </div>
-                            
-                            <div class="terms-conditions">
-                                <h4>CONDIZIONI E NOTE</h4>
-                                <div id="previewNotes">
-                                    Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. 
-                                    I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall'accettazione.
-                                </div>
-                            </div>
-                            
-                            <div class="signature-section">
-                                <div>Firma per accettazione</div>
-                                <div class="signature-line"></div>
-                                <div style="margin-top: 0.5rem; font-size: 0.9rem;">
-                                    Il Responsabile Tecnico<br>
-                                    <strong>Ignazio Cuffari</strong>
-                                </div>
-                            </div>
-                            
-                            <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--gray-color); text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
-                                Documento generato digitalmente da Cuffari Restauri Edili
-                            </div>
+                        </div>
+                        
+                        <div id="noEstimatesMessage" class="no-data d-none">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <h3>Nessun preventivo trovato</h3>
+                            <p>Crea il primo preventivo utilizzando il form.</p>
                         </div>
                     </div>
                 </div>
@@ -1359,7 +1368,7 @@
         </div>
     </main>
     
-    <!-- Footer -->
+    <!-- Footer con informazioni sviluppatore -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -1379,1199 +1388,829 @@
         </div>
     </footer>
 
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="loading"></div>
+            <p>Caricamento...</p>
+        </div>
+    </div>
+
+    <!-- Script per caricare la configurazione Firebase -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Element references
-            const quoteForm = document.getElementById('quoteForm');
-            const quoteNumberInput = document.getElementById('quoteNumber');
-            const quoteDateInput = document.getElementById('quoteDate');
-            const validUntilInput = document.getElementById('validUntil');
-            const paymentTermsSelect = document.getElementById('paymentTerms');
-            const clientNameInput = document.getElementById('clientName');
-            const clientVatInput = document.getElementById('clientVat');
-            const clientAddressInput = document.getElementById('clientAddress');
-            const clientPhoneInput = document.getElementById('clientPhone');
-            const siteAddressInput = document.getElementById('siteAddress');
-            const siteDescriptionInput = document.getElementById('siteDescription');
-            const notesInput = document.getElementById('notes');
-            const itemsContainer = document.getElementById('itemsContainer');
-            const addItemBtn = document.getElementById('addItemBtn');
-            const clearFormBtn = document.getElementById('clearFormBtn');
-            const generateDocxBtn = document.getElementById('generateDocxBtn');
-            const successAlert = document.getElementById('successAlert');
-            const errorAlert = document.getElementById('errorAlert');
-            const errorMessage = document.getElementById('errorMessage');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const userNameElement = document.getElementById('userName');
-            const userRoleElement = document.getElementById('userRole');
-            
-            // Preview elements
-            const previewQuoteNumber = document.getElementById('previewQuoteNumber');
-            const previewQuoteDate = document.getElementById('previewQuoteDate');
-            const previewValidUntil = document.getElementById('previewValidUntil');
-            const previewPaymentTerms = document.getElementById('previewPaymentTerms');
-            const previewClientName = document.getElementById('previewClientName');
-            const previewClientVat = document.getElementById('previewClientVat');
-            const previewClientAddress = document.getElementById('previewClientAddress');
-            const previewClientPhone = document.getElementById('previewClientPhone');
-            const previewSiteAddress = document.getElementById('previewSiteAddress');
-            const previewSiteDescription = document.getElementById('previewSiteDescription');
-            const previewItems = document.getElementById('previewItems');
-            const previewSubtotal = document.getElementById('previewSubtotal');
-            const previewVat = document.getElementById('previewVat');
-            const previewTotal = document.getElementById('previewTotal');
-            const previewNotes = document.getElementById('previewNotes');
-            
-            // Global variables
-            let items = [];
-            let itemCounter = 0;
-            
-            // Initialize page
-            function initPage() {
-                // Set default dates
-                const today = new Date();
-                quoteDateInput.value = formatDateForInput(today);
-                
-                const validUntil = new Date();
-                validUntil.setDate(today.getDate() + 30);
-                validUntilInput.value = formatDateForInput(validUntil);
-                
-                // Generate quote number
-                const randomNum = Math.floor(Math.random() * 1000);
-                const formattedNum = randomNum.toString().padStart(3, '0');
-                quoteNumberInput.value = `PREV-${today.getFullYear()}-${formattedNum}`;
-                
-                // Add first item
-                addNewItem();
-                
-                // Setup event listeners
-                setupEventListeners();
-                
-                // Update user info
-                updateUserInfo();
-                
-                // Initial preview update
-                updatePreview();
-            }
-            
-            // Setup event listeners
-            function setupEventListeners() {
-                // Form inputs live update preview
-                const formInputs = [
-                    quoteNumberInput, quoteDateInput, validUntilInput, paymentTermsSelect,
-                    clientNameInput, clientVatInput, clientAddressInput, clientPhoneInput,
-                    siteAddressInput, siteDescriptionInput, notesInput
-                ];
-                
-                formInputs.forEach(input => {
-                    input.addEventListener('input', updatePreview);
-                    input.addEventListener('change', updatePreview);
-                });
-                
-                // Add item button
-                addItemBtn.addEventListener('click', () => {
-                    addNewItem();
-                    updatePreview();
-                });
-                
-                // Clear form button
-                clearFormBtn.addEventListener('click', clearForm);
-                
-                // Generate DOCX button
-                generateDocxBtn.addEventListener('click', generateProfessionalDocx);
-                
-                // Logout button
-                logoutBtn.addEventListener('click', handleLogout);
-            }
-            
-            // Format date for input (YYYY-MM-DD)
-            function formatDateForInput(date) {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            }
-            
-            // Format date for display (DD/MM/YYYY)
-            function formatDateForDisplay(dateString) {
-                if (!dateString) return '';
-                const date = new Date(dateString + 'T12:00:00');
-                const day = date.getDate().toString().padStart(2, '0');
-                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                const year = date.getFullYear();
-                return `${day}/${month}/${year}`;
-            }
-            
-            // Format currency
-            function formatCurrency(amount) {
-                return new Intl.NumberFormat('it-IT', {
-                    style: 'currency',
-                    currency: 'EUR',
-                    minimumFractionDigits: 2
-                }).format(amount);
-            }
-            
-            // Add new item row
-            function addNewItem() {
-                itemCounter++;
-                const itemId = `item-${itemCounter}`;
-                
-                const itemRow = document.createElement('div');
-                itemRow.className = 'item-row';
-                itemRow.id = itemId;
-                
-                itemRow.innerHTML = `
-                    <input type="text" class="item-input item-description" placeholder="Descrizione lavoro/materiale" data-item="description">
-                    <input type="number" class="item-input item-quantity" placeholder="1" min="0" step="0.1" value="1" data-item="quantity">
-                    <select class="item-input item-unit" data-item="unit">
-                        <option value="n">n</option>
-                        <option value="m">m</option>
-                        <option value="m²">m²</option>
-                        <option value="m³">m³</option>
-                        <option value="kg">kg</option>
-                        <option value="h">h</option>
-                        <option value="gg">gg</option>
-                        <option value="pz">pz</option>
-                        <option value="lotto">lotto</option>
-                    </select>
-                    <input type="number" class="item-input item-price" placeholder="0.00" min="0" step="0.01" value="0" data-item="price">
-                    <div class="item-total-display">0,00 €</div>
-                    <button type="button" class="remove-item" onclick="removeItem('${itemId}')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                
-                itemsContainer.appendChild(itemRow);
-                
-                // Add event listeners to new item inputs
-                const inputs = itemRow.querySelectorAll('.item-input');
-                inputs.forEach(input => {
-                    input.addEventListener('input', () => {
-                        updateItemTotal(itemId);
-                        updatePreview();
-                    });
-                });
-                
-                updateItemTotal(itemId);
-            }
-            
-            // Remove item
-            window.removeItem = function(itemId) {
-                const itemRow = document.getElementById(itemId);
-                if (itemRow) {
-                    itemRow.remove();
-                    updatePreview();
+        // Funzione per caricare la configurazione Firebase
+        async function loadFirebaseConfig() {
+            try {
+                const response = await fetch('firebase_config.json');
+                if (!response.ok) {
+                    throw new Error(`Errore HTTP ${response.status}: ${response.statusText}`);
                 }
-            };
-            
-            // Update item total
-            function updateItemTotal(itemId) {
-                const itemRow = document.getElementById(itemId);
-                if (!itemRow) return;
-                
-                const quantity = parseFloat(itemRow.querySelector('.item-quantity').value) || 0;
-                const price = parseFloat(itemRow.querySelector('.item-price').value) || 0;
-                const total = quantity * price;
-                
-                itemRow.querySelector('.item-total-display').textContent = formatCurrency(total);
-            }
-            
-            // Get all items data
-            function getItemsData() {
-                const itemsData = [];
-                const itemRows = document.querySelectorAll('.item-row');
-                
-                if (!itemRows) return itemsData;
-                
-                itemRows.forEach(row => {
-                    if (row.id && row.id.startsWith('item-')) {
-                        const description = row.querySelector('.item-description').value;
-                        const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
-                        const unit = row.querySelector('.item-unit').value;
-                        const price = parseFloat(row.querySelector('.item-price').value) || 0;
-                        const total = quantity * price;
-                        
-                        if (description && quantity > 0 && price > 0) {
-                            itemsData.push({
-                                description,
-                                quantity,
-                                unit,
-                                price,
-                                total
-                            });
-                        }
-                    }
-                });
-                
-                return itemsData;
-            }
-            
-            // Calculate totals
-            function calculateTotals(itemsData) {
-                if (!itemsData || !Array.isArray(itemsData) || itemsData.length === 0) {
-                    return {
-                        subtotal: 0,
-                        vat: 0,
-                        total: 0
-                    };
-                }
-                
-                const subtotal = itemsData.reduce((sum, item) => sum + (item.total || 0), 0);
-                const vat = subtotal * 0.22;
-                const total = subtotal + vat;
-                
+                const config = await response.json();
+                return config;
+            } catch (error) {
+                console.error('Errore nel caricamento della configurazione Firebase:', error);
+                // Configurazione di fallback (solo per sviluppo)
                 return {
-                    subtotal,
-                    vat,
-                    total
+                    apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
+                    authDomain: "work-tracker-v120400.firebaseapp.com",
+                    projectId: "work-tracker-v120400",
+                    storageBucket: "work-tracker-v120400.firebasestorage.app",
+                    messagingSenderId: "437459935839",
+                    appId: "1:437459935839:web:cb0b54608314dcb25731ea",
+                    measurementId: "G-2LPKL9WREX"
                 };
             }
+        }
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Elementi UI
+            const logoutBtn = document.getElementById('logoutBtn');
+            const estimateForm = document.getElementById('estimateForm');
+            const saveBtn = document.getElementById('saveBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const newEstimateBtn = document.getElementById('newEstimateBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const addItemBtn = document.getElementById('addItemBtn');
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            const infoAlert = document.getElementById('infoAlert');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const infoMessage = document.getElementById('infoMessage');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            // Form fields
+            const estimateId = document.getElementById('estimateId');
+            const clientName = document.getElementById('clientName');
+            const estimateNumber = document.getElementById('estimateNumber');
+            const estimateDate = document.getElementById('estimateDate');
+            const expiryDate = document.getElementById('expiryDate');
+            const clientEmail = document.getElementById('clientEmail');
+            const clientPhone = document.getElementById('clientPhone');
+            const projectTitle = document.getElementById('projectTitle');
+            const description = document.getElementById('description');
+            const status = document.getElementById('status');
+            const notes = document.getElementById('notes');
             
-            // Validate form with detailed messages
-            function validateFormWithDetails() {
-                const errors = [];
+            // Totals
+            const subtotal = document.getElementById('subtotal');
+            const vatAmount = document.getElementById('vatAmount');
+            const totalAmount = document.getElementById('totalAmount');
+            
+            // Tables
+            const itemsTableBody = document.getElementById('itemsTableBody');
+            const estimatesTableBody = document.getElementById('estimatesTableBody');
+            const noEstimatesMessage = document.getElementById('noEstimatesMessage');
+
+            // Stato dell'applicazione
+            let firebaseApp = null;
+            let auth = null;
+            let db = null;
+            let currentUser = null;
+            let userData = null;
+            let estimates = [];
+            let estimateItems = [];
+            let isEditing = false;
+
+            // Funzione per mostrare messaggi
+            function showAlert(alertElement, message = '') {
+                // Nascondi tutti gli alert
+                successAlert.classList.add('d-none');
+                errorAlert.classList.add('d-none');
+                infoAlert.classList.add('d-none');
                 
-                // Check required fields
-                if (!quoteNumberInput.value.trim()) {
-                    errors.push("Il numero preventivo è obbligatorio. Inserisci un codice identificativo come 'PREV-2023-001'.");
-                } else if (!/^[A-Za-z0-9\-_]+$/.test(quoteNumberInput.value.trim())) {
-                    errors.push("Il numero preventivo contiene caratteri non validi. Usa solo lettere, numeri, trattini e underscore.");
+                // Mostra l'alert specificato
+                if (message && alertElement === infoAlert) {
+                    infoMessage.textContent = message;
+                } else if (message && alertElement === errorAlert) {
+                    errorMessage.textContent = message;
+                } else if (message && alertElement === successAlert) {
+                    successMessage.textContent = message;
                 }
-                
-                if (!quoteDateInput.value) {
-                    errors.push("La data preventivo è obbligatoria. Seleziona una data valida dal calendario.");
-                }
-                
-                if (!validUntilInput.value) {
-                    errors.push("La data di validità è obbligatoria. Seleziona una data valida dal calendario.");
-                } else if (validUntilInput.value && quoteDateInput.value) {
-                    const quoteDate = new Date(quoteDateInput.value);
-                    const validUntil = new Date(validUntilInput.value);
-                    if (validUntil <= quoteDate) {
-                        errors.push("La data di validità deve essere successiva alla data del preventivo.");
-                    }
-                }
-                
-                if (!clientNameInput.value.trim()) {
-                    errors.push("Il nome cliente è obbligatorio. Inserisci il nome completo o la ragione sociale del cliente.");
-                }
-                
-                if (!clientAddressInput.value.trim()) {
-                    errors.push("L'indirizzo cliente è obbligatorio. Inserisci via, numero e città del cliente.");
-                }
-                
-                if (!siteAddressInput.value.trim()) {
-                    errors.push("L'indirizzo cantiere è obbligatorio. Inserisci l'indirizzo completo del cantiere dove verranno eseguiti i lavori.");
-                }
-                
-                // Check if there are items
-                const itemsData = getItemsData();
-                if (itemsData.length === 0) {
-                    errors.push("Aggiungi almeno una voce al preventivo. Clicca su 'Aggiungi Voce' per inserire lavori o materiali.");
+                alertElement.classList.remove('d-none');
+            }
+
+            // Funzione per impostare lo stato di caricamento
+            function setLoading(isLoading) {
+                if (isLoading) {
+                    loadingOverlay.style.display = 'flex';
+                    saveBtn.disabled = true;
+                    saveBtn.innerHTML = '<div class="loading"></div> <span>Salvataggio...</span>';
                 } else {
-                    // Check if all items have valid data
-                    itemsData.forEach((item, index) => {
-                        const itemNumber = index + 1;
-                        
-                        if (!item.description || item.description.trim() === '') {
-                            errors.push(`Voce ${itemNumber}: la descrizione è obbligatoria. Descrivi chiaramente il lavoro o materiale.`);
-                        } else if (item.description.trim().length < 3) {
-                            errors.push(`Voce ${itemNumber}: la descrizione è troppo breve (minimo 3 caratteri).`);
-                        }
-                        
-                        if (item.quantity <= 0) {
-                            errors.push(`Voce ${itemNumber}: la quantità deve essere maggiore di zero (attuale: ${item.quantity}).`);
-                        } else if (item.quantity > 1000000) {
-                            errors.push(`Voce ${itemNumber}: la quantità sembra eccessiva (${item.quantity}). Verifica il valore.`);
-                        }
-                        
-                        if (item.price <= 0) {
-                            errors.push(`Voce ${itemNumber}: il prezzo unitario deve essere maggiore di zero (attuale: €${item.price}).`);
-                        } else if (item.price > 1000000) {
-                            errors.push(`Voce ${itemNumber}: il prezzo unitario sembra eccessivo (€${item.price}). Verifica il valore.`);
-                        }
-                        
-                        if (item.total > 10000000) {
-                            errors.push(`Voce ${itemNumber}: il totale della voce sembra eccessivo (€${item.total}). Verifica quantità e prezzo.`);
-                        }
-                    });
-                }
-                
-                return errors;
-            }
-            
-            // Update preview
-            function updatePreview() {
-                // Update basic info
-                previewQuoteNumber.textContent = quoteNumberInput.value || 'PREV-2023-001';
-                previewQuoteDate.textContent = formatDateForDisplay(quoteDateInput.value) || '01/01/2023';
-                previewValidUntil.textContent = formatDateForDisplay(validUntilInput.value) || '31/01/2023';
-                
-                const selectedOption = paymentTermsSelect.options[paymentTermsSelect.selectedIndex];
-                previewPaymentTerms.textContent = selectedOption ? selectedOption.text : '30 giorni dalla consegna';
-                
-                // Update client info
-                previewClientName.textContent = clientNameInput.value || 'Nome Cliente';
-                previewClientVat.textContent = clientVatInput.value ? `P.IVA: ${clientVatInput.value}` : 'P.IVA: -';
-                previewClientAddress.textContent = clientAddressInput.value || 'Indirizzo';
-                previewClientPhone.textContent = clientPhoneInput.value || 'Telefono/Email';
-                
-                // Update site info
-                previewSiteAddress.textContent = siteAddressInput.value || 'Indirizzo cantiere';
-                previewSiteDescription.textContent = siteDescriptionInput.value || 'Descrizione lavori';
-                
-                // Update items
-                const itemsData = getItemsData();
-                const totals = calculateTotals(itemsData);
-                
-                let itemsHTML = '';
-                
-                if (itemsData.length > 0) {
-                    itemsData.forEach(item => {
-                        itemsHTML += `
-                            <tr>
-                                <td>${item.description}</td>
-                                <td>${item.quantity}</td>
-                                <td>${item.unit}</td>
-                                <td class="text-right">${formatCurrency(item.price)}</td>
-                                <td class="text-right">${formatCurrency(item.total)}</td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    itemsHTML = `
-                        <tr>
-                            <td colspan="5" class="text-center">Nessuna voce aggiunta</td>
-                        </tr>
-                    `;
-                }
-                
-                previewItems.innerHTML = itemsHTML;
-                
-                // Update totals
-                previewSubtotal.textContent = formatCurrency(totals.subtotal);
-                previewVat.textContent = formatCurrency(totals.vat);
-                previewTotal.textContent = formatCurrency(totals.total);
-                
-                // Update notes
-                previewNotes.textContent = notesInput.value || 
-                    'Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall\'accettazione.';
-            }
-            
-            // Clear form
-            function clearForm() {
-                if (confirm('Sei sicuro di voler cancellare tutti i dati inseriti?')) {
-                    quoteForm.reset();
-                    
-                    // Clear items
-                    itemsContainer.innerHTML = '';
-                    itemCounter = 0;
-                    
-                    // Reset dates
-                    const today = new Date();
-                    quoteDateInput.value = formatDateForInput(today);
-                    
-                    const validUntil = new Date();
-                    validUntil.setDate(today.getDate() + 30);
-                    validUntilInput.value = formatDateForInput(validUntil);
-                    
-                    // Generate new quote number
-                    const randomNum = Math.floor(Math.random() * 1000);
-                    const formattedNum = randomNum.toString().padStart(3, '0');
-                    quoteNumberInput.value = `PREV-${today.getFullYear()}-${formattedNum}`;
-                    
-                    // Add first item
-                    addNewItem();
-                    
-                    // Update preview
-                    updatePreview();
-                    
-                    // Hide alerts
-                    hideAlerts();
+                    loadingOverlay.style.display = 'none';
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i> <span id="saveBtnText">Salva Preventivo</span>';
                 }
             }
-            
-            // PROFESSIONAL VERSION WITH BETTER FORMATTING
-            async function generateProfessionalDocx() {
+
+            // Inizializza Firebase
+            async function initializeFirebase() {
                 try {
-                    console.log("=== INIZIO GENERAZIONE DOCX PROFESSIONALE ===");
+                    setLoading(true);
                     
-                    // Validazione dettagliata
-                    const validationErrors = validateFormWithDetails();
-                    if (validationErrors.length > 0) {
-                        const errorList = validationErrors.map(err => `• ${err}`).join('\n');
-                        showErrorAlert(`Correggi i seguenti errori:\n${errorList}`);
-                        return;
-                    }
+                    // Carica la configurazione Firebase
+                    const firebaseConfig = await loadFirebaseConfig();
                     
-                    // Ottieni i dati
-                    const itemsData = getItemsData();
-                    console.log("Dati articoli ottenuti:", itemsData);
+                    // Inizializza Firebase
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                    auth = firebase.auth();
+                    db = firebase.firestore();
                     
-                    // Mostra loading
-                    const originalHtml = generateDocxBtn.innerHTML;
-                    generateDocxBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Generazione...</span>';
-                    generateDocxBtn.disabled = true;
-                    
-                    // Calcola totali
-                    const totals = calculateTotals(itemsData);
-                    
-                    // Verifica che la libreria docx sia caricata
-                    if (typeof docx === 'undefined') {
-                        showErrorAlert("La libreria per generare documenti Word non è stata caricata correttamente. Controlla la connessione internet e ricarica la pagina.");
-                        generateDocxBtn.innerHTML = originalHtml;
-                        generateDocxBtn.disabled = false;
-                        return;
-                    }
-                    
-                    const { 
-                        Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, 
-                        AlignmentType, WidthType, HeadingLevel, BorderStyle, ShadingType,
-                        VerticalAlign, TableLayoutType
-                    } = docx;
-                    
-                    // 1. Creazione della tabella degli articoli con formattazione professionale
-                    const tableRows = [];
-                    
-                    // Intestazione della tabella - stile elegante
-                    const headerCells = [
-                        new TableCell({
-                            children: [new Paragraph({
-                                children: [new TextRun({ text: "DESCRIZIONE", bold: true, color: "FFFFFF", size: 20 })],
-                                alignment: AlignmentType.LEFT
-                            })],
-                            shading: { type: ShadingType.SOLID, color: "003366" },
-                            margins: { top: 100, bottom: 100, left: 100, right: 100 }
-                        }),
-                        new TableCell({
-                            children: [new Paragraph({
-                                children: [new TextRun({ text: "QUANTITÀ", bold: true, color: "FFFFFF", size: 20 })],
-                                alignment: AlignmentType.CENTER
-                            })],
-                            shading: { type: ShadingType.SOLID, color: "003366" }
-                        }),
-                        new TableCell({
-                            children: [new Paragraph({
-                                children: [new TextRun({ text: "UNITÀ", bold: true, color: "FFFFFF", size: 20 })],
-                                alignment: AlignmentType.CENTER
-                            })],
-                            shading: { type: ShadingType.SOLID, color: "003366" }
-                        }),
-                        new TableCell({
-                            children: [new Paragraph({
-                                children: [new TextRun({ text: "PREZZO UNITARIO", bold: true, color: "FFFFFF", size: 20 })],
-                                alignment: AlignmentType.RIGHT
-                            })],
-                            shading: { type: ShadingType.SOLID, color: "003366" }
-                        }),
-                        new TableCell({
-                            children: [new Paragraph({
-                                children: [new TextRun({ text: "TOTALE", bold: true, color: "FFFFFF", size: 20 })],
-                                alignment: AlignmentType.RIGHT
-                            })],
-                            shading: { type: ShadingType.SOLID, color: "003366" }
-                        })
-                    ];
-                    
-                    tableRows.push(new TableRow({ children: headerCells }));
-                    
-                    // Aggiungi righe degli articoli con alternanza di colori
-                    for (let i = 0; i < itemsData.length; i++) {
-                        const item = itemsData[i];
-                        const bgColor = i % 2 === 0 ? "FFFFFF" : "F8F9FA";
-                        
-                        const itemRow = new TableRow({
-                            children: [
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: item.description || "", size: 18 })],
-                                        alignment: AlignmentType.LEFT
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: bgColor }
-                                }),
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: item.quantity.toString() || "", size: 18 })],
-                                        alignment: AlignmentType.CENTER
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: bgColor }
-                                }),
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: item.unit || "", size: 18 })],
-                                        alignment: AlignmentType.CENTER
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: bgColor }
-                                }),
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: formatCurrency(item.price) || "", size: 18 })],
-                                        alignment: AlignmentType.RIGHT
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: bgColor }
-                                }),
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: formatCurrency(item.total) || "", size: 18 })],
-                                        alignment: AlignmentType.RIGHT
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: bgColor }
-                                })
-                            ]
-                        });
-                        tableRows.push(itemRow);
-                    }
-                    
-                    // Aggiungi riga vuota per separazione
-                    tableRows.push(new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph("")], columnSpan: 5 })
-                        ]
-                    }));
-                    
-                    // 2. Creazione tabella dei totali
-                    const totalsRows = [
-                        new TableRow({
-                            children: [
-                                new TableCell({ 
-                                    children: [new Paragraph("")], 
-                                    columnSpan: 3 
-                                }),
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: "IMPONIBILE:", bold: true, size: 20 })],
-                                        alignment: AlignmentType.RIGHT
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: "F0F0F0" }
-                                }),
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: formatCurrency(totals.subtotal), size: 20 })],
-                                        alignment: AlignmentType.RIGHT
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: "F0F0F0" }
-                                })
-                            ]
-                        }),
-                        new TableRow({
-                            children: [
-                                new TableCell({ 
-                                    children: [new Paragraph("")], 
-                                    columnSpan: 3 
-                                }),
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: "IVA 22%:", bold: true, size: 20 })],
-                                        alignment: AlignmentType.RIGHT
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: "F0F0F0" }
-                                }),
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: formatCurrency(totals.vat), size: 20 })],
-                                        alignment: AlignmentType.RIGHT
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: "F0F0F0" }
-                                })
-                            ]
-                        }),
-                        new TableRow({
-                            children: [
-                                new TableCell({ 
-                                    children: [new Paragraph("")], 
-                                    columnSpan: 3 
-                                }),
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: "TOTALE PREVENTIVO:", bold: true, color: "FFFFFF", size: 22 })],
-                                        alignment: AlignmentType.RIGHT
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: "003366" }
-                                }),
-                                new TableCell({
-                                    children: [new Paragraph({
-                                        children: [new TextRun({ text: formatCurrency(totals.total), bold: true, color: "FFFFFF", size: 22 })],
-                                        alignment: AlignmentType.RIGHT
-                                    })],
-                                    shading: { type: ShadingType.SOLID, color: "003366" }
-                                })
-                            ]
-                        })
-                    ];
-                    
-                    // Aggiungi le righe dei totali alla tabella principale
-                    totalsRows.forEach(row => tableRows.push(row));
-                    
-                    // 3. Crea il documento con layout professionale
-                    const doc = new Document({
-                        styles: {
-                            paragraphStyles: [
-                                {
-                                    id: "Title",
-                                    name: "Title",
-                                    basedOn: "Normal",
-                                    next: "Normal",
-                                    run: {
-                                        size: 48,
-                                        bold: true,
-                                        color: "003366"
-                                    },
-                                    paragraph: {
-                                        spacing: { after: 300 },
-                                        alignment: AlignmentType.CENTER
-                                    }
-                                },
-                                {
-                                    id: "Heading1",
-                                    name: "Heading 1",
-                                    basedOn: "Normal",
-                                    next: "Normal",
-                                    run: {
-                                        size: 32,
-                                        bold: true,
-                                        color: "003366"
-                                    },
-                                    paragraph: {
-                                        spacing: { before: 240, after: 120 }
-                                    }
-                                },
-                                {
-                                    id: "Heading2",
-                                    name: "Heading 2",
-                                    basedOn: "Normal",
-                                    next: "Normal",
-                                    run: {
-                                        size: 26,
-                                        bold: true,
-                                        color: "003366"
-                                    },
-                                    paragraph: {
-                                        spacing: { before: 180, after: 60 }
-                                    }
-                                },
-                                {
-                                    id: "Normal",
-                                    name: "Normal",
-                                    basedOn: "Normal",
-                                    next: "Normal",
-                                    run: {
-                                        size: 22
-                                    },
-                                    paragraph: {
-                                        spacing: { line: 276 }
-                                    }
-                                }
-                            ]
-                        },
-                        sections: [{
-                            properties: {
-                                page: {
-                                    margin: {
-                                        top: 1440,    // 2.5 cm
-                                        right: 1440,  // 2.5 cm
-                                        bottom: 1440, // 2.5 cm
-                                        left: 1440    // 2.5 cm
-                                    }
-                                }
-                            },
-                            children: [
-                                // INTESTAZIONE AZIENDALE - Centrata
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: " CUFFARI",
-                                            bold: true,
-                                            size: 36,
-                                            color: "003366",
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: AlignmentType.CENTER,
-                                    spacing: { after: 200 }
-                                }),
-                                
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "RESTAURI EDILI SRL",
-                                            bold: true,
-                                            size: 28,
-                                            color: "003366",
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: AlignmentType.CENTER,
-                                    spacing: { after: 400 }
-                                }),
-                                
-                                // DETTAGLI CONTATTO
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "Via Roma 123, 00100 Roma (RM)",
-                                            size: 20,
-                                            color: "666666",
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: AlignmentType.CENTER
-                                }),
-                                
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "Tel: 06 12345678 | P.IVA: 12345678901",
-                                            size: 20,
-                                            color: "666666",
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: AlignmentType.CENTER
-                                }),
-                                
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "Email: info@maroccocuffari.it | www.maroccocuffari.it",
-                                            size: 20,
-                                            color: "666666",
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: AlignmentType.CENTER,
-                                    spacing: { after: 600 }
-                                }),
-                                
-                                // LINEA DIVISORIA
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "____________________________________________________________",
-                                            size: 20,
-                                            color: "003366"
-                                        })
-                                    ],
-                                    alignment: AlignmentType.CENTER,
-                                    spacing: { after: 600 }
-                                }),
-                                
-                                // TITOLO PREVENTIVO
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "PREVENTIVO N.",
-                                            bold: true,
-                                            size: 32,
-                                            color: "003366",
-                                            font: "Arial"
-                                        }),
-                                        new TextRun({
-                                            text: ` ${quoteNumberInput.value}`,
-                                            bold: true,
-                                            size: 32,
-                                            color: "FF9900",
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: AlignmentType.CENTER,
-                                    spacing: { before: 200, after: 400 }
-                                }),
-                                
-                                // TABELLA DETTAGLI CLIENTE E PREVENTIVO
-                                new Table({
-                                    rows: [
-                                        new TableRow({
-                                            children: [
-                                                // Colonna sinistra - Cliente
-                                                new TableCell({
-                                                    width: { size: 50, type: WidthType.PERCENTAGE },
-                                                    children: [
-                                                        new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: "CLIENTE",
-                                                                    bold: true,
-                                                                    size: 24,
-                                                                    color: "003366",
-                                                                    font: "Arial"
-                                                                })
-                                                            ],
-                                                            spacing: { after: 200 }
-                                                        }),
-                                                        new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: clientNameInput.value,
-                                                                    size: 20,
-                                                                    font: "Arial"
-                                                                })
-                                                            ]
-                                                        }),
-                                                        clientVatInput.value ? new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: `P.IVA/CF: ${clientVatInput.value}`,
-                                                                    size: 18,
-                                                                    color: "666666",
-                                                                    font: "Arial"
-                                                                })
-                                                            ]
-                                                        }) : new Paragraph(""),
-                                                        new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: clientAddressInput.value,
-                                                                    size: 18,
-                                                                    font: "Arial"
-                                                                })
-                                                            ]
-                                                        }),
-                                                        clientPhoneInput.value ? new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: `Tel/Email: ${clientPhoneInput.value}`,
-                                                                    size: 18,
-                                                                    color: "666666",
-                                                                    font: "Arial"
-                                                                })
-                                                            ]
-                                                        }) : new Paragraph("")
-                                                    ],
-                                                    margins: { top: 100, bottom: 100, left: 100, right: 100 }
-                                                }),
-                                                // Colonna destra - Dettagli preventivo
-                                                new TableCell({
-                                                    width: { size: 50, type: WidthType.PERCENTAGE },
-                                                    children: [
-                                                        new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: "DETTAGLI PREVENTIVO",
-                                                                    bold: true,
-                                                                    size: 24,
-                                                                    color: "003366",
-                                                                    font: "Arial"
-                                                                })
-                                                            ],
-                                                            spacing: { after: 200 }
-                                                        }),
-                                                        new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: `Data: ${formatDateForDisplay(quoteDateInput.value)}`,
-                                                                    size: 18,
-                                                                    font: "Arial"
-                                                                })
-                                                            ]
-                                                        }),
-                                                        new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: `Validità: ${formatDateForDisplay(validUntilInput.value)}`,
-                                                                    size: 18,
-                                                                    font: "Arial"
-                                                                })
-                                                            ]
-                                                        }),
-                                                        new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: `Pagamento: ${paymentTermsSelect.options[paymentTermsSelect.selectedIndex].text}`,
-                                                                    size: 18,
-                                                                    font: "Arial"
-                                                                })
-                                                            ]
-                                                        }),
-                                                        new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: `Cantiere: ${siteAddressInput.value}`,
-                                                                    size: 18,
-                                                                    font: "Arial"
-                                                                })
-                                                            ]
-                                                        }),
-                                                        siteDescriptionInput.value ? new Paragraph({
-                                                            children: [
-                                                                new TextRun({
-                                                                    text: `Lavori: ${siteDescriptionInput.value}`,
-                                                                    size: 18,
-                                                                    font: "Arial"
-                                                                })
-                                                            ]
-                                                        }) : new Paragraph("")
-                                                    ],
-                                                    margins: { top: 100, bottom: 100, left: 100, right: 100 }
-                                                })
-                                            ]
-                                        })
-                                    ],
-                                    width: { size: 100, type: WidthType.PERCENTAGE },
-                                    layout: TableLayoutType.FIXED
-                                }),
-                                
-                                // SPAZIO
-                                new Paragraph({
-                                    text: "",
-                                    spacing: { before: 400, after: 400 }
-                                }),
-                                
-                                // TITOLO TABELLA ARTICOLI
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "VOCI DI PREVENTIVO",
-                                            bold: true,
-                                            size: 26,
-                                            color: "003366",
-                                            font: "Arial",
-                                            underline: {}
-                                        })
-                                    ],
-                                    alignment: AlignmentType.CENTER,
-                                    spacing: { before: 200, after: 300 }
-                                }),
-                                
-                                // TABELLA ARTICOLI
-                                new Table({
-                                    rows: tableRows,
-                                    width: { size: 100, type: WidthType.PERCENTAGE },
-                                    borders: {
-                                        top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-                                        bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-                                        left: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-                                        right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
-                                        insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
-                                        insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" }
-                                    },
-                                    layout: TableLayoutType.FIXED
-                                }),
-                                
-                                // SPAZIO
-                                new Paragraph({
-                                    text: "",
-                                    spacing: { before: 600, after: 200 }
-                                }),
-                                
-                                // NOTE E CONDIZIONI
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "CONDIZIONI E NOTE",
-                                            bold: true,
-                                            size: 24,
-                                            color: "003366",
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    spacing: { before: 200, after: 200 }
-                                }),
-                                
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: notesInput.value || 'Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall\'accettazione.',
-                                            size: 18,
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    spacing: { after: 400 }
-                                }),
-                                
-                                // SPAZIO PER LA FIRMA
-                                new Paragraph({
-                                    text: "",
-                                    spacing: { before: 800, after: 200 }
-                                }),
-                                
-                                // LINEA PER LA FIRMA
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "_____________________________",
-                                            size: 20
-                                        })
-                                    ]
-                                }),
-                                
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "Firma per accettazione",
-                                            size: 18,
-                                            italics: true,
-                                            color: "666666"
-                                        })
-                                    ],
-                                    spacing: { after: 400 }
-                                }),
-                                
-                                // SPAZIO
-                                new Paragraph({
-                                    text: "",
-                                    spacing: { before: 800, after: 200 }
-                                }),
-                                
-                                // RESPONSABILE TECNICO
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "Il Responsabile Tecnico",
-                                            size: 18,
-                                            font: "Arial"
-                                        })
-                                    ]
-                                }),
-                                
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "Cristian Felice Cuffari",
-                                            bold: true,
-                                            size: 22,
-                                            color: "003366",
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    spacing: { after: 600 }
-                                }),
-                                
-                                // FOOTER
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "Documento generato digitalmente da Cuffari Restauri Edili",
-                                            italics: true,
-                                            size: 16,
-                                            color: "999999",
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: AlignmentType.CENTER,
-                                    spacing: { before: 600 }
-                                }),
-                                
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: `Preventivo creato il: ${new Date().toLocaleDateString('it-IT')}`,
-                                            size: 14,
-                                            color: "999999",
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: AlignmentType.CENTER
-                                })
-                            ]
-                        }]
+                    // Controlla lo stato di autenticazione
+                    auth.onAuthStateChanged(async (user) => {
+                        if (user) {
+                            currentUser = user;
+                            await loadUserData();
+                            setLoading(false);
+                        } else {
+                            // Utente non autenticato, reindirizza al login
+                            window.location.href = 'index.html';
+                        }
                     });
-                    
-                    // 4. Genera e scarica il documento
-                    const blob = await Packer.toBlob(doc);
-                    const fileName = `Preventivo_${quoteNumberInput.value.replace(/[^a-z0-9]/gi, '_')}.docx`;
-                    
-                    // Verifica che FileSaver sia disponibile
-                    if (typeof saveAs === 'undefined') {
-                        showErrorAlert("La libreria per il download non è stata caricata correttamente. Controlla la connessione internet e ricarica la pagina.");
-                        return;
-                    }
-                    
-                    saveAs(blob, fileName);
-                    
-                    console.log("Download completato");
-                    
-                    showSuccessAlert('Preventivo professionale generato con successo! Il file si chiama: ' + fileName);
                     
                 } catch (error) {
-                    console.error("ERRORE NELLA GENERAZIONE:", error);
-                    console.error("Stack trace:", error.stack);
+                    console.error('Errore nell\'inizializzazione di Firebase:', error);
+                    showAlert(errorAlert, 'Errore di configurazione. Contatta l\'amministratore.');
+                    setLoading(false);
+                }
+            }
+
+            // Carica i dati dell'utente
+            async function loadUserData() {
+                try {
+                    setLoading(true);
                     
-                    let userMessage = 'Errore nella generazione del documento: ';
+                    // Carica i dati dal Firestore
+                    const userDoc = await db.collection('users').doc(currentUser.uid).get();
                     
-                    if (error.message.includes("Cannot read properties of undefined")) {
-                        userMessage = "ERRORE: Problema con i dati del form. Verifica che tutti i campi siano compilati correttamente e ricarica la pagina.";
-                    } else if (error.message.includes("docx is not defined")) {
-                        userMessage = "ERRORE: La libreria per generare documenti Word non è stata caricata. Controlla la connessione internet.";
+                    if (userDoc.exists) {
+                        userData = userDoc.data();
+                        
+                        // Aggiorna l'UI con i dati dell'utente
+                        updateUserUI();
+                        
+                        // Carica i preventivi
+                        await loadEstimates();
+                        
+                        // Imposta la data di oggi come default
+                        const today = new Date().toISOString().split('T')[0];
+                        const nextWeek = new Date();
+                        nextWeek.setDate(nextWeek.getDate() + 7);
+                        const nextWeekStr = nextWeek.toISOString().split('T')[0];
+                        
+                        estimateDate.value = today;
+                        expiryDate.value = nextWeekStr;
+                        
+                        // Genera un numero preventivo automatico
+                        generateEstimateNumber();
+                        
                     } else {
-                        userMessage += error.message;
+                        // Se l'utente non esiste in Firestore, crea un documento di default
+                        userData = {
+                            email: currentUser.email,
+                            name: currentUser.displayName || currentUser.email.split('@')[0],
+                            role: 'user',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+                        
+                        await db.collection('users').doc(currentUser.uid).set(userData);
+                        updateUserUI();
+                        await loadEstimates();
                     }
                     
-                    showErrorAlert(userMessage);
+                    setLoading(false);
                     
-                } finally {
-                    // Ripristina il bottone
-                    generateDocxBtn.innerHTML = '<i class="fas fa-file-word"></i> <span>Genera DOCX</span>';
-                    generateDocxBtn.disabled = false;
+                } catch (error) {
+                    console.error('Errore nel caricamento dei dati utente:', error);
+                    showAlert(errorAlert, 'Errore nel caricamento dei dati. Riprova.');
+                    setLoading(false);
                 }
             }
-            
-            // Validate form (per compatibilità)
-            function validateForm() {
-                const errors = validateFormWithDetails();
-                return errors.length === 0;
+
+            // Aggiorna l'interfaccia utente con i dati dell'utente
+            function updateUserUI() {
+                // Header
+                document.getElementById('headerUserName').textContent = userData.name || currentUser.email.split('@')[0];
+                document.getElementById('headerUserRole').textContent = getRoleText(userData.role);
             }
-            
-            // Update user info
-            function updateUserInfo() {
-                // Try to get user from localStorage
-                const userData = localStorage.getItem('user');
-                if (userData) {
-                    try {
-                        const user = JSON.parse(userData);
-                        userNameElement.textContent = user.displayName || user.email || "Utente";
-                        userRoleElement.textContent = user.role || "Utente";
-                    } catch (e) {
-                        console.error("Error parsing user data:", e);
+
+            // Funzioni di utilità
+            function getRoleText(role) {
+                switch(role) {
+                    case 'admin': return 'Amministratore';
+                    case 'manager': return 'Manager';
+                    case 'user': return 'Utente';
+                    default: return 'Utente';
+                }
+            }
+
+            function getStatusText(status) {
+                switch(status) {
+                    case 'draft': return 'Bozza';
+                    case 'sent': return 'Inviato';
+                    case 'accepted': return 'Accettato';
+                    case 'rejected': return 'Rifiutato';
+                    case 'expired': return 'Scaduto';
+                    default: return 'Sconosciuto';
+                }
+            }
+
+            function getStatusClass(status) {
+                switch(status) {
+                    case 'draft': return 'status-draft';
+                    case 'sent': return 'status-sent';
+                    case 'accepted': return 'status-accepted';
+                    case 'rejected': return 'status-rejected';
+                    case 'expired': return 'status-expired';
+                    default: return '';
+                }
+            }
+
+            function formatCurrency(amount) {
+                return parseFloat(amount).toFixed(2).replace('.', ',') + ' €';
+            }
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('it-IT');
+            }
+
+            // Genera un numero preventivo automatico
+            function generateEstimateNumber() {
+                if (estimateNumber.value) return;
+                
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const count = estimates.length + 1;
+                
+                estimateNumber.value = `PREV-${year}-${count.toString().padStart(3, '0')}`;
+            }
+
+            // Aggiunge una voce al preventivo
+            function addItemToTable(item = null) {
+                const itemId = item ? item.id : Date.now().toString();
+                const itemDesc = item ? item.description : '';
+                const itemQty = item ? item.quantity : '1';
+                const itemPrice = item ? item.price : '0';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="text" class="form-control item-desc" value="${itemDesc}" placeholder="Descrizione lavoro/materiale"></td>
+                    <td><input type="number" class="form-control item-qty" value="${itemQty}" min="0" step="0.01" placeholder="Quantità"></td>
+                    <td><input type="number" class="form-control item-price" value="${itemPrice}" min="0" step="0.01" placeholder="Prezzo unitario"></td>
+                    <td class="item-total">${formatCurrency(itemQty * itemPrice)}</td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm remove-item-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                // Aggiungi event listener per calcolare il totale quando cambiano i valori
+                const descInput = row.querySelector('.item-desc');
+                const qtyInput = row.querySelector('.item-qty');
+                const priceInput = row.querySelector('.item-price');
+                
+                const updateTotal = () => {
+                    const qty = parseFloat(qtyInput.value) || 0;
+                    const price = parseFloat(priceInput.value) || 0;
+                    const total = qty * price;
+                    row.querySelector('.item-total').textContent = formatCurrency(total);
+                    updateEstimateTotals();
+                };
+                
+                qtyInput.addEventListener('input', updateTotal);
+                priceInput.addEventListener('input', updateTotal);
+                
+                // Aggiungi event listener per rimuovere la riga
+                row.querySelector('.remove-item-btn').addEventListener('click', function() {
+                    row.remove();
+                    updateEstimateTotals();
+                });
+                
+                itemsTableBody.appendChild(row);
+                
+                // Se è un nuovo elemento, aggiungilo all'array
+                if (!item) {
+                    estimateItems.push({
+                        id: itemId,
+                        description: '',
+                        quantity: 1,
+                        price: 0,
+                        total: 0
+                    });
+                }
+                
+                updateEstimateTotals();
+            }
+
+            // Aggiorna i totali del preventivo
+            function updateEstimateTotals() {
+                let subtotalVal = 0;
+                
+                // Calcola il subtotale dalle voci della tabella
+                const rows = itemsTableBody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const qtyInput = row.querySelector('.item-qty');
+                    const priceInput = row.querySelector('.item-price');
+                    
+                    if (qtyInput && priceInput) {
+                        const qty = parseFloat(qtyInput.value) || 0;
+                        const price = parseFloat(priceInput.value) || 0;
+                        subtotalVal += qty * price;
                     }
+                });
+                
+                // Calcola IVA (22%)
+                const vatVal = subtotalVal * 0.22;
+                const totalVal = subtotalVal + vatVal;
+                
+                // Aggiorna l'UI
+                subtotal.textContent = formatCurrency(subtotalVal);
+                vatAmount.textContent = formatCurrency(vatVal);
+                totalAmount.textContent = formatCurrency(totalVal);
+            }
+
+            // Carica i preventivi dal database
+            async function loadEstimates() {
+                try {
+                    setLoading(true);
+                    
+                    const estimatesSnapshot = await db.collection('estimates')
+                        .orderBy('estimateDate', 'desc')
+                        .get();
+                    
+                    estimates = [];
+                    estimatesSnapshot.forEach(doc => {
+                        estimates.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    
+                    renderEstimatesTable();
+                    updateStatistics();
+                    
+                    setLoading(false);
+                    
+                } catch (error) {
+                    console.error('Errore nel caricamento dei preventivi:', error);
+                    showAlert(errorAlert, 'Errore nel caricamento dei preventivi. Riprova.');
+                    setLoading(false);
                 }
             }
-            
-            // Handle logout
-            function handleLogout() {
-                if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    window.location.href = 'index.html';
+
+            // Renderizza la tabella dei preventivi
+            function renderEstimatesTable(filteredEstimates = estimates) {
+                if (filteredEstimates.length === 0) {
+                    estimatesTableBody.innerHTML = '';
+                    noEstimatesMessage.classList.remove('d-none');
+                    return;
+                }
+                
+                noEstimatesMessage.classList.add('d-none');
+                
+                let tableHTML = '';
+                
+                filteredEstimates.forEach(estimate => {
+                    const statusText = getStatusText(estimate.status);
+                    const statusClass = getStatusClass(estimate.status);
+                    
+                    // Calcola il totale se non è già presente
+                    const total = estimate.totalAmount || 
+                        (estimate.subtotal ? 
+                            (parseFloat(estimate.subtotal) + (parseFloat(estimate.subtotal) * 0.22)) : 
+                            0);
+                    
+                    tableHTML += `
+                        <tr>
+                            <td><strong>${estimate.estimateNumber}</strong></td>
+                            <td>${estimate.clientName}</td>
+                            <td>${formatDate(estimate.estimateDate)}</td>
+                            <td><strong>${formatCurrency(total)}</strong></td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td>
+                                <div style="display: flex; gap: 5px;">
+                                    <button class="btn btn-secondary btn-sm view-estimate-btn" data-id="${estimate.id}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-sm edit-estimate-btn" data-id="${estimate.id}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm delete-estimate-btn" data-id="${estimate.id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                estimatesTableBody.innerHTML = tableHTML;
+                
+                // Aggiungi event listener ai bottoni
+                document.querySelectorAll('.view-estimate-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        viewEstimate(id);
+                    });
+                });
+                
+                document.querySelectorAll('.edit-estimate-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        editEstimate(id);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-estimate-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        deleteEstimate(id);
+                    });
+                });
+            }
+
+            // Aggiorna le statistiche
+            function updateStatistics() {
+                const total = estimates.length;
+                const pending = estimates.filter(e => e.status === 'sent').length;
+                const accepted = estimates.filter(e => e.status === 'accepted').length;
+                const rejected = estimates.filter(e => e.status === 'rejected').length;
+                
+                document.getElementById('totalEstimates').textContent = total;
+                document.getElementById('pendingEstimates').textContent = pending;
+                document.getElementById('acceptedEstimates').textContent = accepted;
+                document.getElementById('rejectedEstimates').textContent = rejected;
+            }
+
+            // Visualizza un preventivo
+            function viewEstimate(id) {
+                const estimate = estimates.find(e => e.id === id);
+                if (estimate) {
+                    alert(`Visualizzazione preventivo:\n\nNumero: ${estimate.estimateNumber}\nCliente: ${estimate.clientName}\nData: ${formatDate(estimate.estimateDate)}\nTotale: ${formatCurrency(estimate.totalAmount || 0)}\nStato: ${getStatusText(estimate.status)}`);
                 }
             }
-            
-            // Alert functions
-            function showSuccessAlert(message) {
-                successAlert.querySelector('div').textContent = message;
-                successAlert.classList.remove('d-none');
-                errorAlert.classList.add('d-none');
-                
-                // Scroll to alert
-                successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                
-                setTimeout(() => {
-                    successAlert.classList.add('d-none');
-                }, 8000);
+
+            // Modifica un preventivo
+            async function editEstimate(id) {
+                try {
+                    setLoading(true);
+                    
+                    const estimate = estimates.find(e => e.id === id);
+                    if (!estimate) {
+                        showAlert(errorAlert, 'Preventivo non trovato.');
+                        return;
+                    }
+                    
+                    // Popola il form
+                    estimateId.value = estimate.id;
+                    clientName.value = estimate.clientName || '';
+                    estimateNumber.value = estimate.estimateNumber || '';
+                    estimateDate.value = estimate.estimateDate || '';
+                    expiryDate.value = estimate.expiryDate || '';
+                    clientEmail.value = estimate.clientEmail || '';
+                    clientPhone.value = estimate.clientPhone || '';
+                    projectTitle.value = estimate.projectTitle || '';
+                    description.value = estimate.description || '';
+                    status.value = estimate.status || 'draft';
+                    notes.value = estimate.notes || '';
+                    
+                    // Pulisci la tabella delle voci
+                    itemsTableBody.innerHTML = '';
+                    estimateItems = [];
+                    
+                    // Aggiungi le voci del preventivo
+                    if (estimate.items && estimate.items.length > 0) {
+                        estimate.items.forEach(item => {
+                            addItemToTable(item);
+                        });
+                    } else {
+                        // Se non ci sono voci, aggiungi una riga vuota
+                        addItemToTable();
+                    }
+                    
+                    // Aggiorna i totali
+                    updateEstimateTotals();
+                    
+                    // Cambia stato del form
+                    isEditing = true;
+                    document.getElementById('formTitle').textContent = 'Modifica Preventivo';
+                    document.getElementById('saveBtnText').textContent = 'Aggiorna Preventivo';
+                    cancelBtn.style.display = 'block';
+                    
+                    // Scorri fino al form
+                    estimateForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    setLoading(false);
+                    
+                } catch (error) {
+                    console.error('Errore nel caricamento del preventivo:', error);
+                    showAlert(errorAlert, 'Errore nel caricamento del preventivo. Riprova.');
+                    setLoading(false);
+                }
             }
-            
-            function showErrorAlert(message) {
-                // Sostituisci newline con <br> per HTML
-                const formattedMessage = message.replace(/\n/g, '<br>');
-                errorMessage.innerHTML = formattedMessage;
-                errorAlert.classList.remove('d-none');
+
+            // Elimina un preventivo
+            async function deleteEstimate(id) {
+                if (!confirm('Sei sicuro di voler eliminare questo preventivo?')) {
+                    return;
+                }
+                
+                try {
+                    setLoading(true);
+                    
+                    await db.collection('estimates').doc(id).delete();
+                    
+                    // Rimuovi dalla lista locale
+                    estimates = estimates.filter(e => e.id !== id);
+                    
+                    // Se stiamo modificando il preventivo eliminato, resetta il form
+                    if (estimateId.value === id) {
+                        resetForm();
+                    }
+                    
+                    // Aggiorna l'UI
+                    renderEstimatesTable();
+                    updateStatistics();
+                    
+                    showAlert(successAlert, 'Preventivo eliminato con successo!');
+                    
+                    // Nascondi l'alert dopo 3 secondi
+                    setTimeout(() => {
+                        successAlert.classList.add('d-none');
+                    }, 3000);
+                    
+                    setLoading(false);
+                    
+                } catch (error) {
+                    console.error('Errore nell\'eliminazione del preventivo:', error);
+                    showAlert(errorAlert, 'Errore nell\'eliminazione del preventivo. Riprova.');
+                    setLoading(false);
+                }
+            }
+
+            // Filtra i preventivi
+            function filterEstimates() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const statusFilterValue = statusFilter.value;
+                
+                let filtered = estimates;
+                
+                // Filtra per stato
+                if (statusFilterValue) {
+                    filtered = filtered.filter(e => e.status === statusFilterValue);
+                }
+                
+                // Filtra per termine di ricerca
+                if (searchTerm) {
+                    filtered = filtered.filter(e => 
+                        (e.clientName && e.clientName.toLowerCase().includes(searchTerm)) ||
+                        (e.estimateNumber && e.estimateNumber.toLowerCase().includes(searchTerm)) ||
+                        (e.projectTitle && e.projectTitle.toLowerCase().includes(searchTerm))
+                    );
+                }
+                
+                renderEstimatesTable(filtered);
+            }
+
+            // Resetta il form
+            function resetForm() {
+                estimateForm.reset();
+                estimateId.value = '';
+                itemsTableBody.innerHTML = '';
+                estimateItems = [];
+                
+                // Reimposta le date
+                const today = new Date().toISOString().split('T')[0];
+                const nextWeek = new Date();
+                nextWeek.setDate(nextWeek.getDate() + 7);
+                const nextWeekStr = nextWeek.toISOString().split('T')[0];
+                
+                estimateDate.value = today;
+                expiryDate.value = nextWeekStr;
+                
+                // Genera un nuovo numero preventivo
+                generateEstimateNumber();
+                
+                // Reimposta lo stato
+                status.value = 'draft';
+                
+                // Aggiungi una riga vuota
+                addItemToTable();
+                
+                // Reimposta lo stato del form
+                isEditing = false;
+                document.getElementById('formTitle').textContent = 'Nuovo Preventivo';
+                document.getElementById('saveBtnText').textContent = 'Salva Preventivo';
+                cancelBtn.style.display = 'none';
+                
+                // Nascondi gli alert
                 successAlert.classList.add('d-none');
-                
-                // Scroll to alert
-                errorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                
-                // Auto-hide dopo 10 secondi
-                setTimeout(() => {
-                    errorAlert.classList.add('d-none');
-                }, 10000);
-            }
-            
-            function hideAlerts() {
-                successAlert.classList.add('d-none');
                 errorAlert.classList.add('d-none');
+                infoAlert.classList.add('d-none');
             }
-            
-            // Initialize the page
-            initPage();
+
+            // Gestione del form
+            estimateForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Nascondi eventuali alert precedenti
+                showAlert(infoAlert, '');
+                
+                // Validazioni
+                if (!clientName.value.trim()) {
+                    showAlert(errorAlert, 'Il nome del cliente è obbligatorio.');
+                    clientName.focus();
+                    return;
+                }
+                
+                if (!estimateNumber.value.trim()) {
+                    showAlert(errorAlert, 'Il numero preventivo è obbligatorio.');
+                    estimateNumber.focus();
+                    return;
+                }
+                
+                if (!estimateDate.value) {
+                    showAlert(errorAlert, 'La data preventivo è obbligatoria.');
+                    estimateDate.focus();
+                    return;
+                }
+                
+                if (!expiryDate.value) {
+                    showAlert(errorAlert, 'La data scadenza è obbligatoria.');
+                    expiryDate.focus();
+                    return;
+                }
+                
+                // Raccogli le voci del preventivo
+                const items = [];
+                const rows = itemsTableBody.querySelectorAll('tr');
+                let hasValidItems = false;
+                
+                rows.forEach(row => {
+                    const descInput = row.querySelector('.item-desc');
+                    const qtyInput = row.querySelector('.item-qty');
+                    const priceInput = row.querySelector('.item-price');
+                    
+                    if (descInput && qtyInput && priceInput) {
+                        const description = descInput.value.trim();
+                        const quantity = parseFloat(qtyInput.value) || 0;
+                        const price = parseFloat(priceInput.value) || 0;
+                        
+                        if (description && quantity > 0 && price > 0) {
+                            items.push({
+                                description,
+                                quantity,
+                                price,
+                                total: quantity * price
+                            });
+                            hasValidItems = true;
+                        }
+                    }
+                });
+                
+                if (!hasValidItems) {
+                    showAlert(errorAlert, 'Aggiungi almeno una voce valida al preventivo.');
+                    return;
+                }
+                
+                // Calcola i totali
+                const subtotalVal = items.reduce((sum, item) => sum + item.total, 0);
+                const vatVal = subtotalVal * 0.22;
+                const totalVal = subtotalVal + vatVal;
+                
+                try {
+                    setLoading(true);
+                    showAlert(infoAlert, 'Salvataggio preventivo in corso...');
+                    
+                    const estimateData = {
+                        clientName: clientName.value.trim(),
+                        estimateNumber: estimateNumber.value.trim(),
+                        estimateDate: estimateDate.value,
+                        expiryDate: expiryDate.value,
+                        clientEmail: clientEmail.value.trim() || '',
+                        clientPhone: clientPhone.value.trim() || '',
+                        projectTitle: projectTitle.value.trim() || '',
+                        description: description.value.trim() || '',
+                        status: status.value,
+                        notes: notes.value.trim() || '',
+                        items: items,
+                        subtotal: subtotalVal,
+                        vat: vatVal,
+                        totalAmount: totalVal,
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedBy: currentUser.uid
+                    };
+                    
+                    if (isEditing) {
+                        // Aggiorna preventivo esistente
+                        await db.collection('estimates').doc(estimateId.value).update(estimateData);
+                        
+                        // Aggiorna la lista locale
+                        const index = estimates.findIndex(e => e.id === estimateId.value);
+                        if (index !== -1) {
+                            estimates[index] = {
+                                id: estimateId.value,
+                                ...estimateData
+                            };
+                        }
+                        
+                        showAlert(successAlert, 'Preventivo aggiornato con successo!');
+                    } else {
+                        // Crea nuovo preventivo
+                        estimateData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                        estimateData.createdBy = currentUser.uid;
+                        
+                        const docRef = await db.collection('estimates').add(estimateData);
+                        
+                        // Aggiungi alla lista locale
+                        estimates.unshift({
+                            id: docRef.id,
+                            ...estimateData
+                        });
+                        
+                        showAlert(successAlert, 'Preventivo creato con successo!');
+                    }
+                    
+                    // Aggiorna l'UI
+                    renderEstimatesTable();
+                    updateStatistics();
+                    
+                    // Resetta il form dopo il salvataggio (solo se non stiamo modificando)
+                    if (!isEditing) {
+                        setTimeout(() => {
+                            resetForm();
+                        }, 2000);
+                    } else {
+                        // Se stiamo modificando, rimani in modalità modifica
+                        isEditing = false;
+                        cancelBtn.style.display = 'none';
+                        document.getElementById('formTitle').textContent = 'Nuovo Preventivo';
+                        document.getElementById('saveBtnText').textContent = 'Salva Preventivo';
+                    }
+                    
+                    // Nascondi l'alert di successo dopo 3 secondi
+                    setTimeout(() => {
+                        successAlert.classList.add('d-none');
+                    }, 3000);
+                    
+                    setLoading(false);
+                    
+                } catch (error) {
+                    console.error('Errore nel salvataggio del preventivo:', error);
+                    showAlert(errorAlert, `Errore nel salvataggio: ${error.message}`);
+                    setLoading(false);
+                }
+            });
+
+            // Inizializza l'applicazione
+            async function init() {
+                // Aggiungi event listener
+                addItemBtn.addEventListener('click', () => addItemToTable());
+                resetBtn.addEventListener('click', resetForm);
+                cancelBtn.addEventListener('click', resetForm);
+                newEstimateBtn.addEventListener('click', resetForm);
+                
+                searchInput.addEventListener('input', filterEstimates);
+                statusFilter.addEventListener('change', filterEstimates);
+                
+                logoutBtn.addEventListener('click', async function() {
+                    if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
+                        try {
+                            setLoading(true);
+                            await auth.signOut();
+                            window.location.href = 'index.html';
+                        } catch (error) {
+                            console.error('Errore durante il logout:', error);
+                            setLoading(false);
+                            alert('Errore durante il logout. Riprova.');
+                        }
+                    }
+                });
+                
+                exportBtn.addEventListener('click', function() {
+                    // Implementa l'esportazione qui
+                    alert('Funzionalità di esportazione in sviluppo...');
+                });
+                
+                // Inizializza Firebase
+                await initializeFirebase();
+                
+                // Aggiungi una riga iniziale alla tabella delle voci
+                addItemToTable();
+            }
+
+            // Avvia l'applicazione
+            init();
         });
     </script>
 </body>
