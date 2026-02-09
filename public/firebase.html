@@ -3,391 +3,1432 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estrazione Schema Firestore - Cuffari Restauri</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Cuffari - Gestione Preventivi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/docx@7.8.0/build/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     <style>
-        body { padding: 20px; background: #f8f9fa; }
-        .container { max-width: 1200px; }
-        .card { margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        pre { max-height: 500px; overflow-y: auto; background: #f5f5f5; padding: 15px; }
-        .status { padding: 10px; border-radius: 5px; margin-bottom: 15px; }
-        .status-success { background: #d4edda; color: #155724; }
-        .status-error { background: #f8d7da; color: #721c24; }
-        .status-loading { background: #fff3cd; color: #856404; }
-        .collection-info { margin-bottom: 10px; }
-        .doc-sample { margin-left: 20px; margin-bottom: 10px; padding: 10px; background: #e9ecef; border-radius: 4px; }
+        /* CSS Reset e Base */
+        :root {
+            --primary-color: #003366;
+            --primary-dark: #002244;
+            --primary-light: #004080;
+            --secondary-color: #ff9900;
+            --secondary-dark: #e68a00;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-color: #6c757d;
+            --border-color: #dee2e6;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Container Responsive */
+        .container {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        
+        /* Breakpoint per xxl (>=1400px) */
+        @media (min-width: 1400px) {
+            .container { max-width: 1320px; }
+            html { font-size: 17px; }
+        }
+        
+        /* Breakpoint per xl (>=1200px) */
+        @media (min-width: 1200px) and (max-width: 1399.98px) {
+            .container { max-width: 1140px; }
+        }
+        
+        /* Breakpoint per lg (>=992px) */
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            .container { max-width: 960px; }
+        }
+        
+        /* Breakpoint per md (>=768px) */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .container { max-width: 720px; }
+        }
+        
+        /* Breakpoint per sm (>=576px) */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            .container { max-width: 540px; }
+        }
+        
+        /* Breakpoint per xs (<576px) */
+        @media (max-width: 575.98px) {
+            .container { padding-right: 10px; padding-left: 10px; }
+            html { font-size: 14px; }
+        }
+        
+        /* Breakpoint per xxs (molto piccoli) */
+        @media (max-width: 359.98px) {
+            html { font-size: 13px; }
+        }
+        
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .d-none { display: none !important; }
+        .d-block { display: block !important; }
+        .d-flex { display: flex !important; }
+        .d-grid { display: grid !important; }
+        .justify-content-between { justify-content: space-between; }
+        .align-items-center { align-items: center; }
+        .flex-column { flex-direction: column; }
+        .flex-wrap { flex-wrap: wrap; }
+        .gap-1 { gap: 0.5rem; }
+        .gap-2 { gap: 1rem; }
+        .gap-3 { gap: 1.5rem; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+        .p-2 { padding: 1rem; }
+        .p-3 { padding: 1.5rem; }
+        .p-4 { padding: 2rem; }
+        .w-100 { width: 100%; }
+        
+        /* Header Styles */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            color: var(--secondary-color);
+            flex-shrink: 0;
+        }
+        
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .nav-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--secondary-color);
+        }
+        
+        .nav-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .user-info {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .user-role {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .logout-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        
+        .logout-btn:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .logout-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem 0;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .page-title i {
+            color: var(--secondary-color);
+        }
+        
+        .page-subtitle {
+            color: var(--gray-color);
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .page-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-info {
+            background: var(--info-color);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Content Layout */
+        .content-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        /* Layout responsive per lg e superiori */
+        @media (min-width: 992px) {
+            .content-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition);
+            height: fit-content;
+        }
+        
+        .form-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.25rem 1.5rem;
+        }
+        
+        .card-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+        
+        .form-group.required label::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+            z-index: 1;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.25);
+            outline: none;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23343a40' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        /* Form responsive */
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        
+        @media (min-width: 576px) {
+            .form-actions {
+                flex-direction: row;
+            }
+        }
+        
+        .btn-full {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* Preview Card */
+        .preview-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition);
+            height: fit-content;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        
+        .preview-content {
+            padding: 1.5rem;
+            font-family: 'Times New Roman', Times, serif;
+            background: white;
+            position: relative;
+            min-height: 600px;
+        }
+        
+        /* Preview Styles */
+        .preview-header {
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .company-info {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .company-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+        
+        .company-details {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .quote-title {
+            font-size: 2rem;
+            text-align: center;
+            color: var(--primary-color);
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+        
+        .quote-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .client-info, .quote-details {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .client-info h3, .quote-details h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            table-layout: fixed;
+        }
+        
+        .items-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--primary-dark);
+        }
+        
+        .items-table td {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .items-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .items-table .text-right {
+            text-align: right;
+        }
+        
+        .totals-section {
+            margin-top: 1.5rem;
+            border-top: 2px solid var(--border-color);
+            padding-top: 1rem;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+        }
+        
+        .total-row.final {
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
+            color: var(--primary-color);
+        }
+        
+        .terms-conditions {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+        
+        .terms-conditions h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .signature-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .signature-line {
+            width: 200px;
+            border-top: 1px solid var(--dark-color);
+            margin-top: 3rem;
+        }
+        
+        .watermark {
+            position: absolute;
+            opacity: 0.05;
+            font-size: 6rem;
+            transform: rotate(-45deg);
+            color: var(--primary-color);
+            pointer-events: none;
+            z-index: 1;
+            top: 30%;
+            left: 10%;
+            white-space: nowrap;
+        }
+        
+        /* Items Management */
+        .items-management {
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .items-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding: 0.75rem;
+            background: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+            min-width: 800px;
+        }
+        
+        .item-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            min-width: 800px;
+        }
+        
+        .item-input {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        .item-total-display {
+            padding: 0.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .remove-item {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .alert i {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+        }
+        
+        .developer-info {
+            margin-bottom: 15px;
+        }
+        
+        .developer-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .company-info {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+        
+        .copyright {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        
+        /* Responsive Design */
+        /* Per schermi grandi (lg e superiori) */
+        @media (min-width: 992px) {
+            .item-row, .items-header {
+                min-width: 0;
+                grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+            }
+        }
+        
+        /* Per tablet (md) */
+        @media (max-width: 991.98px) and (min-width: 768px) {
+            .item-row, .items-header {
+                min-width: 700px;
+            }
+            
+            .quote-title {
+                font-size: 1.8rem;
+            }
+            
+            .company-name {
+                font-size: 1.6rem;
+            }
+        }
+        
+        /* Per tablet piccoli e mobile (sm e xs) */
+        @media (max-width: 767.98px) {
+            .item-row, .items-header {
+                min-width: 650px;
+            }
+            
+            .quote-info {
+                flex-direction: column;
+            }
+            
+            .client-info, .quote-details {
+                min-width: 100%;
+            }
+            
+            .quote-title {
+                font-size: 1.6rem;
+            }
+            
+            .company-name {
+                font-size: 1.4rem;
+            }
+            
+            .watermark {
+                font-size: 4rem;
+                left: 5%;
+            }
+            
+            .items-table {
+                font-size: 0.8rem;
+            }
+            
+            .items-table th,
+            .items-table td {
+                padding: 0.5rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .preview-content {
+                padding: 1rem;
+            }
+        }
+        
+        /* Per mobile piccoli (xs) */
+        @media (max-width: 575.98px) {
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .page-actions {
+                justify-content: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn-full {
+                width: 100%;
+            }
+            
+            .item-row, .items-header {
+                min-width: 550px;
+            }
+            
+            .watermark {
+                font-size: 3rem;
+                top: 40%;
+            }
+            
+            .company-name {
+                font-size: 1.2rem;
+            }
+            
+            .quote-title {
+                font-size: 1.4rem;
+            }
+        }
+        
+        /* Per mobile molto piccoli (xxs) */
+        @media (max-width: 359.98px) {
+            .logo-container {
+                min-width: auto;
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-icon {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+            
+            .user-menu {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+            
+            .user-info {
+                text-align: center;
+            }
+            
+            .nav-menu {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem;
+            }
+            
+            .nav-btn span {
+                display: none;
+            }
+            
+            .nav-btn i {
+                margin-right: 0;
+                font-size: 1.1rem;
+            }
+            
+            .item-row, .items-header {
+                min-width: 450px;
+            }
+            
+            .watermark {
+                font-size: 2.5rem;
+            }
+            
+            .company-name {
+                font-size: 1rem;
+            }
+            
+            .quote-title {
+                font-size: 1.2rem;
+            }
+        }
+        
+        /* Scrollbar personalizzata */
+        .preview-card::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .preview-card::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .preview-card::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+        
+        .preview-card::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+        
+        .items-management::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .items-management::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .items-management::-webkit-scrollbar-thumb {
+            background: var(--gray-color);
+            border-radius: 4px;
+        }
+        
+        /* Aggiustamenti per evitare overflow */
+        .form-control, .item-input, select, textarea {
+            max-width: 100%;
+        }
+        
+        /* Garantire che le tabelle siano responsive */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Miglioramenti per i select su mobile */
+        @media (max-width: 767.98px) {
+            select.form-control {
+                font-size: 16px; /* Previene lo zoom su iOS */
+            }
+        }
+
+        /* Stili specifici per menu responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                order: 2;
+                width: 100%;
+                margin-top: 1rem;
+                justify-content: center;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.85rem;
+            }
+            
+            .nav-btn i {
+                margin-right: 0.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-btn span {
+                display: none;
+            }
+            
+            .nav-btn i {
+                margin-right: 0;
+                font-size: 1rem;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem;
+                min-width: 40px;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mb-4">Estrazione Schema Firestore</h1>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>1. Configurazione Firebase</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Incolla qui il contenuto del file <code>firebase_config.json</code>:</p>
-                        <textarea id="firebaseConfig" class="form-control" rows="10" placeholder='{
-  "apiKey": "your-api-key",
-  "authDomain": "your-project.firebaseapp.com",
-  "projectId": "your-project-id",
-  "storageBucket": "your-project.appspot.com",
-  "messagingSenderId": "your-messaging-sender-id",
-  "appId": "your-app-id"
-}'></textarea>
-                        <button id="initFirebase" class="btn btn-primary mt-3">Inizializza Firebase</button>
-                    </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <i class="fas fa-building logo-icon"></i>
+                <div>
+                    <div class="logo-text">Cuffari Restauri Edili</div>
+                    <div class="subtitle">Piattaforma di Management Interno</div>
                 </div>
             </div>
             
-            <div class="col-md-6">
-                <div class="card">
+            <div class="user-menu">
+                <div class="nav-menu">
+                    <a href="profile.html" class="nav-btn">
+                        <i class="fas fa-user-circle"></i> <span>Profilo</span>
+                    </a>
+                    <a href="users.html" class="nav-btn">
+                        <i class="fas fa-users"></i> <span>Utenti</span>
+                    </a>
+                    <a href="construction-sites.html" class="nav-btn">
+                        <i class="fas fa-hard-hat"></i> <span>Cantieri</span>
+                    </a>
+                    <a href="work-days.html" class="nav-btn">
+                        <i class="fas fa-calendar-day"></i> <span>Giornate</span>
+                    </a>
+                    <a href="estimates.html" class="nav-btn active">
+                        <i class="fas fa-calculator"></i> <span>Preventivi</span>
+                    </a>
+                    <a href="suppliers.html" class="nav-btn">
+                        <i class="fas fa-truck"></i> <span>Fornitori</span>
+                    </a>
+                    <a href="materials.html" class="nav-btn">
+                        <i class="fas fa-boxes"></i> <span>Materiali</span>
+                    </a>
+                    <a href="invoices.html" class="nav-btn">
+                        <i class="fas fa-file-invoice"></i> <span>Fatture</span>
+                    </a>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-name" id="userName">Caricamento...</div>
+                    <div class="user-role" id="userRole">Utente</div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> <span>Esci</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-file-contract"></i> Gestione Preventivi DOCX
+                    </h1>
+                    <p class="page-subtitle">Crea preventivi professionali in formato Word per i tuoi clienti</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-warning" id="clearFormBtn">
+                        <i class="fas fa-broom"></i> <span>Pulisci</span>
+                    </button>
+                    <button class="btn btn-primary" id="generateDocxBtn">
+                        <i class="fas fa-file-word"></i> <span>Genera DOCX</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="content-container">
+                <!-- Form Card -->
+                <div class="form-card">
                     <div class="card-header">
-                        <h5>2. Stato Connessione</h5>
+                        <h3><i class="fas fa-edit"></i> Dati Preventivo</h3>
                     </div>
                     <div class="card-body">
-                        <div id="connectionStatus" class="status">In attesa di configurazione...</div>
-                        <div id="authStatus" class="status">Non autenticato</div>
-                        <button id="loginBtn" class="btn btn-secondary" disabled>Accedi con Google</button>
-                        <button id="logoutBtn" class="btn btn-outline-secondary mt-2" disabled>Esci</button>
+                        <form id="quoteForm">
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="quoteNumber">Numero Preventivo</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-hashtag"></i>
+                                        <input type="text" id="quoteNumber" class="form-control" placeholder="Es: PREV-2023-001" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group required">
+                                    <label for="quoteDate">Data Preventivo</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <input type="date" id="quoteDate" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="validUntil">Validità fino al</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <input type="date" id="validUntil" class="form-control" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="paymentTerms">Termini di Pagamento</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-money-check-alt"></i>
+                                        <select id="paymentTerms" class="form-control">
+                                            <option value="30 giorni">30 giorni dalla consegna</option>
+                                            <option value="50% anticipo">50% anticipo, 50% a consegna</option>
+                                            <option value="contanti">Contanti alla consegna</option>
+                                            <option value="bonifico">Bonifico bancario</option>
+                                            <option value="personalizzato">Personalizzato</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cliente -->
+                            <div class="form-group">
+                                <h4 style="color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                                    <i class="fas fa-user-tie"></i> Dati Cliente
+                                </h4>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="clientName">Nome Cliente/Ragione Sociale</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-building"></i>
+                                        <input type="text" id="clientName" class="form-control" placeholder="Nome completo o ragione sociale" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="clientVat">Partita IVA/Codice Fiscale</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-id-card"></i>
+                                        <input type="text" id="clientVat" class="form-control" placeholder="P. IVA o CF">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="clientAddress">Indirizzo</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <input type="text" id="clientAddress" class="form-control" placeholder="Via, numero, città" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="clientPhone">Telefono/Email</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-phone"></i>
+                                        <input type="text" id="clientPhone" class="form-control" placeholder="Telefono o email">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cantiere -->
+                            <div class="form-group">
+                                <h4 style="color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                                    <i class="fas fa-hard-hat"></i> Dati Cantiere
+                                </h4>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label for="siteAddress">Indirizzo Cantiere</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-map-pin"></i>
+                                        <input type="text" id="siteAddress" class="form-control" placeholder="Indirizzo del cantiere" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="siteDescription">Descrizione Lavori</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-clipboard-list"></i>
+                                        <input type="text" id="siteDescription" class="form-control" placeholder="Breve descrizione dei lavori">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Voci di Preventivo -->
+                            <div class="form-group">
+                                <h4 style="color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                                    <i class="fas fa-list-ol"></i> Voci di Preventivo
+                                </h4>
+                            </div>
+                            
+                            <div class="items-management">
+                                <div class="items-header">
+                                    <div>Descrizione</div>
+                                    <div>Quantità</div>
+                                    <div>Unià</div>
+                                    <div>Prezzo Unitario (€)</div>
+                                    <div>Totale (€)</div>
+                                    <div>Azioni</div>
+                                </div>
+                                <div id="itemsContainer">
+                                    <!-- Items will be added here -->
+                                </div>
+                                
+                                <button type="button" class="btn btn-secondary btn-sm mt-2" id="addItemBtn">
+                                    <i class="fas fa-plus"></i> Aggiungi Voce
+                                </button>
+                            </div>
+                            
+                            <!-- Note -->
+                            <div class="form-group">
+                                <label for="notes">Note Aggiuntive</label>
+                                <textarea id="notes" class="form-control" placeholder="Note, condizioni particolari, esclusioni..." rows="3"></textarea>
+                            </div>
+                            
+                            <!-- Alerts -->
+                            <div id="successAlert" class="alert alert-success d-none">
+                                <i class="fas fa-check-circle"></i>
+                                <div>Preventivo generato con successo!</div>
+                            </div>
+                            
+                            <div id="errorAlert" class="alert alert-error d-none">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <div id="errorMessage">Si è verificato un errore. Controlla i dati inseriti.</div>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 
-                <div class="card mt-3">
+                <!-- Preview Card -->
+                <div class="preview-card">
                     <div class="card-header">
-                        <h5>3. Estrazione Dati</h5>
+                        <h3><i class="fas fa-eye"></i> Anteprima Preventivo</h3>
                     </div>
                     <div class="card-body">
-                        <p>Collezioni da analizzare:</p>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="constructionSites" id="coll1" checked>
-                            <label class="form-check-label" for="coll1">constructionSites</label>
+                        <div class="preview-content" id="previewContent">
+                            <div class="watermark">CUFFARI</div>
+                            <div class="preview-header">
+                                <div class="company-info">
+                                    <div class="company-name">CUFFARI RESTAURI EDILI SRL</div>
+                                    <div class="company-details">
+                                        Via Roma 123, 00100 Roma (RM) | Tel: 06 12345678 | P.IVA: 12345678901
+                                    </div>
+                                    <div class="company-details">
+                                        Email: info@maroccocuffari.it | www.maroccocuffari.it
+                                    </div>
+                                </div>
+                                
+                                <div class="quote-title">PREVENTIVO N. <span id="previewQuoteNumber">PREV-2023-001</span></div>
+                            </div>
+                            
+                            <div class="quote-info">
+                                <div class="client-info">
+                                    <h3>CLIENTE</h3>
+                                    <div id="previewClientName">Nome Cliente</div>
+                                    <div id="previewClientVat">P.IVA: -</div>
+                                    <div id="previewClientAddress">Indirizzo</div>
+                                    <div id="previewClientPhone">Telefono/Email</div>
+                                </div>
+                                
+                                <div class="quote-details">
+                                    <h3>DETTAGLI PREVENTIVO</h3>
+                                    <div>Data: <span id="previewQuoteDate">01/01/2023</span></div>
+                                    <div>Validità: <span id="previewValidUntil">31/01/2023</span></div>
+                                    <div>Termini pagamento: <span id="previewPaymentTerms">30 giorni</span></div>
+                                    <div>Cantiere: <span id="previewSiteAddress">Indirizzo cantiere</span></div>
+                                    <div>Lavori: <span id="previewSiteDescription">Descrizione lavori</span></div>
+                                </div>
+                            </div>
+                            
+                            <table class="items-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%;">Descrizione</th>
+                                        <th style="width: 12%;">Quantità</th>
+                                        <th style="width: 12%;">Unità</th>
+                                        <th style="width: 18%;" class="text-right">Prezzo Unitario (€)</th>
+                                        <th style="width: 18%;" class="text-right">Totale (€)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="previewItems">
+                                    <tr>
+                                        <td colspan="5" class="text-center">Nessuna voce aggiunta</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <div class="totals-section">
+                                <div class="total-row">
+                                    <span>Imponibile:</span>
+                                    <span id="previewSubtotal">0,00 €</span>
+                                </div>
+                                <div class="total-row">
+                                    <span>IVA 22%:</span>
+                                    <span id="previewVat">0,00 €</span>
+                                </div>
+                                <div class="total-row final">
+                                    <span>TOTALE PREVENTIVO:</span>
+                                    <span id="previewTotal">0,00 €</span>
+                                </div>
+                            </div>
+                            
+                            <div class="terms-conditions">
+                                <h4>CONDIZIONI E NOTE</h4>
+                                <div id="previewNotes">
+                                    Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. 
+                                    I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall'accettazione.
+                                </div>
+                            </div>
+                            
+                            <div class="signature-section">
+                                <div>Firma per accettazione</div>
+                                <div class="signature-line"></div>
+                                <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                                    Il Responsabile Tecnico<br>
+                                    <strong>Cristian Felice Cuffari</strong>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--gray-color); text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                                Documento generato digitalmente da Cuffari Restauri Edili SRL
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="workDays" id="coll2" checked>
-                            <label class="form-check-label" for="coll2">workDays</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="materials" id="coll3" checked>
-                            <label class="form-check-label" for="coll3">materials</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="invoices" id="coll4" checked>
-                            <label class="form-check-label" for="coll4">invoices</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="estimates" id="coll5" checked>
-                            <label class="form-check-label" for="coll5">estimates</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="suppliers" id="coll6" checked>
-                            <label class="form-check-label" for="coll6">suppliers</label>
-                        </div>
-                        
-                        <div class="mt-3">
-                            <label for="docLimit" class="form-label">Documenti per collezione (max):</label>
-                            <input type="number" id="docLimit" class="form-control" value="5" min="1" max="20">
-                        </div>
-                        
-                        <button id="extractBtn" class="btn btn-success mt-3" disabled>Estrai Schema</button>
-                        <button id="clearBtn" class="btn btn-outline-danger mt-3">Pulisci Risultati</button>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5>4. Risultati Estrazione</h5>
-                        <button id="copyBtn" class="btn btn-sm btn-outline-primary" disabled>Copia JSON</button>
-                    </div>
-                    <div class="card-body">
-                        <div id="progress" class="progress mb-3" style="display: none;">
-                            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
-                                 style="width: 0%"></div>
-                        </div>
-                        
-                        <div id="resultsSummary" class="mb-3"></div>
-                        <pre id="jsonOutput"></pre>
-                    </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="developer-info">
+                    <h3>Sviluppatore della Piattaforma</h3>
+                    <p>Cristian Felice Cuffari</p>
+                </div>
+                
+                <div class="company-info">
+                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità dal 1995</p>
+                </div>
+                
+                <div class="copyright">
+                    <p>&copy; 2023 Cuffari Restauri Edili. Tutti i diritti riservati.</p>
                 </div>
             </div>
         </div>
-        
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Istruzioni</h5>
-                    </div>
-                    <div class="card-body">
-                        <ol>
-                            <li>Copia il contenuto del file <code>firebase_config.json</code> e incollalo nel primo campo</li>
-                            <li>Clicca "Inizializza Firebase" per configurare la connessione</li>
-                            <li>Accedi con Google (o con il metodo di autenticazione configurato nel tuo progetto)</li>
-                            <li>Seleziona le collezioni da analizzare e il numero di documenti campione</li>
-                            <li>Clicca "Estrai Schema" per recuperare la struttura dei dati</li>
-                            <li>Copia l'output JSON e condividilo per ottenere il codice personalizzato</li>
-                        </ol>
-                        <p class="text-muted">Nota: Questa pagina non salva alcun dato. Viene eseguita solo nel tuo browser.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    </footer>
 
     <script>
-        // Elementi DOM
-        const firebaseConfigTextarea = document.getElementById('firebaseConfig');
-        const initFirebaseBtn = document.getElementById('initFirebase');
-        const connectionStatus = document.getElementById('connectionStatus');
-        const authStatus = document.getElementById('authStatus');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const extractBtn = document.getElementById('extractBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const copyBtn = document.getElementById('copyBtn');
-        const progress = document.getElementById('progress');
-        const progressBar = document.getElementById('progressBar');
-        const resultsSummary = document.getElementById('resultsSummary');
-        const jsonOutput = document.getElementById('jsonOutput');
-        
-        let db = null;
-        let auth = null;
-        let isFirebaseInitialized = false;
-        let currentUser = null;
-        
-        // Inizializza Firebase
-        initFirebaseBtn.addEventListener('click', () => {
-            try {
-                const configText = firebaseConfigTextarea.value.trim();
-                if (!configText) {
-                    alert('Incolla la configurazione Firebase nel campo di testo');
-                    return;
-                }
-                
-                const config = JSON.parse(configText);
-                
-                // Inizializza Firebase
-                firebase.initializeApp(config);
-                db = firebase.firestore();
-                auth = firebase.auth();
-                
-                isFirebaseInitialized = true;
-                connectionStatus.textContent = 'Firebase inizializzato correttamente';
-                connectionStatus.className = 'status status-success';
-                
-                loginBtn.disabled = false;
-                extractBtn.disabled = true;
-                
-                // Imposta listener per lo stato di autenticazione
-                auth.onAuthStateChanged((user) => {
-                    currentUser = user;
-                    if (user) {
-                        authStatus.textContent = `Autenticato come: ${user.email}`;
-                        authStatus.className = 'status status-success';
-                        loginBtn.disabled = true;
-                        logoutBtn.disabled = false;
-                        extractBtn.disabled = false;
-                    } else {
-                        authStatus.textContent = 'Non autenticato';
-                        authStatus.className = 'status status-error';
-                        loginBtn.disabled = false;
-                        logoutBtn.disabled = true;
-                        extractBtn.disabled = true;
-                    }
-                });
-                
-            } catch (error) {
-                connectionStatus.textContent = `Errore: ${error.message}`;
-                connectionStatus.className = 'status status-error';
-                console.error(error);
-            }
-        });
-        
-        // Login con Google
-        loginBtn.addEventListener('click', async () => {
-            if (!isFirebaseInitialized) {
-                alert('Inizializza Firebase prima di autenticarti');
-                return;
-            }
-            
-            try {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                await auth.signInWithPopup(provider);
-            } catch (error) {
-                alert(`Errore di autenticazione: ${error.message}`);
-                console.error(error);
-            }
-        });
-        
-        // Logout
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await auth.signOut();
-            } catch (error) {
-                alert(`Errore durante il logout: ${error.message}`);
-                console.error(error);
-            }
-        });
-        
-        // Estrazione schema
-        extractBtn.addEventListener('click', async () => {
-            if (!currentUser) {
-                alert('Devi essere autenticato per estrarre i dati');
-                return;
-            }
-            
-            // Ottieni le collezioni selezionate
-            const collections = [];
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
-                collections.push(cb.value);
-            });
-            
-            if (collections.length === 0) {
-                alert('Seleziona almeno una collezione');
-                return;
-            }
-            
-            const docLimit = parseInt(document.getElementById('docLimit').value) || 5;
-            
-            // Mostra progress bar
-            progress.style.display = 'block';
-            progressBar.style.width = '0%';
-            progressBar.textContent = '0%';
-            
-            try {
-                const schema = {
-                    timestamp: new Date().toISOString(),
-                    user: currentUser.email,
-                    collections: {}
-                };
-                
-                for (let i = 0; i < collections.length; i++) {
-                    const collectionName = collections[i];
-                    
-                    // Aggiorna progress bar
-                    const progressPercent = Math.round((i / collections.length) * 100);
-                    progressBar.style.width = `${progressPercent}%`;
-                    progressBar.textContent = `${progressPercent}%`;
-                    resultsSummary.innerHTML = `Analizzando: ${collectionName}...`;
-                    
-                    try {
-                        // Ottieni conteggio documenti
-                        const countSnapshot = await db.collection(collectionName).count().get();
-                        const totalCount = countSnapshot.data().count;
-                        
-                        // Ottieni documenti campione
-                        const querySnapshot = await db.collection(collectionName)
-                            .limit(docLimit)
-                            .get();
-                        
-                        const sampleDocuments = [];
-                        querySnapshot.forEach(doc => {
-                            sampleDocuments.push({
-                                id: doc.id,
-                                data: doc.data()
-                            });
-                        });
-                        
-                        // Analizza i campi presenti
-                        const fields = {};
-                        if (sampleDocuments.length > 0) {
-                            sampleDocuments.forEach(doc => {
-                                Object.keys(doc.data).forEach(key => {
-                                    if (!fields[key]) {
-                                        fields[key] = {
-                                            type: typeof doc.data[key],
-                                            example: doc.data[key],
-                                            hasValue: true
-                                        };
-                                    }
-                                });
-                            });
-                        }
-                        
-                        schema.collections[collectionName] = {
-                            totalCount,
-                            sampleSize: sampleDocuments.length,
-                            fields,
-                            sampleDocuments
-                        };
-                        
-                    } catch (error) {
-                        schema.collections[collectionName] = {
-                            error: error.message,
-                            code: error.code
-                        };
-                    }
-                }
-                
-                // Completa progress bar
-                progressBar.style.width = '100%';
-                progressBar.textContent = '100%';
-                
-                // Mostra risultati
-                const jsonString = JSON.stringify(schema, null, 2);
-                jsonOutput.textContent = jsonString;
-                
-                // Mostra sommario
-                let summaryHtml = '<h6>Sommario:</h6><ul class="list-unstyled">';
-                Object.keys(schema.collections).forEach(collName => {
-                    const coll = schema.collections[collName];
-                    if (coll.error) {
-                        summaryHtml += `<li><span class="text-danger">${collName}: ERRORE - ${coll.error}</span></li>`;
-                    } else {
-                        summaryHtml += `<li>${collName}: ${coll.totalCount} documenti totali, ${coll.sampleSize} campioni estratti</li>`;
-                    }
-                });
-                summaryHtml += '</ul>';
-                resultsSummary.innerHTML = summaryHtml;
-                
-                // Abilita pulsante copia
-                copyBtn.disabled = false;
-                
-            } catch (error) {
-                resultsSummary.innerHTML = `<div class="alert alert-danger">Errore durante l'estrazione: ${error.message}</div>`;
-                console.error(error);
-            } finally {
-                setTimeout(() => {
-                    progress.style.display = 'none';
-                }, 1000);
-            }
-        });
-        
-        // Copia JSON
-        copyBtn.addEventListener('click', () => {
-            const text = jsonOutput.textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = 'Copiato!';
-                setTimeout(() => {
-                    copyBtn.textContent = originalText;
-                }, 2000);
-            }).catch(err => {
-                alert('Errore durante la copia: ' + err.message);
-            });
-        });
-        
-        // Pulisci risultati
-        clearBtn.addEventListener('click', () => {
-            jsonOutput.textContent = '';
-            resultsSummary.innerHTML = '';
-            copyBtn.disabled = true;
-        });
-        
-        // Esempio di configurazione
-        document.getElementById('firebaseConfig').value = `{
+        // Firebase Configuration - CORRETTA CON JSON VALIDO
+        const firebaseConfig = {
             apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
             authDomain: "work-tracker-v120400.firebaseapp.com",
             projectId: "work-tracker-v120400",
@@ -395,7 +1436,822 @@
             messagingSenderId: "437459935839",
             appId: "1:437459935839:web:cb0b54608314dcb25731ea",
             measurementId: "G-2LPKL9WREX"
-}`;
+        };
+
+        // Initialize Firebase
+        let auth, db, currentUser = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Element references
+            const quoteForm = document.getElementById('quoteForm');
+            const quoteNumberInput = document.getElementById('quoteNumber');
+            const quoteDateInput = document.getElementById('quoteDate');
+            const validUntilInput = document.getElementById('validUntil');
+            const paymentTermsSelect = document.getElementById('paymentTerms');
+            const clientNameInput = document.getElementById('clientName');
+            const clientVatInput = document.getElementById('clientVat');
+            const clientAddressInput = document.getElementById('clientAddress');
+            const clientPhoneInput = document.getElementById('clientPhone');
+            const siteAddressInput = document.getElementById('siteAddress');
+            const siteDescriptionInput = document.getElementById('siteDescription');
+            const notesInput = document.getElementById('notes');
+            const itemsContainer = document.getElementById('itemsContainer');
+            const addItemBtn = document.getElementById('addItemBtn');
+            const clearFormBtn = document.getElementById('clearFormBtn');
+            const generateDocxBtn = document.getElementById('generateDocxBtn');
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userNameElement = document.getElementById('userName');
+            const userRoleElement = document.getElementById('userRole');
+            
+            // Preview elements
+            const previewQuoteNumber = document.getElementById('previewQuoteNumber');
+            const previewQuoteDate = document.getElementById('previewQuoteDate');
+            const previewValidUntil = document.getElementById('previewValidUntil');
+            const previewPaymentTerms = document.getElementById('previewPaymentTerms');
+            const previewClientName = document.getElementById('previewClientName');
+            const previewClientVat = document.getElementById('previewClientVat');
+            const previewClientAddress = document.getElementById('previewClientAddress');
+            const previewClientPhone = document.getElementById('previewClientPhone');
+            const previewSiteAddress = document.getElementById('previewSiteAddress');
+            const previewSiteDescription = document.getElementById('previewSiteDescription');
+            const previewItems = document.getElementById('previewItems');
+            const previewSubtotal = document.getElementById('previewSubtotal');
+            const previewVat = document.getElementById('previewVat');
+            const previewTotal = document.getElementById('previewTotal');
+            const previewNotes = document.getElementById('previewNotes');
+            
+            // Global variables
+            let items = [];
+            let itemCounter = 0;
+            
+            // Initialize Firebase
+            function initializeFirebase() {
+                try {
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
+                        console.log("Firebase initialized successfully");
+                    }
+                    
+                    auth = firebase.auth();
+                    db = firebase.firestore();
+                    
+                    // Monitor authentication state
+                    auth.onAuthStateChanged(user => {
+                        if (user) {
+                            currentUser = user;
+                            updateUserInfo(user);
+                            console.log("User logged in:", user.email);
+                        } else {
+                            // Redirect to login page
+                            window.location.href = 'index.html';
+                        }
+                    });
+                    
+                } catch (error) {
+                    console.error("Error initializing Firebase:", error);
+                    showErrorAlert("Errore di connessione a Firebase. I dati verranno gestiti localmente.");
+                }
+            }
+            
+            // Update user info in header
+            async function updateUserInfo(user) {
+                if (user) {
+                    userNameElement.textContent = user.displayName || user.email || "Utente";
+                    userRoleElement.textContent = "Caricamento...";
+                    
+                    try {
+                        // Get user data from Firestore
+                        const userDoc = await db.collection('users').doc(user.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            userRoleElement.textContent = userData.role || "Utente";
+                            
+                            // Save user data to localStorage for quick access
+                            localStorage.setItem('user', JSON.stringify({
+                                uid: user.uid,
+                                email: user.email,
+                                displayName: user.displayName,
+                                role: userData.role
+                            }));
+                        }
+                    } catch (error) {
+                        console.error("Error fetching user data:", error);
+                        userRoleElement.textContent = "Utente";
+                    }
+                }
+            }
+            
+            // Initialize page
+            async function initPage() {
+                // Initialize Firebase first
+                initializeFirebase();
+                
+                // Wait for authentication
+                await waitForAuth();
+                
+                // Set default dates
+                const today = new Date();
+                quoteDateInput.value = formatDateForInput(today);
+                
+                const validUntil = new Date();
+                validUntil.setDate(today.getDate() + 30);
+                validUntilInput.value = formatDateForInput(validUntil);
+                
+                // Generate quote number
+                const randomNum = Math.floor(Math.random() * 1000);
+                const formattedNum = randomNum.toString().padStart(3, '0');
+                quoteNumberInput.value = `PREV-${today.getFullYear()}-${formattedNum}`;
+                
+                // Add first item
+                addNewItem();
+                
+                // Setup event listeners
+                setupEventListeners();
+                
+                // Initial preview update
+                updatePreview();
+            }
+            
+            // Wait for authentication
+            function waitForAuth() {
+                return new Promise((resolve) => {
+                    if (auth.currentUser) {
+                        resolve(auth.currentUser);
+                    } else {
+                        const unsubscribe = auth.onAuthStateChanged(user => {
+                            unsubscribe();
+                            resolve(user);
+                        });
+                    }
+                });
+            }
+            
+            // Setup event listeners
+            function setupEventListeners() {
+                // Form inputs live update preview
+                const formInputs = [
+                    quoteNumberInput, quoteDateInput, validUntilInput, paymentTermsSelect,
+                    clientNameInput, clientVatInput, clientAddressInput, clientPhoneInput,
+                    siteAddressInput, siteDescriptionInput, notesInput
+                ];
+                
+                formInputs.forEach(input => {
+                    input.addEventListener('input', updatePreview);
+                    input.addEventListener('change', updatePreview);
+                });
+                
+                // Add item button
+                addItemBtn.addEventListener('click', () => {
+                    addNewItem();
+                    updatePreview();
+                });
+                
+                // Clear form button
+                clearFormBtn.addEventListener('click', clearForm);
+                
+                // Generate DOCX button
+                generateDocxBtn.addEventListener('click', generateDocxFixed);
+                
+                // Logout button
+                logoutBtn.addEventListener('click', handleLogout);
+            }
+            
+            // Format date for input (YYYY-MM-DD)
+            function formatDateForInput(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            
+            // Format date for display (DD/MM/YYYY)
+            function formatDateForDisplay(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString + 'T12:00:00');
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+            
+            // Format currency
+            function formatCurrency(amount) {
+                return new Intl.NumberFormat('it-IT', {
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimumFractionDigits: 2
+                }).format(amount);
+            }
+            
+            // Add new item row
+            function addNewItem() {
+                itemCounter++;
+                const itemId = `item-${itemCounter}`;
+                
+                const itemRow = document.createElement('div');
+                itemRow.className = 'item-row';
+                itemRow.id = itemId;
+                
+                itemRow.innerHTML = `
+                    <input type="text" class="item-input item-description" placeholder="Descrizione lavoro/materiale" data-item="description">
+                    <input type="number" class="item-input item-quantity" placeholder="1" min="0" step="0.1" value="1" data-item="quantity">
+                    <select class="item-input item-unit" data-item="unit">
+                        <option value="n">n</option>
+                        <option value="m">m</option>
+                        <option value="m²">m²</option>
+                        <option value="m³">m³</option>
+                        <option value="kg">kg</option>
+                        <option value="h">h</option>
+                        <option value="gg">gg</option>
+                        <option value="pz">pz</option>
+                        <option value="lotto">lotto</option>
+                    </select>
+                    <input type="number" class="item-input item-price" placeholder="0.00" min="0" step="0.01" value="0" data-item="price">
+                    <div class="item-total-display">0,00 €</div>
+                    <button type="button" class="remove-item" onclick="removeItem('${itemId}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                itemsContainer.appendChild(itemRow);
+                
+                // Add event listeners to new item inputs
+                const inputs = itemRow.querySelectorAll('.item-input');
+                inputs.forEach(input => {
+                    input.addEventListener('input', () => {
+                        updateItemTotal(itemId);
+                        updatePreview();
+                    });
+                });
+                
+                updateItemTotal(itemId);
+            }
+            
+            // Remove item
+            window.removeItem = function(itemId) {
+                const itemRow = document.getElementById(itemId);
+                if (itemRow) {
+                    itemRow.remove();
+                    updatePreview();
+                }
+            };
+            
+            // Update item total
+            function updateItemTotal(itemId) {
+                const itemRow = document.getElementById(itemId);
+                if (!itemRow) return;
+                
+                const quantity = parseFloat(itemRow.querySelector('.item-quantity').value) || 0;
+                const price = parseFloat(itemRow.querySelector('.item-price').value) || 0;
+                const total = quantity * price;
+                
+                itemRow.querySelector('.item-total-display').textContent = formatCurrency(total);
+            }
+            
+            // Get all items data
+            function getItemsData() {
+                const itemsData = [];
+                const itemRows = document.querySelectorAll('.item-row');
+                
+                if (!itemRows) return itemsData;
+                
+                itemRows.forEach(row => {
+                    if (row.id && row.id.startsWith('item-')) {
+                        const description = row.querySelector('.item-description').value;
+                        const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
+                        const unit = row.querySelector('.item-unit').value;
+                        const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                        const total = quantity * price;
+                        
+                        if (description && quantity > 0 && price > 0) {
+                            itemsData.push({
+                                description,
+                                quantity,
+                                unit,
+                                price,
+                                total
+                            });
+                        }
+                    }
+                });
+                
+                return itemsData;
+            }
+            
+            // Calculate totals
+            function calculateTotals(itemsData) {
+                if (!itemsData || !Array.isArray(itemsData) || itemsData.length === 0) {
+                    return {
+                        subtotal: 0,
+                        vat: 0,
+                        total: 0
+                    };
+                }
+                
+                const subtotal = itemsData.reduce((sum, item) => sum + (item.total || 0), 0);
+                const vat = subtotal * 0.22;
+                const total = subtotal + vat;
+                
+                return {
+                    subtotal,
+                    vat,
+                    total
+                };
+            }
+            
+            // Update preview
+            function updatePreview() {
+                // Update basic info
+                previewQuoteNumber.textContent = quoteNumberInput.value || 'PREV-2023-001';
+                previewQuoteDate.textContent = formatDateForDisplay(quoteDateInput.value) || '01/01/2023';
+                previewValidUntil.textContent = formatDateForDisplay(validUntilInput.value) || '31/01/2023';
+                
+                const selectedOption = paymentTermsSelect.options[paymentTermsSelect.selectedIndex];
+                previewPaymentTerms.textContent = selectedOption ? selectedOption.text : '30 giorni dalla consegna';
+                
+                // Update client info
+                previewClientName.textContent = clientNameInput.value || 'Nome Cliente';
+                previewClientVat.textContent = clientVatInput.value ? `P.IVA: ${clientVatInput.value}` : 'P.IVA: -';
+                previewClientAddress.textContent = clientAddressInput.value || 'Indirizzo';
+                previewClientPhone.textContent = clientPhoneInput.value || 'Telefono/Email';
+                
+                // Update site info
+                previewSiteAddress.textContent = siteAddressInput.value || 'Indirizzo cantiere';
+                previewSiteDescription.textContent = siteDescriptionInput.value || 'Descrizione lavori';
+                
+                // Update items
+                const itemsData = getItemsData();
+                const totals = calculateTotals(itemsData);
+                
+                let itemsHTML = '';
+                
+                if (itemsData.length > 0) {
+                    itemsData.forEach(item => {
+                        itemsHTML += `
+                            <tr>
+                                <td>${item.description}</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.unit}</td>
+                                <td class="text-right">${formatCurrency(item.price)}</td>
+                                <td class="text-right">${formatCurrency(item.total)}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    itemsHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center">Nessuna voce aggiunta</td>
+                        </tr>
+                    `;
+                }
+                
+                previewItems.innerHTML = itemsHTML;
+                
+                // Update totals
+                previewSubtotal.textContent = formatCurrency(totals.subtotal);
+                previewVat.textContent = formatCurrency(totals.vat);
+                previewTotal.textContent = formatCurrency(totals.total);
+                
+                // Update notes
+                previewNotes.textContent = notesInput.value || 
+                    'Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall\'accettazione.';
+            }
+            
+            // Clear form
+            function clearForm() {
+                if (confirm('Sei sicuro di voler cancellare tutti i dati inseriti?')) {
+                    quoteForm.reset();
+                    
+                    // Clear items
+                    itemsContainer.innerHTML = '';
+                    itemCounter = 0;
+                    
+                    // Reset dates
+                    const today = new Date();
+                    quoteDateInput.value = formatDateForInput(today);
+                    
+                    const validUntil = new Date();
+                    validUntil.setDate(today.getDate() + 30);
+                    validUntilInput.value = formatDateForInput(validUntil);
+                    
+                    // Generate new quote number
+                    const randomNum = Math.floor(Math.random() * 1000);
+                    const formattedNum = randomNum.toString().padStart(3, '0');
+                    quoteNumberInput.value = `PREV-${today.getFullYear()}-${formattedNum}`;
+                    
+                    // Add first item
+                    addNewItem();
+                    
+                    // Update preview
+                    updatePreview();
+                    
+                    // Hide alerts
+                    hideAlerts();
+                }
+            }
+            
+            // Generate DOCX Document
+            async function generateDocxFixed() {
+                try {
+                    console.log("=== INIZIO GENERAZIONE DOCX ===");
+                    
+                    // 1. Validazione di base
+                    if (!quoteNumberInput.value.trim()) {
+                        showErrorAlert("Inserisci il numero preventivo");
+                        return;
+                    }
+                    
+                    // 2. Ottieni i dati
+                    const itemsData = getItemsData();
+                    console.log("Dati articoli ottenuti:", itemsData);
+                    
+                    if (!itemsData || itemsData.length === 0) {
+                        showErrorAlert("Aggiungi almeno una voce al preventivo");
+                        return;
+                    }
+                    
+                    // 3. Mostra loading
+                    const originalHtml = generateDocxBtn.innerHTML;
+                    generateDocxBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Generazione...</span>';
+                    generateDocxBtn.disabled = true;
+                    
+                    // 4. Calcola totali
+                    const totals = calculateTotals(itemsData);
+                    
+                    // 5. Crea documento con approccio semplificato
+                    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, AlignmentType, WidthType } = docx;
+                    
+                    // 6. Crea tabella con cicli for invece di forEach
+                    const tableRows = [];
+                    
+                    // Header row
+                    const headerCells = [
+                        new TableCell({ children: [new Paragraph("Descrizione")] }),
+                        new TableCell({ children: [new Paragraph("Quantità")] }),
+                        new TableCell({ children: [new Paragraph("Unità")] }),
+                        new TableCell({ children: [new Paragraph("Prezzo Unitario (€)")] }),
+                        new TableCell({ children: [new Paragraph("Totale (€)")] })
+                    ];
+                    
+                    // Applica stile alle celle dell'header
+                    for (let i = 0; i < headerCells.length; i++) {
+                        headerCells[i].shading = { fill: "003366" };
+                        const paragraph = headerCells[i].children[0];
+                        const textRun = paragraph.children[0];
+                        textRun.color = "FFFFFF";
+                        textRun.bold = true;
+                    }
+                    
+                    const headerRow = new TableRow({ children: headerCells });
+                    tableRows.push(headerRow);
+                    
+                    // Aggiungi righe degli articoli
+                    for (let i = 0; i < itemsData.length; i++) {
+                        const item = itemsData[i];
+                        const itemRow = new TableRow({
+                            children: [
+                                new TableCell({ children: [new Paragraph(item.description || "")] }),
+                                new TableCell({ children: [new Paragraph(item.quantity.toString() || "")] }),
+                                new TableCell({ children: [new Paragraph(item.unit || "")] }),
+                                new TableCell({ children: [new Paragraph(formatCurrency(item.price) || "")] }),
+                                new TableCell({ children: [new Paragraph(formatCurrency(item.total) || "")] })
+                            ]
+                        });
+                        tableRows.push(itemRow);
+                    }
+                    
+                    // Aggiungi righe dei totali
+                    // Imponibile
+                    tableRows.push(new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
+                            new TableCell({ 
+                                children: [new Paragraph("Imponibile:")],
+                                shading: { fill: "F0F0F0" }
+                            }),
+                            new TableCell({ 
+                                children: [new Paragraph(formatCurrency(totals.subtotal))],
+                                shading: { fill: "F0F0F0" }
+                            })
+                        ]
+                    }));
+                    
+                    // IVA
+                    tableRows.push(new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
+                            new TableCell({ 
+                                children: [new Paragraph("IVA 22%:")],
+                                shading: { fill: "F0F0F0" }
+                            }),
+                            new TableCell({ 
+                                children: [new Paragraph(formatCurrency(totals.vat))],
+                                shading: { fill: "F0F0F0" }
+                            })
+                        ]
+                    }));
+                    
+                    // Totale
+                    const totalRow = new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
+                            new TableCell({ 
+                                children: [new Paragraph("TOTALE PREVENTIVO:")],
+                                shading: { fill: "003366" }
+                            }),
+                            new TableCell({ 
+                                children: [new Paragraph(formatCurrency(totals.total))],
+                                shading: { fill: "003366" }
+                            })
+                        ]
+                    });
+                    
+                    // Applica stile alle celle del totale
+                    for (let i = 3; i < totalRow.children.length; i++) {
+                        const cell = totalRow.children[i];
+                        if (cell.children && cell.children[0]) {
+                            const paragraph = cell.children[0];
+                            if (paragraph.children && paragraph.children[0]) {
+                                const textRun = paragraph.children[0];
+                                textRun.color = "FFFFFF";
+                                textRun.bold = true;
+                            }
+                        }
+                    }
+                    
+                    tableRows.push(totalRow);
+                    
+                    // 7. Crea il documento completo
+                    const doc = new Document({
+                        sections: [{
+                            properties: {},
+                            children: [
+                                // Intestazione aziendale
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "CUFFARI RESTAURI EDILI SRL",
+                                            bold: true,
+                                            size: 28,
+                                            color: "003366"
+                                        }),
+                                        new TextRun({
+                                            text: "\nVia Roma 123, 00100 Roma (RM) | Tel: 06 12345678 | P.IVA: 12345678901",
+                                            size: 20,
+                                            color: "666666"
+                                        }),
+                                        new TextRun({
+                                            text: "\nEmail: info@maroccocuffari.it | www.maroccocuffari.it",
+                                            size: 20,
+                                            color: "666666"
+                                        })
+                                    ],
+                                    spacing: { after: 400 }
+                                }),
+                                
+                                // Titolo preventivo
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: `PREVENTIVO N. ${quoteNumberInput.value}`,
+                                            bold: true,
+                                            size: 32,
+                                            color: "003366",
+                                            underline: {}
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER,
+                                    spacing: { before: 400, after: 400 }
+                                }),
+                                
+                                // Dettagli cliente
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: `Data: ${formatDateForDisplay(quoteDateInput.value)} | Validità fino al: ${formatDateForDisplay(validUntilInput.value)}`,
+                                            bold: true,
+                                            size: 22
+                                        }),
+                                        new TextRun({
+                                            text: `\n\nCLIENTE: ${clientNameInput.value}`,
+                                            bold: true,
+                                            size: 22
+                                        }),
+                                        new TextRun({
+                                            text: clientVatInput.value ? `\nP.IVA/CF: ${clientVatInput.value}` : '',
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: `\nIndirizzo: ${clientAddressInput.value}`,
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: clientPhoneInput.value ? `\nContatti: ${clientPhoneInput.value}` : '',
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: `\n\nCANTIERE: ${siteAddressInput.value}`,
+                                            bold: true,
+                                            size: 22
+                                        }),
+                                        new TextRun({
+                                            text: siteDescriptionInput.value ? `\nLavori: ${siteDescriptionInput.value}` : '',
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: `\n\nTermini di pagamento: ${paymentTermsSelect.options[paymentTermsSelect.selectedIndex].text}`,
+                                            bold: true,
+                                            size: 20
+                                        })
+                                    ],
+                                    spacing: { after: 400 }
+                                }),
+                                
+                                // Tabella degli articoli
+                                new Table({
+                                    rows: tableRows,
+                                    width: { size: 100, type: WidthType.PERCENTAGE }
+                                }),
+                                
+                                // Note e condizioni
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "\nCONDIZIONI E NOTE",
+                                            bold: true,
+                                            size: 24,
+                                            color: "003366"
+                                        }),
+                                        new TextRun({
+                                            text: `\n${notesInput.value || 'Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall\'accettazione.'}`,
+                                            size: 20
+                                        })
+                                    ],
+                                    spacing: { before: 400, after: 400 }
+                                }),
+                                
+                                // Sezione firma
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "\n\nFirma per accettazione",
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: "\n\n\n___________________________",
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: "\nIl Responsabile Tecnico",
+                                            size: 20
+                                        }),
+                                        new TextRun({
+                                            text: "\nCristian Felice Cuffari",
+                                            bold: true,
+                                            size: 22
+                                        })
+                                    ],
+                                    spacing: { before: 400 }
+                                }),
+                                
+                                // Footer
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "\n\nDocumento generato digitalmente da Cuffari Restauri Edili SRL",
+                                            italics: true,
+                                            size: 18,
+                                            color: "666666"
+                                        }),
+                                        new TextRun({
+                                            text: "\nPreventivo creato il: " + new Date().toLocaleDateString('it-IT'),
+                                            size: 16,
+                                            color: "666666"
+                                        })
+                                    ],
+                                    alignment: AlignmentType.CENTER
+                                })
+                            ]
+                        }]
+                    });
+                    
+                    // 8. Genera e scarica
+                    const blob = await Packer.toBlob(doc);
+                    const fileName = `Preventivo_${quoteNumberInput.value.replace(/[^a-z0-9]/gi, '_')}.docx`;
+                    saveAs(blob, fileName);
+                    
+                    console.log("Download completato");
+                    
+                    // Salva il preventivo su Firebase se disponibile
+                    if (db && currentUser) {
+                        await saveQuoteToFirebase(itemsData, totals, fileName);
+                    }
+                    
+                    showSuccessAlert('Preventivo generato e scaricato con successo!');
+                    
+                } catch (error) {
+                    console.error("ERRORE CRITICO:", error);
+                    console.error("Stack trace:", error.stack);
+                    
+                    let userMessage = 'Errore nella generazione del documento: ';
+                    
+                    if (error.message.includes("Cannot read properties of undefined")) {
+                        userMessage += "C'è un problema con i dati del form. Verifica che tutti i campi siano compilati correttamente e che le voci del preventivo siano valide.";
+                    } else if (error.message.includes("docx is not defined")) {
+                        userMessage += "La libreria per generare documenti Word non è stata caricata correttamente. Ricarica la pagina.";
+                    } else {
+                        userMessage += error.message;
+                    }
+                    
+                    showErrorAlert(userMessage);
+                    
+                } finally {
+                    generateDocxBtn.innerHTML = '<i class="fas fa-file-word"></i> <span>Genera DOCX</span>';
+                    generateDocxBtn.disabled = false;
+                }
+            }
+            
+            // Save quote to Firebase
+            async function saveQuoteToFirebase(itemsData, totals, fileName) {
+                try {
+                    const quoteData = {
+                        quoteNumber: quoteNumberInput.value,
+                        quoteDate: quoteDateInput.value,
+                        validUntil: validUntilInput.value,
+                        paymentTerms: paymentTermsSelect.value,
+                        clientName: clientNameInput.value,
+                        clientVat: clientVatInput.value || '',
+                        clientAddress: clientAddressInput.value,
+                        clientPhone: clientPhoneInput.value || '',
+                        siteAddress: siteAddressInput.value,
+                        siteDescription: siteDescriptionInput.value || '',
+                        notes: notesInput.value || '',
+                        items: itemsData,
+                        subtotal: totals.subtotal,
+                        vat: totals.vat,
+                        total: totals.total,
+                        fileName: fileName,
+                        createdBy: currentUser.uid,
+                        createdByEmail: currentUser.email,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    
+                    await db.collection('quotes').add(quoteData);
+                    console.log("Preventivo salvato su Firebase");
+                    
+                } catch (error) {
+                    console.error("Errore nel salvataggio su Firebase:", error);
+                    // Non mostrare errore all'utente, è solo un backup
+                }
+            }
+            
+            // Handle logout
+            async function handleLogout() {
+                if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
+                    try {
+                        if (auth) {
+                            await auth.signOut();
+                        }
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.href = 'index.html';
+                        
+                    } catch (error) {
+                        console.error("Error during logout:", error);
+                        showErrorAlert("Errore durante il logout: " + error.message);
+                    }
+                }
+            }
+            
+            // Alert functions
+            function showSuccessAlert(message = "Preventivo generato con successo!") {
+                successAlert.querySelector('div').textContent = message;
+                successAlert.classList.remove('d-none');
+                errorAlert.classList.add('d-none');
+                
+                setTimeout(() => {
+                    successAlert.classList.add('d-none');
+                }, 5000);
+            }
+            
+            function showErrorAlert(message) {
+                errorMessage.textContent = message;
+                errorAlert.classList.remove('d-none');
+                successAlert.classList.add('d-none');
+            }
+            
+            function hideAlerts() {
+                successAlert.classList.add('d-none');
+                errorAlert.classList.add('d-none');
+            }
+            
+            // Initialize the page
+            initPage();
+        });
     </script>
 </body>
 </html>
