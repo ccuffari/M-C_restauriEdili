@@ -1,84 +1,148 @@
-name: Firebase Hosting Deploy
+name: Deploy Pipeline
 
 on:
+  pull_request:
+    branches: [main]
   push:
-    branches: [ main ]
-    tags:
-      - 'v*.*.*'
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Tag/Version da deployare (es: v1.0.0, main, o commit SHA)'
-        required: true
-        default: 'main'
-        type: string
+    branches: [main]
 
 jobs:
-  deploy:
+  # PR: Preview per testing
+  pr-preview:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout Repository
+    - name: Checkout PR Branch
       uses: actions/checkout@v4
       with:
-        ref: ${{ github.event.inputs.version || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && github.ref) || github.ref }}
-        fetch-depth: 0
-        token: ${{ secrets.GH_PAT }}  # ← Usa il PAT qui
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    - name: Install Firebase CLI
-      run: |
-        echo "Installing Firebase CLI..."
-        npm install -g firebase-tools
-
-    - name: Deploy to Firebase
+        ref: ${{ github.event.pull_request.head.sha }}
+    
+    - name: Setup Firebase
+      run: npm install -g firebase-tools
+    
+    - name: Deploy Preview
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       run: |
-        echo "Starting Firebase deployment..."
+        # Channel name sicuro basato sul PR number
+        CHANNEL_NAME="pr-${{ github.event.number }}"
         
-        if [ -z "$FIREBASE_TOKEN" ]; then
-          echo "❌ ERRORE: FIREBASE_TOKEN non configurato!"
-          exit 1
-        fi
+        echo "🚀 Deploying PR #${{ github.event.number }} to preview channel..."
+        firebase hosting:channel:deploy "$CHANNEL_NAME" \
+          --token "$FIREBASE_TOKEN" \
+          --expires 7d
+        
+        # Ottieni URL
+        DEPLOY_URL=$(firebase hosting:channel:list \
+          --token "$FIREBASE_TOKEN" \
+          --json | jq -r '.results[] | select(.name=="'$CHANNEL_NAME'") | .url')
+        
+        echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
+    
+    - name: Comment Preview Link
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `### 🚀 Preview Deployed\n\n🔗 **Live Preview:** ${process.env.DEPLOY_URL}\n⏰ **Expires:** 7 days\n📝 **Commit:** ${context.sha.substring(0, 7)}\n\nTest the changes before merging!`
+          })
+
+  # Merge su main: Deploy in produzione + Release
+  production-deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Get Previous Tag
+      id: prev_tag
+      run: |
+        # Trova l'ultimo tag semantico
+        PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+        echo "previous_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+        
+        # Incrementa patch version (es: v1.2.3 -> v1.2.4)
+        VERSION=$(echo $PREV_TAG | awk -F. '{$NF = $NF + 1; print $0}' | sed 's/ /./g')
+        echo "new_version=$VERSION" >> $GITHUB_OUTPUT
+        
+        echo "🔄 Previous: $PREV_TAG → New: $VERSION"
+    
+    - name: Create Git Tag
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Crea tag annotato
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        
+        # Messaggio di release dal commit
+        COMMIT_MSG=$(git log -1 --pretty=%B)
+        
+        git tag -a "${{ steps.prev_tag.outputs.new_version }}" \
+          -m "Release ${{ steps.prev_tag.outputs.new_version }}"$'\n\n'"$COMMIT_MSG"
+        
+        git push origin "${{ steps.prev_tag.outputs.new_version }}"
+        
+        echo "🏷️ Tag ${{ steps.prev_tag.outputs.new_version }} creato"
+    
+    - name: Deploy to Production
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      run: |
+        echo "🚀 Deploying to production..."
         
         firebase deploy \
           --token "$FIREBASE_TOKEN" \
           --only hosting \
-          --non-interactive
+          --message "Release ${{ steps.prev_tag.outputs.new_version }} - ${{ github.sha }}"
         
-        echo "✅ Deploy completato con successo!"
-
-    - name: Create and Push Git Tag (solo per deploy su main)
-      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-      env:
-        GH_TOKEN: ${{ secrets.GH_PAT }}  # ← Usa il PAT anche qui
+        echo "✅ Deployed to production"
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.prev_tag.outputs.new_version }}
+        name: Release ${{ steps.prev_tag.outputs.new_version }}
+        body: |
+          **Production Deployment** ✅
+          
+          **Version:** ${{ steps.prev_tag.outputs.new_version }}
+          **Commit:** [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+          **Deployed:** $(date -u)
+          
+          **Changes:**
+          $(git log --oneline -n 10 ${{ steps.prev_tag.outputs.previous_tag }}..${{ github.sha }} | sed 's/^/- /')
+          
+          **Deployment Logs:** [View in Actions](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        
+        draft: false
+        prerelease: false
+    
+    - name: Update Changelog
       run: |
-        # Genera un numero di versione basato sulla data
-        VERSION="v$(date +'%Y.%m.%d.%H%M%S')"
+        # Crea/aggiorna CHANGELOG.md
+        if [ ! -f CHANGELOG.md ]; then
+          echo "# Changelog" > CHANGELOG.md
+          echo "" >> CHANGELOG.md
+        fi
         
-        # Configura git
+        # Aggiungi nuova release in cima
+        HEADER="## [${{ steps.prev_tag.outputs.new_version }}] - $(date +%Y-%m-%d)"
+        echo -e "$HEADER\n" > CHANGELOG.tmp
+        cat CHANGELOG.md >> CHANGELOG.tmp
+        mv CHANGELOG.tmp CHANGELOG.md
+        
+        # Commit del changelog
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        
-        # Crea il tag
-        git tag -a "$VERSION" -m "Release $VERSION - Commit: ${{ github.sha }}"
-        
-        # Push del tag usando il PAT
-        git push origin "$VERSION"
-        
-        echo "✅ Tag $VERSION creato e pushato"
-
-    - name: Success Message
-      if: success()
-      run: |
-        echo "=========================================="
-        echo "🎉 Deploy completato con successo!"
-        echo "Branch/Tag: ${{ github.ref }}"
-        echo "Commit: ${{ github.sha }}"
-        echo "Data: $(date)"
-        echo "=========================================="
+        git add CHANGELOG.md
+        git commit -m "docs: update changelog for ${{ steps.prev_tag.outputs.new_version }}" || echo "No changes to changelog"
+        git push origin main
