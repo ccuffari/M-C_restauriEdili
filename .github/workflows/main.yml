@@ -1,12 +1,11 @@
-name: Simple Deploy
+name: Deploy Pipeline
 
 on:
   push:
     branches: [main]
 
-# ✅ Questo risolve tutto - dà permessi di scrittura al token auto-generato
 permissions:
-  contents: write
+  contents: write  # 🎯 DÀ AL GITHUB_TOKEN PERMESSI DI SCRITTURA PER TAG E RELEASE
 
 jobs:
   deploy:
@@ -21,32 +20,64 @@ jobs:
     - name: Setup Firebase CLI
       run: npm install -g firebase-tools
     
-    - name: Create Version Tag
+    - name: Generate Version Number
+      id: version
       run: |
+        # Genera versione basata sulla data (funziona sempre)
         VERSION="v$(date +'%Y.%m.%d.%H%M%S')"
-        echo "Creating tag: $VERSION"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "🎯 Generated version: $VERSION"
+    
+    - name: Create Git Tag
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
         
+        echo "🏷️ Creating tag: $VERSION"
+        
+        # Configura git
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
         
-        # Usa GITHUB_TOKEN (auto-generato, ora con permessi write)
+        # Crea e push tag usando GITHUB_TOKEN (ora con permessi)
         git tag -a "$VERSION" -m "Release $VERSION - ${{ github.sha }}"
         git push origin "$VERSION"
         
-        echo "✅ Tag $VERSION created"
+        echo "✅ Tag $VERSION created and pushed"
     
     - name: Deploy to Firebase
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       run: |
-        echo "🚀 Deploying..."
-        firebase deploy --only hosting --token "$FIREBASE_TOKEN"
-        echo "✅ Deployed!"
+        echo "🚀 Deploying version ${{ steps.version.outputs.version }}..."
+        
+        firebase deploy \
+          --token "$FIREBASE_TOKEN" \
+          --only hosting \
+          --message "Release ${{ steps.version.outputs.version }}"
+        
+        echo "✅ Deployed successfully to Firebase!"
     
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.version.outputs.version }}
         name: Release ${{ steps.version.outputs.version }}
+        body: |
+          **Production Deployment** ✅
+          
+          **Version:** ${{ steps.version.outputs.version }}
+          **Commit:** [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+          **Deployed:** $(date -u)
+          
+          **Deployment Logs:** [View in Actions](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
         draft: false
         prerelease: false
+    
+    - name: Success Notification
+      run: |
+        echo "=========================================="
+        echo "🎉 RELEASE COMPLETED SUCCESSFULLY!"
+        echo "Version: ${{ steps.version.outputs.version }}"
+        echo "Deploy: ✅ Firebase Hosting"
+        echo "Release: ✅ GitHub Release Created"
+        echo "=========================================="
