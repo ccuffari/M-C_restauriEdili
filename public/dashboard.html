@@ -2381,6 +2381,43 @@
             
             console.log('Dashboard ML inizializzata con successo!');
         });
+
+// Codice per estrarre lo schema delle collezioni
+async function getCollectionsSchema() {
+  const collections = ['constructionSites', 'workDays', 'materials', 'invoices', 'estimates', 'suppliers'];
+  const schema = {};
+  
+  for (const collectionName of collections) {
+    try {
+      const snapshot = await firebase.firestore().collection(collectionName).limit(5).get();
+      schema[collectionName] = {
+        count: (await firebase.firestore().collection(collectionName).get()).size,
+        sampleDocuments: []
+      };
+      
+      snapshot.forEach(doc => {
+        schema[collectionName].sampleDocuments.push({
+          id: doc.id,
+          data: doc.data()
+        });
+      });
+    } catch (error) {
+      console.error(`Errore nella collezione ${collectionName}:`, error);
+      schema[collectionName] = { error: error.message };
+    }
+  }
+  
+  console.log('SCHEMA COMPLETO FIRESTORE:');
+  console.log(JSON.stringify(schema, null, 2));
+  
+  // Copia questo output e incollamelo
+  return schema;
+}
+
+// Esegui questa funzione dopo aver inizializzato Firebase
+// getCollectionsSchema();        
     </script>
+
+    
 </body>
 </html>
