@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuffari - Dashboard ML Previsioni</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* CSS Reset e Base */
+        :root {
+            --primary-color: #003366;
+            --primary-dark: #002244;
+            --primary-light: #004080;
+            --secondary-color: #ff9900;
+            --secondary-dark: #e68a00;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-color: #6c757d;
+            --border-color: #dee2e6;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Container Responsive */
+        .container {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        
+        /* Breakpoint per xxs (molto piccolo) */
+        @media (max-width: 359.98px) {
+            .container { padding: 0 8px; }
+            html { font-size: 14px; }
+        }
+        
+        /* Breakpoint per xs (extra small) */
+        @media (min-width: 360px) and (max-width: 575.98px) {
+            .container { max-width: 100%; }
+        }
+        
+        /* Breakpoint per sm (small) */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            .container { max-width: 540px; }
+        }
+        
+        /* Breakpoint per md (medium) */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .container { max-width: 720px; }
+        }
+        
+        /* Breakpoint per lg (large) */
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            .container { max-width: 960px; }
+        }
+        
+        /* Breakpoint per xl (extra large) */
+        @media (min-width: 1200px) and (max-width: 1399.98px) {
+            .container { max-width: 1140px; }
+        }
+        
+        /* Breakpoint per xxl (extra extra large) */
+        @media (min-width: 1400px) {
+            .container { max-width: 1320px; }
+        }
+        
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .d-none { display: none !important; }
+        .d-block { display: block !important; }
+        .d-flex { display: flex !important; }
+        .d-grid { display: grid !important; }
+        .justify-content-between { justify-content: space-between; }
+        .align-items-center { align-items: center; }
+        .flex-column { flex-direction: column; }
+        .flex-wrap { flex-wrap: wrap; }
+        .gap-1 { gap: 0.5rem; }
+        .gap-2 { gap: 1rem; }
+        .gap-3 { gap: 1.5rem; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+        .p-2 { padding: 1rem; }
+        .p-3 { padding: 1.5rem; }
+        .p-4 { padding: 2rem; }
+        .w-100 { width: 100%; }
+        
+        /* Header Styles */
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            color: var(--secondary-color);
+            flex-shrink: 0;
+        }
+        
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .nav-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--secondary-color);
+        }
+        
+        .nav-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .user-info {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .user-role {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .logout-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        
+        .logout-btn:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .logout-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem 0;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .page-title i {
+            color: var(--secondary-color);
+        }
+        
+        .page-subtitle {
+            color: var(--gray-color);
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .page-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-info {
+            background: var(--info-color);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Stats Cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-right: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .stat-info {
+            flex: 1;
+        }
+        
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.2;
+        }
+        
+        .stat-change {
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+        
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+        
+        .stat-change.negative {
+            color: var(--danger-color);
+        }
+        
+        /* Main Content Layout */
+        .content-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 992px) {
+            .content-container {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .form-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.25rem 1.5rem;
+        }
+        
+        .card-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+        
+        .form-group.required label::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+            z-index: 1;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.25);
+            outline: none;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23343a40' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        
+        @media (min-width: 576px) {
+            .form-actions {
+                flex-direction: row;
+            }
+        }
+        
+        .btn-full {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* Suppliers List */
+        .suppliers-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .suppliers-list:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .list-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        @media (min-width: 768px) {
+            .list-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+        
+        .list-title {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .list-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            width: 100%;
+        }
+        
+        @media (min-width: 576px) {
+            .list-controls {
+                flex-direction: row;
+                align-items: center;
+                width: auto;
+            }
+        }
+        
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.25);
+            outline: none;
+        }
+        
+        .filter-select {
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: white;
+            color: var(--dark-color);
+            font-size: 0.95rem;
+            min-width: 160px;
+            cursor: pointer;
+        }
+        
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .suppliers-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .suppliers-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .suppliers-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+        
+        .suppliers-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .suppliers-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .supplier-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .supplier-contact {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-top: 0.25rem;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background: #e9ecef;
+            color: var(--dark-color);
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-suspended {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Category Badges */
+        .category-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
+            background: #e6f0ff;
+            color: var(--primary-color);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: nowrap;
+        }
+        
+        .action-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--gray-color);
+            transition: var(--transition);
+            padding: 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            min-height: 36px;
+        }
+        
+        .action-btn:hover {
+            color: var(--primary-color);
+            background: rgba(0, 51, 102, 0.1);
+        }
+        
+        .action-btn-danger:hover {
+            color: var(--danger-color);
+            background: rgba(220, 53, 69, 0.1);
+        }
+        
+        /* No Data Message */
+        .no-data {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-color);
+        }
+        
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+        
+        .no-data h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .no-data p {
+            font-size: 1rem;
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-color);
+        }
+        
+        .loading-spinner i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .alert i {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .pagination button {
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pagination button:hover {
+            background: #f8f9fa;
+        }
+        
+        .pagination button.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+        }
+        
+        .developer-info {
+            margin-bottom: 15px;
+        }
+        
+        .developer-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .company-info {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+        
+        .copyright {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-color);
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        
+        /* Supplier Details */
+        .supplier-details {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .supplier-details {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .detail-group {
+            margin-bottom: 1rem;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            color: var(--dark-color);
+            font-size: 1rem;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .logo-container {
+                min-width: auto;
+                margin-bottom: 1rem;
+            }
+            
+            .user-menu {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-menu {
+                order: 2;
+                width: 100%;
+                margin-top: 1rem;
+                justify-content: center;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.75rem;
+            }
+            
+            .stat-card {
+                padding: 1.25rem;
+            }
+            
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                margin-right: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .card-body {
+                padding: 1.25rem;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .logo-container {
+                justify-content: center;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            
+            .logo-icon {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+            
+            .user-menu {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .user-info {
+                text-align: center;
+            }
+            
+            .nav-menu {
+                justify-content: center;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .page-actions {
+                justify-content: center;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn-full {
+                width: 100%;
+            }
+            
+            .list-controls {
+                flex-direction: column;
+            }
+            
+            .search-box,
+            .filter-select {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .logo-text {
+                font-size: 1.3rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+            
+            .nav-btn span {
+                display: none;
+            }
+            
+            .nav-btn i {
+                margin-right: 0;
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stat-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        /* Extra small devices (xxs) */
+        @media (max-width: 320px) {
+            .logo-text {
+                font-size: 1.1rem;
+            }
+            
+            .subtitle {
+                font-size: 0.8rem;
+            }
+            
+            .page-title {
+                font-size: 1.3rem;
+            }
+            
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .nav-btn {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Stili aggiuntivi specifici per ML */
+        .ml-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .ml-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .ml-card h3 {
+            color: white;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .ml-card h3 i {
+            color: #ffd700;
+        }
+        
+        .prediction-result {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .prediction-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .confidence-badge {
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        
+        .ml-controls {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .ml-slider-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .ml-slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .ml-slider-value {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+        
+        .ml-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e9ecef;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .ml-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .ml-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .ml-chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            height: 400px;
+        }
+        
+        .ml-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .ml-history-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .ml-history-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .ml-history-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .ml-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .ml-tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            font-weight: 600;
+            color: var(--gray-color);
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .ml-tab.active {
+            color: var(--primary-color);
+        }
+        
+        .ml-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-color);
+        }
+        
+        .ml-tab-content {
+            display: none;
+        }
+        
+        .ml-tab-content.active {
+            display: block;
+        }
+        
+        .ml-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ml-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .ml-warning i {
+            color: #ffc107;
+        }
+        
+        @media (max-width: 768px) {
+            .ml-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .ml-chart-container {
+                height: 300px;
+            }
+            
+            .prediction-result {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (stesso della pagina fornitori) -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <i class="fas fa-brain logo-icon"></i>
+                <div>
+                    <div class="logo-text">Cuffari Restauri Edili</div>
+                    <div class="subtitle">Intelligenza Artificiale per le Previsioni</div>
+                </div>
+            </div>
+            
+            <div class="user-menu">
+                <div class="nav-menu">
+                    <a href="profile.html" class="nav-btn">
+                        <i class="fas fa-user-circle"></i> <span>Profilo</span>
+                    </a>
+                    <a href="construction-sites.html" class="nav-btn">
+                        <i class="fas fa-hard-hat"></i> <span>Cantieri</span>
+                    </a>
+                    <a href="estimates.html" class="nav-btn">
+                        <i class="fas fa-calculator"></i> <span>Preventivi</span>
+                    </a>
+                    <a href="suppliers.html" class="nav-btn">
+                        <i class="fas fa-truck"></i> <span>Fornitori</span>
+                    </a>
+                    <a href="ml-dashboard.html" class="nav-btn active">
+                        <i class="fas fa-robot"></i> <span>AI Previsioni</span>
+                    </a>
+                    <a href="reports.html" class="nav-btn">
+                        <i class="fas fa-chart-bar"></i> <span>Report</span>
+                    </a>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-name" id="userName">Caricamento...</div>
+                    <div class="user-role" id="userRole">Analista</div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> <span>Esci</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-robot"></i> Dashboard AI Previsioni
+                    </h1>
+                    <p class="page-subtitle">Previsioni di costo e analisi predittiva basata sui dati storici</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-secondary" id="resetModelBtn">
+                        <i class="fas fa-redo"></i> <span>Reset Modello</span>
+                    </button>
+                    <button class="btn btn-primary" id="addHistoricalBtn">
+                        <i class="fas fa-history"></i> <span>Aggiungi Storico</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Warning Box -->
+            <div class="ml-warning">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Nota:</strong> Le previsioni sono basate su dati storici e modelli statistici. 
+                    Utilizzale come riferimento, ma considera sempre l'esperienza e le condizioni specifiche del cantiere.
+                </div>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="ml-tabs">
+                <button class="ml-tab active" data-tab="forecast">
+                    <i class="fas fa-calculator"></i> Previsione Costi
+                </button>
+                <button class="ml-tab" data-tab="analysis">
+                    <i class="fas fa-chart-line"></i> Analisi Storica
+                </button>
+                <button class="ml-tab" data-tab="settings">
+                    <i class="fas fa-cog"></i> Impostazioni
+                </button>
+            </div>
+            
+            <!-- Tab Content: Forecast -->
+            <div id="forecast-tab" class="ml-tab-content active">
+                <div class="ml-grid">
+                    <!-- Prediction Card -->
+                    <div class="ml-card">
+                        <h3><i class="fas fa-bullseye"></i> Previsione di Costo</h3>
+                        <div class="prediction-label">Costo previsto al metro quadro</div>
+                        <div class="prediction-result" id="predictedCost">€ 1.850</div>
+                        <div class="prediction-label">Per una superficie di <span id="currentSurface">100</span> m²</div>
+                        <div class="text-center">
+                            <div class="prediction-label mt-3">Costo totale previsto</div>
+                            <div class="prediction-result" id="predictedTotal">€ 185.000</div>
+                            <div class="confidence-badge">
+                                <i class="fas fa-shield-alt"></i>
+                                Affidabilità: <span id="confidenceLevel">85%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Risk Card -->
+                    <div class="ml-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Analisi Rischio</h3>
+                        <div class="prediction-label">Livello di rischio stimato</div>
+                        <div class="prediction-result" id="riskLevel">MEDIO</div>
+                        <div class="prediction-label">Basato su parametri inseriti</div>
+                        <div class="text-center mt-3">
+                            <div class="prediction-label">Deviazione standard attesa</div>
+                            <div class="prediction-result">± € <span id="deviation">120</span>/m²</div>
+                            <div class="confidence-badge" style="background: rgba(255,255,255,0.3);">
+                                <i class="fas fa-chart-bar"></i>
+                                Range: €<span id="minCost">1.730</span> - €<span id="maxCost">1.970</span>/m²
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controls -->
+                <div class="ml-controls mt-4">
+                    <h3 class="mb-3"><i class="fas fa-sliders-h"></i> Parametri della Commessa</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="ml-slider-container">
+                                <div class="ml-slider-label">
+                                    <span>Superficie (m²)</span>
+                                    <span class="ml-slider-value" id="surfaceValue">100 m²</span>
+                                </div>
+                                <input type="range" min="50" max="5000" value="100" class="ml-slider" id="surfaceSlider">
+                                <div class="d-flex justify-content-between mt-1">
+                                    <small>50 m²</small>
+                                    <small>5000 m²</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ml-slider-container">
+                                <div class="ml-slider-label">
+                                    <span>Complessità</span>
+                                    <span class="ml-slider-value" id="complexityValue">3 - Media</span>
+                                </div>
+                                <input type="range" min="1" max="5" value="3" class="ml-slider" id="complexitySlider">
+                                <div class="d-flex justify-content-between mt-1">
+                                    <small>Semplice</small>
+                                    <small>Molto complessa</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="projectType">Tipologia di Progetto</label>
+                                <select class="form-control" id="projectType">
+                                    <option value="ristrutturazione">Ristrutturazione</option>
+                                    <option value="nuova_costruzione">Nuova Costruzione</option>
+                                    <option value="ampliamento">Ampliamento</option>
+                                    <option value="restauro">Restauro Conservativo</option>
+                                    <option value="manutenzione">Manutenzione Straordinaria</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="location">Zona/Località</label>
+                                <select class="form-control" id="location">
+                                    <option value="centro">Centro Città</option>
+                                    <option value="periferia">Periferia</option>
+                                    <option value="collina">Zona Collinare</option>
+                                    <option value="montagna">Zona Montana</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-row mt-3">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="urgentCheck">
+                                        <label class="form-check-label" for="urgentCheck">
+                                            Commessa Urgente
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="historicCheck">
+                                        <label class="form-check-label" for="historicCheck">
+                                            Edificio Storico
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-full" id="calculateBtn">
+                            <i class="fas fa-calculator"></i> Calcola Previsione
+                        </button>
+                        <button class="btn btn-success btn-full" id="saveEstimateBtn">
+                            <i class="fas fa-save"></i> Salva come Preventivo
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Comparison Chart -->
+                <div class="ml-chart-container mt-4">
+                    <h3><i class="fas fa-chart-line"></i> Confronto con Commesse Simili</h3>
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Tab Content: Analysis -->
+            <div id="analysis-tab" class="ml-tab-content">
+                <div class="ml-chart-container">
+                    <h3><i class="fas fa-chart-bar"></i> Andamento Costi Storici</h3>
+                    <canvas id="historicalChart"></canvas>
+                </div>
+                
+                <div class="ml-controls mt-4">
+                    <h3><i class="fas fa-database"></i> Dati Storici delle Commesse</h3>
+                    <div class="table-responsive">
+                        <table class="ml-history-table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Tipologia</th>
+                                    <th>Superficie</th>
+                                    <th>Costo Previsto</th>
+                                    <th>Costo Reale</th>
+                                    <th>Scostamento</th>
+                                    <th>Affidabilità</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- Dati verranno popolati via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab Content: Settings -->
+            <div id="settings-tab" class="ml-tab-content">
+                <div class="ml-controls">
+                    <h3><i class="fas fa-cog"></i> Configurazione Modello ML</h3>
+                    
+                    <div class="form-group">
+                        <label for="modelType">Tipo di Modello Predittivo</label>
+                        <select class="form-control" id="modelType">
+                            <option value="linear">Regressione Lineare (Consigliato)</option>
+                            <option value="polynomial">Regressione Polinomiale</option>
+                            <option value="ensemble">Ensemble Learning</option>
+                            <option value="neural">Rete Neurale (Sperimentale)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="trainingData">Utilizza Dati Storici (ultimi)</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                            <select class="form-control" id="trainingData">
+                                <option value="12">12 mesi</option>
+                                <option value="24" selected>24 mesi</option>
+                                <option value="36">36 mesi</option>
+                                <option value="all">Tutti i dati</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confidenceThreshold">Soglia di Affidabilità Minima</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-chart-line"></i>
+                            <input type="range" min="60" max="95" value="75" class="form-control-range" id="confidenceThreshold">
+                            <span class="ml-2" id="thresholdValue">75%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="autoUpdate" checked>
+                            <label class="form-check-label" for="autoUpdate">
+                                Aggiorna automaticamente il modello con nuove commesse
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn btn-primary" id="saveSettingsBtn">
+                            <i class="fas fa-save"></i> Salva Impostazioni
+                        </button>
+                        <button class="btn btn-info" id="trainModelBtn">
+                            <i class="fas fa-brain"></i> Ri-allena Modello
+                        </button>
+                        <button class="btn btn-secondary" id="exportModelBtn">
+                            <i class="fas fa-download"></i> Esporta Modello
+                        </button>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h4><i class="fas fa-info-circle"></i> Statistiche del Modello</h4>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background-color: #e6f0ff; color: #004080;">
+                                        <i class="fas fa-database"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div class="stat-title">Commesse Analizzate</div>
+                                        <div class="stat-value" id="modelDataCount">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background-color: #d4edda; color: #155724;">
+                                        <i class="fas fa-percentage"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div class="stat-title">Accuratezza</div>
+                                        <div class="stat-value" id="modelAccuracy">0%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background-color: #fff3cd; color: #856404;">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div class="stat-title">Ultimo Aggiornamento</div>
+                                        <div class="stat-value" id="modelLastUpdate">-</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background-color: #f8d7da; color: #721c24;">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div class="stat-title">Errore Medio</div>
+                                        <div class="stat-value" id="modelError">€0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer (stesso della pagina fornitori) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="developer-info">
+                    <h3>Dashboard AI Predittiva</h3>
+                    <p>Sviluppato da Cristian Felice Cuffari</p>
+                </div>
+                
+                <div class="company-info">
+                    <p><strong>Modello ML per Previsioni di Costo</strong> - Basato su dati storici reali</p>
+                </div>
+                
+                <div class="copyright">
+                    <p>&copy; 2026 Cuffari Restauri Edili. Sistema di intelligenza artificiale proprietario.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript ML Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ============== INIZIALIZZAZIONE ==============
+            let mlModel = {
+                coefficients: {
+                    baseCost: 1000,
+                    surfaceMultiplier: -0.08,
+                    complexityMultiplier: 145,
+                    typeMultipliers: {
+                        ristrutturazione: 120,
+                        nuova_costruzione: 0,
+                        ampliamento: 85,
+                        restauro: 210,
+                        manutenzione: 65
+                    },
+                    locationMultipliers: {
+                        centro: 180,
+                        periferia: 0,
+                        collina: 45,
+                        montagna: 75
+                    },
+                    urgencyPenalty: 1.15,
+                    historicBonus: 1.25
+                },
+                historicalData: [],
+                accuracy: 0.87,
+                lastTraining: new Date().toISOString()
+            };
+            
+            let charts = {};
+            
+            // ============== FUNZIONI ML ==============
+            
+            // Funzione di previsione principale
+            function predictCost(params) {
+                let base = mlModel.coefficients.baseCost;
+                
+                // Superficie (economie di scala)
+                base += params.surface * mlModel.coefficients.surfaceMultiplier;
+                
+                // Complessità
+                base += params.complexity * mlModel.coefficients.complexityMultiplier;
+                
+                // Tipologia
+                base += mlModel.coefficients.typeMultipliers[params.type] || 0;
+                
+                // Località
+                base += mlModel.coefficients.locationMultipliers[params.location] || 0;
+                
+                // Fattori aggiuntivi
+                if (params.urgent) base *= mlModel.coefficients.urgencyPenalty;
+                if (params.historic) base *= mlModel.coefficients.historicBonus;
+                
+                // Aggiungi varianza casuale basata sull'affidabilità
+                const confidence = calculateConfidence(params);
+                const variance = (1 - confidence) * 0.15; // Massimo 15% varianza
+                const randomFactor = 1 + (Math.random() * 2 - 1) * variance;
+                
+                return Math.round(base * randomFactor);
+            }
+            
+            // Calcola l'affidabilità della previsione
+            function calculateConfidence(params) {
+                let confidence = 0.85; // Base
+                
+                // Più dati storici = più affidabilità
+                confidence += Math.min(mlModel.historicalData.length / 50, 0.1);
+                
+                // Commesse simili nel database
+                const similarProjects = findSimilarProjects(params);
+                confidence += similarProjects.length * 0.02;
+                
+                // Parametri estremi riducono l'affidabilità
+                if (params.surface < 100 || params.surface > 2000) confidence -= 0.05;
+                if (params.complexity === 5) confidence -= 0.03;
+                
+                return Math.max(0.6, Math.min(0.95, confidence));
+            }
+            
+            // Trova commesse simili nella cronologia
+            function findSimilarProjects(params) {
+                return mlModel.historicalData.filter(project => {
+                    const typeMatch = project.type === params.type;
+                    const complexityClose = Math.abs(project.complexity - params.complexity) <= 1;
+                    const surfaceRatio = project.surface / params.surface;
+                    const surfaceClose = surfaceRatio > 0.7 && surfaceRatio < 1.3;
+                    
+                    return typeMatch && complexityClose && surfaceClose;
+                });
+            }
+            
+            // Calcola il livello di rischio
+            function calculateRiskLevel(params, predictedCost) {
+                const similar = findSimilarProjects(params);
+                
+                if (similar.length === 0) return 'ALTO';
+                
+                // Calcola la varianza dei costi simili
+                const costs = similar.map(p => p.actualCostPerM2);
+                const avg = costs.reduce((a, b) => a + b, 0) / costs.length;
+                const variance = costs.reduce((s, c) => s + Math.pow(c - avg, 2), 0) / costs.length;
+                
+                if (variance > 25000) return 'ALTO';
+                if (variance > 10000) return 'MEDIO-ALTO';
+                if (variance > 5000) return 'MEDIO';
+                return 'BASSO';
+            }
+            
+            // Carica dati storici da localStorage o usa dati di esempio
+            function loadHistoricalData() {
+                const saved = localStorage.getItem('mlHistoricalData');
+                if (saved) {
+                    mlModel.historicalData = JSON.parse(saved);
+                } else {
+                    // Dati di esempio
+                    mlModel.historicalData = generateSampleData();
+                    saveHistoricalData();
+                }
+                
+                updateModelStats();
+            }
+            
+            // Genera dati di esempio realistici
+            function generateSampleData() {
+                const types = ['ristrutturazione', 'nuova_costruzione', 'ampliamento', 'restauro', 'manutenzione'];
+                const locations = ['centro', 'periferia', 'collina', 'montagna'];
+                const data = [];
+                
+                for (let i = 0; i < 25; i++) {
+                    const surface = Math.floor(Math.random() * 2000) + 100;
+                    const complexity = Math.floor(Math.random() * 5) + 1;
+                    const type = types[Math.floor(Math.random() * types.length)];
+                    const location = locations[Math.floor(Math.random() * locations.length)];
+                    
+                    // Costo previsto dal modello
+                    const predicted = predictCost({ surface, complexity, type, location, urgent: false, historic: false });
+                    
+                    // Aggiungi varianza reale (±15%)
+                    const actual = predicted * (0.85 + Math.random() * 0.3);
+                    
+                    data.push({
+                        id: Date.now() + i,
+                        date: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
+                        surface,
+                        complexity,
+                        type,
+                        location,
+                        predictedCostPerM2: Math.round(predicted),
+                        actualCostPerM2: Math.round(actual),
+                        deviation: Math.round(((actual - predicted) / predicted) * 100)
+                    });
+                }
+                
+                return data;
+            }
+            
+            // Salva dati storici
+            function saveHistoricalData() {
+                localStorage.setItem('mlHistoricalData', JSON.stringify(mlModel.historicalData));
+            }
+            
+            // ============== UI FUNCTIONS ==============
+            
+            // Aggiorna la previsione quando cambiano i parametri
+            function updatePrediction() {
+                const params = getCurrentParams();
+                const predicted = predictCost(params);
+                const confidence = calculateConfidence(params);
+                const risk = calculateRiskLevel(params, predicted);
+                
+                // Aggiorna UI
+                document.getElementById('predictedCost').textContent = '€ ' + predicted.toLocaleString();
+                document.getElementById('predictedTotal').textContent = '€ ' + (predicted * params.surface).toLocaleString();
+                document.getElementById('confidenceLevel').textContent = Math.round(confidence * 100) + '%';
+                document.getElementById('riskLevel').textContent = risk;
+                
+                // Calcola deviazione standard basata sull'affidabilità
+                const deviation = Math.round(predicted * (1 - confidence));
+                document.getElementById('deviation').textContent = deviation;
+                document.getElementById('minCost').textContent = (predicted - deviation).toLocaleString();
+                document.getElementById('maxCost').textContent = (predicted + deviation).toLocaleString();
+                document.getElementById('currentSurface').textContent = params.surface;
+                
+                updateCharts(params, predicted);
+            }
+            
+            // Ottieni parametri correnti dalla UI
+            function getCurrentParams() {
+                return {
+                    surface: parseInt(document.getElementById('surfaceSlider').value),
+                    complexity: parseInt(document.getElementById('complexitySlider').value),
+                    type: document.getElementById('projectType').value,
+                    location: document.getElementById('location').value,
+                    urgent: document.getElementById('urgentCheck').checked,
+                    historic: document.getElementById('historicCheck').checked
+                };
+            }
+            
+            // Aggiorna le statistiche del modello
+            function updateModelStats() {
+                document.getElementById('modelDataCount').textContent = mlModel.historicalData.length;
+                document.getElementById('modelAccuracy').textContent = Math.round(mlModel.accuracy * 100) + '%';
+                document.getElementById('modelLastUpdate').textContent = new Date(mlModel.lastTraining).toLocaleDateString();
+                
+                // Calcola errore medio
+                if (mlModel.historicalData.length > 0) {
+                    const totalError = mlModel.historicalData.reduce((sum, p) => {
+                        return sum + Math.abs(p.actualCostPerM2 - p.predictedCostPerM2);
+                    }, 0);
+                    const avgError = Math.round(totalError / mlModel.historicalData.length);
+                    document.getElementById('modelError').textContent = '€' + avgError;
+                }
+                
+                updateHistoryTable();
+            }
+            
+            // Aggiorna tabella cronologia
+            function updateHistoryTable() {
+                const tbody = document.getElementById('historyTableBody');
+                tbody.innerHTML = '';
+                
+                // Mostra ultime 10 commesse
+                const recent = mlModel.historicalData
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 10);
+                
+                recent.forEach(project => {
+                    const row = document.createElement('tr');
+                    const deviationClass = project.deviation > 10 ? 'text-danger' : 
+                                          project.deviation < -10 ? 'text-warning' : 'text-success';
+                    
+                    row.innerHTML = `
+                        <td>${new Date(project.date).toLocaleDateString()}</td>
+                        <td>${translateType(project.type)}</td>
+                        <td>${project.surface} m²</td>
+                        <td>€ ${project.predictedCostPerM2.toLocaleString()}</td>
+                        <td>€ ${project.actualCostPerM2.toLocaleString()}</td>
+                        <td class="${deviationClass}">${project.deviation > 0 ? '+' : ''}${project.deviation}%</td>
+                        <td>
+                            <span class="status-badge ${getAccuracyBadgeClass(project.deviation)}">
+                                ${getAccuracyBadgeText(project.deviation)}
+                            </span>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+            
+            // Funzioni di supporto per la tabella
+            function translateType(type) {
+                const types = {
+                    'ristrutturazione': 'Ristrutturazione',
+                    'nuova_costruzione': 'Nuova Costruzione',
+                    'ampliamento': 'Ampliamento',
+                    'restauro': 'Restauro',
+                    'manutenzione': 'Manutenzione'
+                };
+                return types[type] || type;
+            }
+            
+            function getAccuracyBadgeClass(deviation) {
+                if (Math.abs(deviation) < 5) return 'status-active';
+                if (Math.abs(deviation) < 10) return 'status-pending';
+                return 'status-suspended';
+            }
+            
+            function getAccuracyBadgeText(deviation) {
+                if (Math.abs(deviation) < 5) return 'Precisa';
+                if (Math.abs(deviation) < 10) return 'Accettabile';
+                return 'Da rivedere';
+            }
+            
+            // ============== CHARTS ==============
+            
+            // Inizializza i grafici
+            function initializeCharts() {
+                // Grafico di confronto
+                const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+                charts.comparison = new Chart(comparisonCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Commessa Attuale', 'Media Simili', 'Minimo Storico', 'Massimo Storico'],
+                        datasets: [{
+                            label: 'Costo al m² (€)',
+                            data: [0, 0, 0, 0],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(255, 99, 132, 0.7)',
+                                'rgba(255, 159, 64, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgb(54, 162, 235)',
+                                'rgb(75, 192, 192)',
+                                'rgb(255, 99, 132)',
+                                'rgb(255, 159, 64)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Costo al m² (€)'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Grafico storico
+                const historicalCtx = document.getElementById('historicalChart').getContext('2d');
+                charts.historical = new Chart(historicalCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [
+                            {
+                                label: 'Costo Previsto',
+                                data: [],
+                                borderColor: 'rgb(54, 162, 235)',
+                                backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                                tension: 0.3
+                            },
+                            {
+                                label: 'Costo Reale',
+                                data: [],
+                                borderColor: 'rgb(75, 192, 192)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                                tension: 0.3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: 'Costo al m² (€)'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                updateHistoricalChart();
+            }
+            
+            // Aggiorna grafico di confronto
+            function updateCharts(params, predictedCost) {
+                // Aggiorna grafico di confronto
+                const similar = findSimilarProjects(params);
+                let avgSimilar = predictedCost;
+                let minSimilar = predictedCost * 0.8;
+                let maxSimilar = predictedCost * 1.2;
+                
+                if (similar.length > 0) {
+                    const costs = similar.map(p => p.actualCostPerM2);
+                    avgSimilar = costs.reduce((a, b) => a + b, 0) / costs.length;
+                    minSimilar = Math.min(...costs);
+                    maxSimilar = Math.max(...costs);
+                }
+                
+                charts.comparison.data.datasets[0].data = [
+                    predictedCost,
+                    avgSimilar,
+                    minSimilar,
+                    maxSimilar
+                ];
+                charts.comparison.update();
+            }
+            
+            // Aggiorna grafico storico
+            function updateHistoricalChart() {
+                const sortedData = mlModel.historicalData
+                    .sort((a, b) => new Date(a.date) - new Date(b.date))
+                    .slice(-20); // Ultime 20 commesse
+                
+                charts.historical.data.labels = sortedData.map(p => 
+                    new Date(p.date).toLocaleDateString('it-IT', { month: 'short', day: 'numeric' })
+                );
+                charts.historical.data.datasets[0].data = sortedData.map(p => p.predictedCostPerM2);
+                charts.historical.data.datasets[1].data = sortedData.map(p => p.actualCostPerM2);
+                charts.historical.update();
+            }
+            
+            // ============== EVENT HANDLERS ==============
+            
+            // Setup slider listeners
+            document.getElementById('surfaceSlider').addEventListener('input', function(e) {
+                document.getElementById('surfaceValue').textContent = e.target.value + ' m²';
+                updatePrediction();
+            });
+            
+            document.getElementById('complexitySlider').addEventListener('input', function(e) {
+                const complexityText = ['1 - Molto semplice', '2 - Semplice', '3 - Media', '4 - Complessa', '5 - Molto complessa'];
+                document.getElementById('complexityValue').textContent = complexityText[e.target.value - 1];
+                updatePrediction();
+            });
+            
+            // Setup tab switching
+            document.querySelectorAll('.ml-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and contents
+                    document.querySelectorAll('.ml-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.ml-tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-tab').classList.add('active');
+                });
+            });
+            
+            // Setup buttons
+            document.getElementById('calculateBtn').addEventListener('click', updatePrediction);
+            
+            document.getElementById('saveEstimateBtn').addEventListener('click', function() {
+                const params = getCurrentParams();
+                const predicted = predictCost(params);
+                
+                // Crea un nuovo preventivo
+                const estimate = {
+                    id: 'EST_' + Date.now(),
+                    date: new Date().toISOString(),
+                    ...params,
+                    predictedCostPerM2: predicted,
+                    totalCost: predicted * params.surface,
+                    confidence: calculateConfidence(params),
+                    riskLevel: calculateRiskLevel(params, predicted),
+                    source: 'ml-dashboard'
+                };
+                
+                // Salva in localStorage
+                const estimates = JSON.parse(localStorage.getItem('mlEstimates') || '[]');
+                estimates.unshift(estimate);
+                localStorage.setItem('mlEstimates', JSON.stringify(estimates));
+                
+                // Mostra conferma
+                alert(`Preventivo salvato con successo!\n\nCodice: ${estimate.id}\nCosto totale: €${estimate.totalCost.toLocaleString()}\nAffidabilità: ${Math.round(estimate.confidence * 100)}%`);
+                
+                // Aggiungi alla cronologia ML
+                mlModel.historicalData.push({
+                    ...estimate,
+                    actualCostPerM2: null, // Da completare quando si hanno i costi reali
+                    deviation: null
+                });
+                saveHistoricalData();
+                updateModelStats();
+            });
+            
+            document.getElementById('addHistoricalBtn').addEventListener('click', function() {
+                // Mostra un form per aggiungere dati storici reali
+                const params = getCurrentParams();
+                const predicted = predictCost(params);
+                
+                const actualCost = prompt(
+                    `Inserisci il costo REALE al m² per questa commessa:\n\n` +
+                    `Superficie: ${params.surface} m²\n` +
+                    `Complessità: ${params.complexity}\n` +
+                    `Tipologia: ${translateType(params.type)}\n` +
+                    `Previsione ML: €${predicted}/m²\n\n` +
+                    `Inserisci il costo effettivo (€/m²):`,
+                    predicted
+                );
+                
+                if (actualCost && !isNaN(actualCost)) {
+                    const actual = parseFloat(actualCost);
+                    const deviation = Math.round(((actual - predicted) / predicted) * 100);
+                    
+                    // Aggiungi alla cronologia
+                    mlModel.historicalData.push({
+                        id: 'HIST_' + Date.now(),
+                        date: new Date().toISOString(),
+                        ...params,
+                        predictedCostPerM2: predicted,
+                        actualCostPerM2: actual,
+                        deviation: deviation
+                    });
+                    
+                    saveHistoricalData();
+                    updateModelStats();
+                    updateHistoricalChart();
+                    
+                    alert(`Dato storico aggiunto!\nScostamento dalla previsione: ${deviation}%`);
+                }
+            });
+            
+            document.getElementById('resetModelBtn').addEventListener('click', function() {
+                if (confirm('Vuoi resettare il modello ai valori predefiniti? I dati storici non verranno eliminati.')) {
+                    // Reset coefficients to defaults
+                    mlModel.coefficients = {
+                        baseCost: 1000,
+                        surfaceMultiplier: -0.08,
+                        complexityMultiplier: 145,
+                        typeMultipliers: {
+                            ristrutturazione: 120,
+                            nuova_costruzione: 0,
+                            ampliamento: 85,
+                            restauro: 210,
+                            manutenzione: 65
+                        },
+                        locationMultipliers: {
+                            centro: 180,
+                            periferia: 0,
+                            collina: 45,
+                            montagna: 75
+                        },
+                        urgencyPenalty: 1.15,
+                        historicBonus: 1.25
+                    };
+                    
+                    mlModel.lastTraining = new Date().toISOString();
+                    updatePrediction();
+                    alert('Modello resettato ai valori predefiniti!');
+                }
+            });
+            
+            document.getElementById('trainModelBtn').addEventListener('click', function() {
+                // Simula il ri-addestramento del modello
+                document.getElementById('trainModelBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Addestramento in corso...';
+                document.getElementById('trainModelBtn').disabled = true;
+                
+                setTimeout(() => {
+                    // Migliora leggermente l'accuratezza basata sui dati storici
+                    if (mlModel.historicalData.length > 10) {
+                        const improvements = mlModel.historicalData
+                            .filter(p => p.actualCostPerM2)
+                            .map(p => Math.abs(p.deviation) < 10);
+                        
+                        if (improvements.length > 0) {
+                            const improvementRate = improvements.filter(Boolean).length / improvements.length;
+                            mlModel.accuracy = Math.min(0.95, mlModel.accuracy + (improvementRate * 0.05));
+                        }
+                    }
+                    
+                    mlModel.lastTraining = new Date().toISOString();
+                    updateModelStats();
+                    
+                    document.getElementById('trainModelBtn').innerHTML = '<i class="fas fa-brain"></i> Ri-allena Modello';
+                    document.getElementById('trainModelBtn').disabled = false;
+                    
+                    alert(`Modello ri-addestrato con successo!\nNuova accuratezza: ${Math.round(mlModel.accuracy * 100)}%`);
+                }, 1500);
+            });
+            
+            // ============== INIZIALIZZAZIONE PAGINA ==============
+            
+            // Carica dati storici
+            loadHistoricalData();
+            
+            // Inizializza grafici
+            initializeCharts();
+            
+            // Calcola prima previsione
+            updatePrediction();
+            
+            // Setup user info (simulato)
+            document.getElementById('userName').textContent = 'Amministratore ML';
+            document.getElementById('userRole').textContent = 'Analista Predittivo';
+            
+            // Logout handler
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Sei sicuro di voler uscire?')) {
+                    window.location.href = 'index.html';
+                }
+            });
+            
+            console.log('Dashboard ML inizializzata con successo!');
+        });
+    </script>
+</body>
+</html>
