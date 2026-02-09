@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrazione Schema Firestore - Cuffari Restauri</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 20px; background: #f8f9fa; }
+        .container { max-width: 1200px; }
+        .card { margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        pre { max-height: 500px; overflow-y: auto; background: #f5f5f5; padding: 15px; }
+        .status { padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+        .status-success { background: #d4edda; color: #155724; }
+        .status-error { background: #f8d7da; color: #721c24; }
+        .status-loading { background: #fff3cd; color: #856404; }
+        .collection-info { margin-bottom: 10px; }
+        .doc-sample { margin-left: 20px; margin-bottom: 10px; padding: 10px; background: #e9ecef; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Estrazione Schema Firestore</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>1. Configurazione Firebase</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Incolla qui il contenuto del file <code>firebase_config.json</code>:</p>
+                        <textarea id="firebaseConfig" class="form-control" rows="10" placeholder='{
+  "apiKey": "your-api-key",
+  "authDomain": "your-project.firebaseapp.com",
+  "projectId": "your-project-id",
+  "storageBucket": "your-project.appspot.com",
+  "messagingSenderId": "your-messaging-sender-id",
+  "appId": "your-app-id"
+}'></textarea>
+                        <button id="initFirebase" class="btn btn-primary mt-3">Inizializza Firebase</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>2. Stato Connessione</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="connectionStatus" class="status">In attesa di configurazione...</div>
+                        <div id="authStatus" class="status">Non autenticato</div>
+                        <button id="loginBtn" class="btn btn-secondary" disabled>Accedi con Google</button>
+                        <button id="logoutBtn" class="btn btn-outline-secondary mt-2" disabled>Esci</button>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5>3. Estrazione Dati</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Collezioni da analizzare:</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="constructionSites" id="coll1" checked>
+                            <label class="form-check-label" for="coll1">constructionSites</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="workDays" id="coll2" checked>
+                            <label class="form-check-label" for="coll2">workDays</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="materials" id="coll3" checked>
+                            <label class="form-check-label" for="coll3">materials</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="invoices" id="coll4" checked>
+                            <label class="form-check-label" for="coll4">invoices</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="estimates" id="coll5" checked>
+                            <label class="form-check-label" for="coll5">estimates</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="suppliers" id="coll6" checked>
+                            <label class="form-check-label" for="coll6">suppliers</label>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <label for="docLimit" class="form-label">Documenti per collezione (max):</label>
+                            <input type="number" id="docLimit" class="form-control" value="5" min="1" max="20">
+                        </div>
+                        
+                        <button id="extractBtn" class="btn btn-success mt-3" disabled>Estrai Schema</button>
+                        <button id="clearBtn" class="btn btn-outline-danger mt-3">Pulisci Risultati</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>4. Risultati Estrazione</h5>
+                        <button id="copyBtn" class="btn btn-sm btn-outline-primary" disabled>Copia JSON</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="progress" class="progress mb-3" style="display: none;">
+                            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 style="width: 0%"></div>
+                        </div>
+                        
+                        <div id="resultsSummary" class="mb-3"></div>
+                        <pre id="jsonOutput"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Istruzioni</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol>
+                            <li>Copia il contenuto del file <code>firebase_config.json</code> e incollalo nel primo campo</li>
+                            <li>Clicca "Inizializza Firebase" per configurare la connessione</li>
+                            <li>Accedi con Google (o con il metodo di autenticazione configurato nel tuo progetto)</li>
+                            <li>Seleziona le collezioni da analizzare e il numero di documenti campione</li>
+                            <li>Clicca "Estrai Schema" per recuperare la struttura dei dati</li>
+                            <li>Copia l'output JSON e condividilo per ottenere il codice personalizzato</li>
+                        </ol>
+                        <p class="text-muted">Nota: Questa pagina non salva alcun dato. Viene eseguita solo nel tuo browser.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <script>
+        // Elementi DOM
+        const firebaseConfigTextarea = document.getElementById('firebaseConfig');
+        const initFirebaseBtn = document.getElementById('initFirebase');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const authStatus = document.getElementById('authStatus');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const extractBtn = document.getElementById('extractBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const progress = document.getElementById('progress');
+        const progressBar = document.getElementById('progressBar');
+        const resultsSummary = document.getElementById('resultsSummary');
+        const jsonOutput = document.getElementById('jsonOutput');
+        
+        let db = null;
+        let auth = null;
+        let isFirebaseInitialized = false;
+        let currentUser = null;
+        
+        // Inizializza Firebase
+        initFirebaseBtn.addEventListener('click', () => {
+            try {
+                const configText = firebaseConfigTextarea.value.trim();
+                if (!configText) {
+                    alert('Incolla la configurazione Firebase nel campo di testo');
+                    return;
+                }
+                
+                const config = JSON.parse(configText);
+                
+                // Inizializza Firebase
+                firebase.initializeApp(config);
+                db = firebase.firestore();
+                auth = firebase.auth();
+                
+                isFirebaseInitialized = true;
+                connectionStatus.textContent = 'Firebase inizializzato correttamente';
+                connectionStatus.className = 'status status-success';
+                
+                loginBtn.disabled = false;
+                extractBtn.disabled = true;
+                
+                // Imposta listener per lo stato di autenticazione
+                auth.onAuthStateChanged((user) => {
+                    currentUser = user;
+                    if (user) {
+                        authStatus.textContent = `Autenticato come: ${user.email}`;
+                        authStatus.className = 'status status-success';
+                        loginBtn.disabled = true;
+                        logoutBtn.disabled = false;
+                        extractBtn.disabled = false;
+                    } else {
+                        authStatus.textContent = 'Non autenticato';
+                        authStatus.className = 'status status-error';
+                        loginBtn.disabled = false;
+                        logoutBtn.disabled = true;
+                        extractBtn.disabled = true;
+                    }
+                });
+                
+            } catch (error) {
+                connectionStatus.textContent = `Errore: ${error.message}`;
+                connectionStatus.className = 'status status-error';
+                console.error(error);
+            }
+        });
+        
+        // Login con Google
+        loginBtn.addEventListener('click', async () => {
+            if (!isFirebaseInitialized) {
+                alert('Inizializza Firebase prima di autenticarti');
+                return;
+            }
+            
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                await auth.signInWithPopup(provider);
+            } catch (error) {
+                alert(`Errore di autenticazione: ${error.message}`);
+                console.error(error);
+            }
+        });
+        
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+            } catch (error) {
+                alert(`Errore durante il logout: ${error.message}`);
+                console.error(error);
+            }
+        });
+        
+        // Estrazione schema
+        extractBtn.addEventListener('click', async () => {
+            if (!currentUser) {
+                alert('Devi essere autenticato per estrarre i dati');
+                return;
+            }
+            
+            // Ottieni le collezioni selezionate
+            const collections = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+                collections.push(cb.value);
+            });
+            
+            if (collections.length === 0) {
+                alert('Seleziona almeno una collezione');
+                return;
+            }
+            
+            const docLimit = parseInt(document.getElementById('docLimit').value) || 5;
+            
+            // Mostra progress bar
+            progress.style.display = 'block';
+            progressBar.style.width = '0%';
+            progressBar.textContent = '0%';
+            
+            try {
+                const schema = {
+                    timestamp: new Date().toISOString(),
+                    user: currentUser.email,
+                    collections: {}
+                };
+                
+                for (let i = 0; i < collections.length; i++) {
+                    const collectionName = collections[i];
+                    
+                    // Aggiorna progress bar
+                    const progressPercent = Math.round((i / collections.length) * 100);
+                    progressBar.style.width = `${progressPercent}%`;
+                    progressBar.textContent = `${progressPercent}%`;
+                    resultsSummary.innerHTML = `Analizzando: ${collectionName}...`;
+                    
+                    try {
+                        // Ottieni conteggio documenti
+                        const countSnapshot = await db.collection(collectionName).count().get();
+                        const totalCount = countSnapshot.data().count;
+                        
+                        // Ottieni documenti campione
+                        const querySnapshot = await db.collection(collectionName)
+                            .limit(docLimit)
+                            .get();
+                        
+                        const sampleDocuments = [];
+                        querySnapshot.forEach(doc => {
+                            sampleDocuments.push({
+                                id: doc.id,
+                                data: doc.data()
+                            });
+                        });
+                        
+                        // Analizza i campi presenti
+                        const fields = {};
+                        if (sampleDocuments.length > 0) {
+                            sampleDocuments.forEach(doc => {
+                                Object.keys(doc.data).forEach(key => {
+                                    if (!fields[key]) {
+                                        fields[key] = {
+                                            type: typeof doc.data[key],
+                                            example: doc.data[key],
+                                            hasValue: true
+                                        };
+                                    }
+                                });
+                            });
+                        }
+                        
+                        schema.collections[collectionName] = {
+                            totalCount,
+                            sampleSize: sampleDocuments.length,
+                            fields,
+                            sampleDocuments
+                        };
+                        
+                    } catch (error) {
+                        schema.collections[collectionName] = {
+                            error: error.message,
+                            code: error.code
+                        };
+                    }
+                }
+                
+                // Completa progress bar
+                progressBar.style.width = '100%';
+                progressBar.textContent = '100%';
+                
+                // Mostra risultati
+                const jsonString = JSON.stringify(schema, null, 2);
+                jsonOutput.textContent = jsonString;
+                
+                // Mostra sommario
+                let summaryHtml = '<h6>Sommario:</h6><ul class="list-unstyled">';
+                Object.keys(schema.collections).forEach(collName => {
+                    const coll = schema.collections[collName];
+                    if (coll.error) {
+                        summaryHtml += `<li><span class="text-danger">${collName}: ERRORE - ${coll.error}</span></li>`;
+                    } else {
+                        summaryHtml += `<li>${collName}: ${coll.totalCount} documenti totali, ${coll.sampleSize} campioni estratti</li>`;
+                    }
+                });
+                summaryHtml += '</ul>';
+                resultsSummary.innerHTML = summaryHtml;
+                
+                // Abilita pulsante copia
+                copyBtn.disabled = false;
+                
+            } catch (error) {
+                resultsSummary.innerHTML = `<div class="alert alert-danger">Errore durante l'estrazione: ${error.message}</div>`;
+                console.error(error);
+            } finally {
+                setTimeout(() => {
+                    progress.style.display = 'none';
+                }, 1000);
+            }
+        });
+        
+        // Copia JSON
+        copyBtn.addEventListener('click', () => {
+            const text = jsonOutput.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copiato!';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                alert('Errore durante la copia: ' + err.message);
+            });
+        });
+        
+        // Pulisci risultati
+        clearBtn.addEventListener('click', () => {
+            jsonOutput.textContent = '';
+            resultsSummary.innerHTML = '';
+            copyBtn.disabled = true;
+        });
+        
+        // Esempio di configurazione
+        document.getElementById('firebaseConfig').value = `{
+            apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
+            authDomain: "work-tracker-v120400.firebaseapp.com",
+            projectId: "work-tracker-v120400",
+            storageBucket: "work-tracker-v120400.firebasestorage.app",
+            messagingSenderId: "437459935839",
+            appId: "1:437459935839:web:cb0b54608314dcb25731ea",
+            measurementId: "G-2LPKL9WREX"
+}`;
+    </script>
+</body>
+</html>
