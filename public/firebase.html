@@ -217,13 +217,6 @@
                 connectionStatus.textContent = `Errore: ${error.message}`;
                 connectionStatus.className = 'status status-error';
                 console.error('Errore dettagliato:', error);
-                
-                // Mostra suggerimento per l'errore JSON
-                if (error.message.includes('JSON')) {
-                    const text = firebaseConfigTextarea.value;
-                    const lines = text.split('\n');
-                    console.log('Linee del JSON:', lines);
-                }
             }
         });
         
@@ -295,9 +288,10 @@
                     resultsSummary.innerHTML = `Analizzando: ${collectionName}...`;
                     
                     try {
-                        // Ottieni conteggio documenti
-                        const countSnapshot = await db.collection(collectionName).count().get();
-                        const totalCount = countSnapshot.data().count;
+                        // CORREZIONE: invece di count(), otteniamo tutti i documenti e contiamo manualmente
+                        // Per non caricare troppi dati, limitiamo a 1000 documenti per il conteggio
+                        const countSnapshot = await db.collection(collectionName).limit(1000).get();
+                        const totalCount = countSnapshot.size;
                         
                         // Ottieni documenti campione
                         const querySnapshot = await db.collection(collectionName)
@@ -306,6 +300,7 @@
                         
                         const sampleDocuments = [];
                         querySnapshot.forEach(doc => {
+                            // CORREZIONE: doc.data() invece di doc.data
                             sampleDocuments.push({
                                 id: doc.id,
                                 data: doc.data()
@@ -318,9 +313,10 @@
                             sampleDocuments.forEach(doc => {
                                 Object.keys(doc.data).forEach(key => {
                                     if (!fields[key]) {
+                                        const value = doc.data[key];
                                         fields[key] = {
-                                            type: typeof doc.data[key],
-                                            example: doc.data[key],
+                                            type: typeof value,
+                                            example: value,
                                             hasValue: true
                                         };
                                     }
@@ -358,7 +354,7 @@
                     if (coll.error) {
                         summaryHtml += `<li><span class="text-danger">${collName}: ERRORE - ${coll.error}</span></li>`;
                     } else {
-                        summaryHtml += `<li>${collName}: ${coll.totalCount} documenti totali, ${coll.sampleSize} campioni estratti</li>`;
+                        summaryHtml += `<li>${collName}: ${coll.totalCount} documenti totali (campione fino a 1000), ${coll.sampleSize} campioni estratti</li>`;
                     }
                 });
                 summaryHtml += '</ul>';
