@@ -2383,63 +2383,113 @@
             }
             
             // Initialize Firebase
-            async function initializeFirebase() {
-                let firebaseConfig;
-                
+// Initialize Firebase
+async function initializeFirebase() {
+    // Try multiple configuration sources
+    let firebaseConfig;
+    
+    // Source 1: Try from environment or hardcoded config
+    try {
+        // Configuration for your specific project
+        firebaseConfig = {
+            apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
+            authDomain: "work-tracker-v120400.firebaseapp.com",
+            projectId: "work-tracker-v120400",
+            storageBucket: "work-tracker-v120400.firebasestorage.app",
+            messagingSenderId: "437459935839",
+            appId: "1:437459935839:web:cb0b54608314dcb25731ea",
+            measurementId: "G-2LPKL9WREX"
+        };
+        
+        console.log("Using hardcoded Firebase configuration");
+        
+    } catch (error) {
+        console.error("Error loading Firebase config:", error);
+        return null;
+    }
+    
+    try {
+        // Check if Firebase is already initialized
+        if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
+            const app = firebase.initializeApp(firebaseConfig);
+            console.log("Firebase initialized successfully");
+            
+            // Initialize services
+            db = firebase.firestore();
+            auth = firebase.auth();
+            storage = firebase.storage();
+            
+            // Enable offline persistence for Firestore
+            if (db) {
                 try {
-                    const response = await fetch('firebase_config.json');
-                    if (response.ok) {
-                        firebaseConfig = await response.json();
-                        console.log("Firebase config loaded from JSON file");
-                    } else {
-                        throw new Error("Config file not found");
-                    }
-                } catch (error) {
-                    console.warn("Could not load firebase_config.json, using hardcoded config:", error);
-                    
-                    firebaseConfig = {
-                        apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
-                        authDomain: "work-tracker-v120400.firebaseapp.com",
-                        projectId: "work-tracker-v120400",
-                        storageBucket: "work-tracker-v120400.firebasestorage.app",
-                        messagingSenderId: "437459935839",
-                        appId: "1:437459935839:web:cb0b54608314dcb25731ea",
-                        measurementId: "G-2LPKL9WREX"
-                    };
-                }
-                
-                try {
-                    if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
-                        firebase.initializeApp(firebaseConfig);
-                        console.log("Firebase initialized successfully");
-                        
-                        db = firebase.firestore();
-                        auth = firebase.auth();
-                        storage = firebase.storage();
-                        
-                        auth.onAuthStateChanged(user => {
-                            if (user) {
-                                currentUser = user;
-                                updateUserInfo(user);
-                            } else {
-                                window.location.href = 'index.html';
-                            }
+                    await db.enablePersistence({ synchronizeTabs: true })
+                        .catch(err => {
+                            console.warn("Firestore persistence error:", err);
                         });
-                        
-                        return { db, auth, storage };
-                    } else if (typeof firebase !== 'undefined') {
-                        console.log("Firebase already initialized");
-                        db = firebase.firestore();
-                        auth = firebase.auth();
-                        storage = firebase.storage();
-                        return { db, auth, storage };
-                    }
-                } catch (error) {
-                    console.error("Error initializing Firebase:", error);
-                    showErrorAlert("Errore di connessione a Firebase. I dati verranno gestiti localmente.");
-                    return null;
+                } catch (persistenceError) {
+                    console.warn("Cannot enable persistence:", persistenceError);
                 }
             }
+            
+            // Set up auth state listener
+            if (auth) {
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        currentUser = user;
+                        await updateUserInfo(user);
+                        
+                        // Load data after user is authenticated
+                        await Promise.all([
+                            loadWorkers(),
+                            loadConstructionSites(),
+                            loadWorkDays()
+                        ]);
+                        
+                        // Enable AI insights
+                        loadAIInsights();
+                        
+                    } else {
+                        // Try to sign in anonymously for demo purposes
+                        try {
+                            const authResult = await auth.signInAnonymously();
+                            currentUser = authResult.user;
+                            console.log("Signed in anonymously:", currentUser.uid);
+                        } catch (authError) {
+                            console.error("Anonymous auth failed:", authError);
+                            // Continue in offline mode
+                            loadWorkersFallback();
+                            loadConstructionSitesFallback();
+                            loadWorkDaysFallback();
+                            loadAIInsights();
+                        }
+                    }
+                });
+            }
+            
+            return { db, auth, storage };
+        } else if (typeof firebase !== 'undefined') {
+            console.log("Firebase already initialized");
+            db = firebase.firestore();
+            auth = firebase.auth();
+            storage = firebase.storage();
+            return { db, auth, storage };
+        } else {
+            console.error("Firebase SDK not loaded");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error initializing Firebase:", error);
+        showErrorAlert("Errore di connessione al database. Modalità offline attivata.");
+        
+        // Fallback to local data
+        loadWorkersFallback();
+        loadConstructionSitesFallback();
+        loadWorkDaysFallback();
+        loadAIInsights();
+        
+        return null;
+    }
+}
             
             // Update user info in header
             function updateUserInfo(user) {
