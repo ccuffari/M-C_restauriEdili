@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/docx@7.8.0/build/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     <style>
         /* CSS Reset e Base */
         :root {
@@ -179,6 +184,7 @@
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
+            justify-content: center;
         }
         
         .nav-btn {
@@ -1026,6 +1032,44 @@
                 font-size: 16px; /* Previene lo zoom su iOS */
             }
         }
+
+        /* Stili specifici per menu responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                order: 2;
+                width: 100%;
+                margin-top: 1rem;
+                justify-content: center;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.85rem;
+            }
+            
+            .nav-btn i {
+                margin-right: 0.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-btn span {
+                display: none;
+            }
+            
+            .nav-btn i {
+                margin-right: 0;
+                font-size: 1rem;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem;
+                min-width: 40px;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1057,11 +1101,20 @@
                     <a href="work-days.html" class="nav-btn">
                         <i class="fas fa-calendar-day"></i> <span>Giornate</span>
                     </a>
+                    <a href="estimates.html" class="nav-btn">
+                        <i class="fas fa-calculator"></i> <span>Preventivi</span>
+                    </a>
+                    <a href="suppliers.html" class="nav-btn">
+                        <i class="fas fa-truck"></i> <span>Fornitori</span>
+                    </a>
+                    <a href="materials.html" class="nav-btn">
+                        <i class="fas fa-boxes"></i> <span>Materiali</span>
+                    </a>
                     <a href="invoices.html" class="nav-btn">
                         <i class="fas fa-file-invoice"></i> <span>Fatture</span>
                     </a>
                     <a href="preventivi.html" class="nav-btn active">
-                        <i class="fas fa-file-contract"></i> <span>Preventivi</span>
+                        <i class="fas fa-file-contract"></i> <span>Preventivi DOCX</span>
                     </a>
                 </div>
                 
@@ -1082,9 +1135,9 @@
             <div class="page-header">
                 <div>
                     <h1 class="page-title">
-                        <i class="fas fa-file-contract"></i> Gestione Preventivi
+                        <i class="fas fa-file-contract"></i> Gestione Preventivi DOCX
                     </h1>
-                    <p class="page-subtitle">Crea preventivi professionali per i tuoi clienti</p>
+                    <p class="page-subtitle">Crea preventivi professionali in formato Word per i tuoi clienti</p>
                 </div>
                 <div class="page-actions">
                     <button class="btn btn-warning" id="clearFormBtn">
@@ -1380,6 +1433,20 @@
     </footer>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
+            authDomain: "work-tracker-v120400.firebaseapp.com",
+            projectId: "work-tracker-v120400",
+            storageBucket: "work-tracker-v120400.firebasestorage.app",
+            messagingSenderId: "437459935839",
+            appId: "1:437459935839:web:cb0b54608314dcb25731ea",
+            measurementId: "G-2LPKL9WREX"
+        };
+
+        // Initialize Firebase
+        let auth, db, currentUser = null;
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Element references
             const quoteForm = document.getElementById('quoteForm');
@@ -1426,8 +1493,71 @@
             let items = [];
             let itemCounter = 0;
             
+            // Initialize Firebase
+            function initializeFirebase() {
+                try {
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
+                        console.log("Firebase initialized successfully");
+                    }
+                    
+                    auth = firebase.auth();
+                    db = firebase.firestore();
+                    
+                    // Monitor authentication state
+                    auth.onAuthStateChanged(user => {
+                        if (user) {
+                            currentUser = user;
+                            updateUserInfo(user);
+                            console.log("User logged in:", user.email);
+                        } else {
+                            // Redirect to login page
+                            window.location.href = 'index.html';
+                        }
+                    });
+                    
+                } catch (error) {
+                    console.error("Error initializing Firebase:", error);
+                    showErrorAlert("Errore di connessione a Firebase. I dati verranno gestiti localmente.");
+                }
+            }
+            
+            // Update user info in header
+            async function updateUserInfo(user) {
+                if (user) {
+                    userNameElement.textContent = user.displayName || user.email || "Utente";
+                    userRoleElement.textContent = "Caricamento...";
+                    
+                    try {
+                        // Get user data from Firestore
+                        const userDoc = await db.collection('users').doc(user.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            userRoleElement.textContent = userData.role || "Utente";
+                            
+                            // Save user data to localStorage for quick access
+                            localStorage.setItem('user', JSON.stringify({
+                                uid: user.uid,
+                                email: user.email,
+                                displayName: user.displayName,
+                                role: userData.role
+                            }));
+                        }
+                    } catch (error) {
+                        console.error("Error fetching user data:", error);
+                        userRoleElement.textContent = "Utente";
+                    }
+                }
+            }
+            
             // Initialize page
-            function initPage() {
+            async function initPage() {
+                // Initialize Firebase first
+                initializeFirebase();
+                
+                // Wait for authentication
+                await waitForAuth();
+                
                 // Set default dates
                 const today = new Date();
                 quoteDateInput.value = formatDateForInput(today);
@@ -1447,11 +1577,22 @@
                 // Setup event listeners
                 setupEventListeners();
                 
-                // Update user info
-                updateUserInfo();
-                
                 // Initial preview update
                 updatePreview();
+            }
+            
+            // Wait for authentication
+            function waitForAuth() {
+                return new Promise((resolve) => {
+                    if (auth.currentUser) {
+                        resolve(auth.currentUser);
+                    } else {
+                        const unsubscribe = auth.onAuthStateChanged(user => {
+                            unsubscribe();
+                            resolve(user);
+                        });
+                    }
+                });
             }
             
             // Setup event listeners
@@ -1477,7 +1618,7 @@
                 // Clear form button
                 clearFormBtn.addEventListener('click', clearForm);
                 
-                // Generate DOCX button - MODIFICA QUI: sostituisci con la nuova funzione
+                // Generate DOCX button
                 generateDocxBtn.addEventListener('click', generateDocxFixed);
                 
                 // Logout button
@@ -1718,7 +1859,7 @@
                 }
             }
             
-            // NEW: FIXED VERSION OF generateDocx WITHOUT forEach ERROR
+            // Generate DOCX Document
             async function generateDocxFixed() {
                 try {
                     console.log("=== INIZIO GENERAZIONE DOCX FIXED ===");
@@ -2010,6 +2151,11 @@
                     
                     console.log("Download completato");
                     
+                    // Salva il preventivo su Firebase se disponibile
+                    if (db && currentUser) {
+                        await saveQuoteToFirebase(itemsData, totals, fileName);
+                    }
+                    
                     showSuccessAlert('Preventivo generato e scaricato con successo!');
                     
                 } catch (error) {
@@ -2034,106 +2180,61 @@
                 }
             }
             
-            // OLD FUNCTION (keep for reference but don't use)
-            function generateDocx() {
-                // This is the old function that had the error
-                // We're replacing it with generateDocxFixed
-                generateDocxFixed();
-            }
-            
-            // Validate form
-            function validateForm() {
-                // Check required fields
-                if (!quoteNumberInput.value.trim()) {
-                    showErrorAlert("Il numero preventivo è obbligatorio");
-                    quoteNumberInput.focus();
-                    return false;
-                }
-                
-                if (!quoteDateInput.value) {
-                    showErrorAlert("La data preventivo è obbligatoria");
-                    quoteDateInput.focus();
-                    return false;
-                }
-                
-                if (!validUntilInput.value) {
-                    showErrorAlert("La data di validità è obbligatoria");
-                    validUntilInput.focus();
-                    return false;
-                }
-                
-                if (!clientNameInput.value.trim()) {
-                    showErrorAlert("Il nome cliente è obbligatorio");
-                    clientNameInput.focus();
-                    return false;
-                }
-                
-                if (!clientAddressInput.value.trim()) {
-                    showErrorAlert("L'indirizzo cliente è obbligatorio");
-                    clientAddressInput.focus();
-                    return false;
-                }
-                
-                if (!siteAddressInput.value.trim()) {
-                    showErrorAlert("L'indirizzo cantiere è obbligatorio");
-                    siteAddressInput.focus();
-                    return false;
-                }
-                
-                // Check if there are items
-                const itemsData = getItemsData();
-                if (itemsData.length === 0) {
-                    showErrorAlert("Aggiungi almeno una voce al preventivo");
-                    return false;
-                }
-                
-                // Check if all items have valid data
-                for (const item of itemsData) {
-                    if (!item.description.trim()) {
-                        showErrorAlert("Tutte le voci devono avere una descrizione");
-                        return false;
-                    }
+            // Save quote to Firebase
+            async function saveQuoteToFirebase(itemsData, totals, fileName) {
+                try {
+                    const quoteData = {
+                        quoteNumber: quoteNumberInput.value,
+                        quoteDate: quoteDateInput.value,
+                        validUntil: validUntilInput.value,
+                        paymentTerms: paymentTermsSelect.value,
+                        clientName: clientNameInput.value,
+                        clientVat: clientVatInput.value || '',
+                        clientAddress: clientAddressInput.value,
+                        clientPhone: clientPhoneInput.value || '',
+                        siteAddress: siteAddressInput.value,
+                        siteDescription: siteDescriptionInput.value || '',
+                        notes: notesInput.value || '',
+                        items: itemsData,
+                        subtotal: totals.subtotal,
+                        vat: totals.vat,
+                        total: totals.total,
+                        fileName: fileName,
+                        createdBy: currentUser.uid,
+                        createdByEmail: currentUser.email,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
                     
-                    if (item.quantity <= 0) {
-                        showErrorAlert("Tutte le voci devono avere una quantità maggiore di zero");
-                        return false;
-                    }
+                    await db.collection('quotes').add(quoteData);
+                    console.log("Preventivo salvato su Firebase");
                     
-                    if (item.price <= 0) {
-                        showErrorAlert("Tutte le voci devono avere un prezzo maggiore di zero");
-                        return false;
-                    }
-                }
-                
-                return true;
-            }
-            
-            // Update user info
-            function updateUserInfo() {
-                // Try to get user from localStorage
-                const userData = localStorage.getItem('user');
-                if (userData) {
-                    try {
-                        const user = JSON.parse(userData);
-                        userNameElement.textContent = user.displayName || user.email || "Utente";
-                        userRoleElement.textContent = user.role || "Utente";
-                    } catch (e) {
-                        console.error("Error parsing user data:", e);
-                    }
+                } catch (error) {
+                    console.error("Errore nel salvataggio su Firebase:", error);
+                    // Non mostrare errore all'utente, è solo un backup
                 }
             }
             
             // Handle logout
-            function handleLogout() {
+            async function handleLogout() {
                 if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    window.location.href = 'index.html';
+                    try {
+                        if (auth) {
+                            await auth.signOut();
+                        }
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.href = 'index.html';
+                        
+                    } catch (error) {
+                        console.error("Error during logout:", error);
+                        showErrorAlert("Errore durante il logout: " + error.message);
+                    }
                 }
             }
             
             // Alert functions
-            function showSuccessAlert(message) {
+            function showSuccessAlert(message = "Preventivo generato con successo!") {
                 successAlert.querySelector('div').textContent = message;
                 successAlert.classList.remove('d-none');
                 errorAlert.classList.add('d-none');
