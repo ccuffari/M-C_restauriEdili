@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuffari - Giornate Lavorative AI</title>
+    <title>Cuffari - Giornate Lavorative</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* CSS Reset e Base */
@@ -22,25 +21,23 @@
             --dark-color: #343a40;
             --gray-color: #6c757d;
             --border-color: #dee2e6;
-            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
-            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
             --transition: all 0.3s ease;
-            --ai-color: #4F46E5;
-            --ai-light: #E0E7FF;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         html {
             font-size: 16px;
             scroll-behavior: smooth;
         }
-
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
@@ -50,7 +47,7 @@
             display: flex;
             flex-direction: column;
         }
-
+        
         /* Container Responsive */
         .container {
             width: 100%;
@@ -59,165 +56,71 @@
             margin-right: auto;
             margin-left: auto;
         }
-
+        
         /* Breakpoint per xxs (molto piccolo) */
         @media (max-width: 359.98px) {
-            .container {
-                padding: 0 8px;
-            }
-
-            html {
-                font-size: 14px;
-            }
+            .container { padding: 0 8px; }
+            html { font-size: 14px; }
         }
-
+        
         /* Breakpoint per xs (extra small) */
         @media (min-width: 360px) and (max-width: 575.98px) {
-            .container {
-                max-width: 100%;
-            }
+            .container { max-width: 100%; }
         }
-
+        
         /* Breakpoint per sm (small) */
         @media (min-width: 576px) and (max-width: 767.98px) {
-            .container {
-                max-width: 540px;
-            }
+            .container { max-width: 540px; }
         }
-
+        
         /* Breakpoint per md (medium) */
         @media (min-width: 768px) and (max-width: 991.98px) {
-            .container {
-                max-width: 720px;
-            }
+            .container { max-width: 720px; }
         }
-
+        
         /* Breakpoint per lg (large) */
         @media (min-width: 992px) and (max-width: 1199.98px) {
-            .container {
-                max-width: 960px;
-            }
+            .container { max-width: 960px; }
         }
-
+        
         /* Breakpoint per xl (extra large) */
         @media (min-width: 1200px) and (max-width: 1399.98px) {
-            .container {
-                max-width: 1140px;
-            }
+            .container { max-width: 1140px; }
         }
-
+        
         /* Breakpoint per xxl (extra extra large) */
         @media (min-width: 1400px) {
-            .container {
-                max-width: 1320px;
-            }
+            .container { max-width: 1320px; }
         }
-
+        
         /* Utility Classes */
-        .text-center {
-            text-align: center;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .text-left {
-            text-align: left;
-        }
-
-        .d-none {
-            display: none !important;
-        }
-
-        .d-block {
-            display: block !important;
-        }
-
-        .d-flex {
-            display: flex !important;
-        }
-
-        .d-grid {
-            display: grid !important;
-        }
-
-        .justify-content-between {
-            justify-content: space-between;
-        }
-
-        .align-items-center {
-            align-items: center;
-        }
-
-        .flex-column {
-            flex-direction: column;
-        }
-
-        .flex-wrap {
-            flex-wrap: wrap;
-        }
-
-        .gap-1 {
-            gap: 0.5rem;
-        }
-
-        .gap-2 {
-            gap: 1rem;
-        }
-
-        .gap-3 {
-            gap: 1.5rem;
-        }
-
-        .mt-1 {
-            margin-top: 0.5rem;
-        }
-
-        .mt-2 {
-            margin-top: 1rem;
-        }
-
-        .mt-3 {
-            margin-top: 1.5rem;
-        }
-
-        .mt-4 {
-            margin-top: 2rem;
-        }
-
-        .mb-1 {
-            margin-bottom: 0.5rem;
-        }
-
-        .mb-2 {
-            margin-bottom: 1rem;
-        }
-
-        .mb-3 {
-            margin-bottom: 1.5rem;
-        }
-
-        .mb-4 {
-            margin-bottom: 2rem;
-        }
-
-        .p-2 {
-            padding: 1rem;
-        }
-
-        .p-3 {
-            padding: 1.5rem;
-        }
-
-        .p-4 {
-            padding: 2rem;
-        }
-
-        .w-100 {
-            width: 100%;
-        }
-
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .d-none { display: none !important; }
+        .d-block { display: block !important; }
+        .d-flex { display: flex !important; }
+        .d-grid { display: grid !important; }
+        .justify-content-between { justify-content: space-between; }
+        .align-items-center { align-items: center; }
+        .flex-column { flex-direction: column; }
+        .flex-wrap { flex-wrap: wrap; }
+        .gap-1 { gap: 0.5rem; }
+        .gap-2 { gap: 1rem; }
+        .gap-3 { gap: 1.5rem; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+        .p-2 { padding: 1rem; }
+        .p-3 { padding: 1.5rem; }
+        .p-4 { padding: 2rem; }
+        .w-100 { width: 100%; }
+        
         /* Header Styles */
         .header {
             background-color: var(--primary-color);
@@ -228,54 +131,54 @@
             top: 0;
             z-index: 1000;
         }
-
+        
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
         }
-
+        
         .logo-container {
             display: flex;
             align-items: center;
             flex: 1;
             min-width: 250px;
         }
-
+        
         .logo-icon {
             font-size: 2.5rem;
             margin-right: 1rem;
             color: var(--secondary-color);
             flex-shrink: 0;
         }
-
+        
         .logo-text {
             font-size: 1.6rem;
             font-weight: 600;
             line-height: 1.2;
         }
-
+        
         .subtitle {
             font-size: 0.9rem;
             opacity: 0.9;
             margin-top: 0.25rem;
         }
-
+        
         .user-menu {
             display: flex;
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
         }
-
+        
         .nav-menu {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
             justify-content: center;
         }
-
+        
         .nav-btn {
             background: transparent;
             color: white;
@@ -290,35 +193,35 @@
             text-decoration: none;
             white-space: nowrap;
         }
-
+        
         .nav-btn:hover {
             background: rgba(255, 255, 255, 0.1);
             border-color: rgba(255, 255, 255, 0.4);
         }
-
+        
         .nav-btn.active {
             background: rgba(255, 255, 255, 0.15);
             border-color: var(--secondary-color);
         }
-
+        
         .nav-btn i {
             margin-right: 0.5rem;
         }
-
+        
         .user-info {
             text-align: right;
         }
-
+        
         .user-name {
             font-weight: 600;
             font-size: 1rem;
         }
-
+        
         .user-role {
             font-size: 0.85rem;
             opacity: 0.9;
         }
-
+        
         .logout-btn {
             background: var(--secondary-color);
             color: white;
@@ -332,22 +235,22 @@
             align-items: center;
             white-space: nowrap;
         }
-
+        
         .logout-btn:hover {
             background: var(--secondary-dark);
             transform: translateY(-2px);
         }
-
+        
         .logout-btn i {
             margin-right: 0.5rem;
         }
-
+        
         /* Main Content */
         .main-content {
             flex: 1;
             padding: 2rem 0;
         }
-
+        
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -356,7 +259,7 @@
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-
+        
         .page-title {
             font-size: 2rem;
             color: var(--primary-color);
@@ -365,23 +268,23 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-
+        
         .page-title i {
             color: var(--secondary-color);
         }
-
+        
         .page-subtitle {
             color: var(--gray-color);
             margin-top: 0.5rem;
             font-size: 1rem;
         }
-
+        
         .page-actions {
             display: flex;
             gap: 0.75rem;
             flex-wrap: wrap;
         }
-
+        
         /* Button Styles */
         .btn {
             padding: 0.75rem 1.5rem;
@@ -397,63 +300,53 @@
             text-decoration: none;
             white-space: nowrap;
         }
-
+        
         .btn i {
             margin-right: 0.5rem;
         }
-
+        
         .btn-primary {
             background: var(--primary-color);
             color: white;
         }
-
+        
         .btn-primary:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
-
+        
         .btn-secondary {
             background: #e9ecef;
             color: var(--dark-color);
         }
-
+        
         .btn-secondary:hover {
             background: #dee2e6;
             transform: translateY(-2px);
             box-shadow: var(--shadow-sm);
         }
-
+        
         .btn-success {
             background: var(--success-color);
             color: white;
         }
-
+        
         .btn-danger {
             background: var(--danger-color);
             color: white;
         }
-
+        
         .btn-info {
             background: var(--info-color);
             color: white;
         }
-
-        .btn-ai {
-            background: var(--ai-color);
-            color: white;
-        }
-
-        .btn-ai:hover {
-            background: #4338CA;
-            transform: translateY(-2px);
-        }
-
+        
         .btn-sm {
             padding: 0.5rem 1rem;
             font-size: 0.875rem;
         }
-
+        
         /* Stats Cards */
         .stats-cards {
             display: grid;
@@ -461,7 +354,7 @@
             gap: 1.5rem;
             margin-bottom: 2.5rem;
         }
-
+        
         .stat-card {
             background: white;
             border-radius: 8px;
@@ -471,12 +364,12 @@
             align-items: center;
             transition: var(--transition);
         }
-
+        
         .stat-card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-md);
         }
-
+        
         .stat-icon {
             width: 60px;
             height: 60px;
@@ -488,160 +381,50 @@
             margin-right: 1.25rem;
             flex-shrink: 0;
         }
-
+        
         .stat-info {
             flex: 1;
         }
-
+        
         .stat-title {
             font-size: 0.9rem;
             color: var(--gray-color);
             margin-bottom: 0.25rem;
         }
-
+        
         .stat-value {
             font-size: 1.8rem;
             font-weight: 700;
             color: var(--primary-color);
             line-height: 1.2;
         }
-
+        
         .stat-change {
             font-size: 0.85rem;
             margin-top: 0.25rem;
         }
-
+        
         .stat-change.positive {
             color: var(--success-color);
         }
-
+        
         .stat-change.negative {
             color: var(--danger-color);
         }
-
-        /* AI Insights Widget */
-        .ai-insights-widget {
-            background: white;
-            border-radius: 10px;
-            box-shadow: var(--shadow-sm);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--ai-color);
-            transition: var(--transition);
-        }
-
-        .ai-insights-widget:hover {
-            box-shadow: var(--shadow-md);
-        }
-
-        .ai-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        .ai-header h3 {
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .ai-refresh-btn {
-            background: var(--ai-light);
-            border: none;
-            border-radius: 4px;
-            color: var(--ai-color);
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .ai-refresh-btn:hover {
-            background: #C7D2FE;
-        }
-
-        .ai-content {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .ai-alert {
-            background: #FEF3C7;
-            border: 1px solid #F59E0B;
-            color: #92400E;
-            padding: 0.75rem;
-            border-radius: 6px;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .ai-alert i {
-            font-size: 1rem;
-            margin-top: 0.1rem;
-        }
-
-        .ai-suggestion {
-            background: #DBEAFE;
-            border: 1px solid #3B82F6;
-            color: #1E40AF;
-            padding: 0.75rem;
-            border-radius: 6px;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .ai-suggestion i {
-            font-size: 1rem;
-            margin-top: 0.1rem;
-        }
-
-        .ai-prediction {
-            background: #D1FAE5;
-            border: 1px solid #10B981;
-            color: #065F46;
-            padding: 0.75rem;
-            border-radius: 6px;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .ai-loading {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--gray-color);
-            padding: 0.75rem;
-            justify-content: center;
-        }
-
+        
         /* Main Content Layout */
         .content-container {
             display: grid;
             grid-template-columns: 1fr;
             gap: 2rem;
         }
-
+        
         @media (min-width: 992px) {
             .content-container {
                 grid-template-columns: 1fr 2fr;
             }
         }
-
+        
         /* Form Card */
         .form-card {
             background: white;
@@ -650,17 +433,17 @@
             overflow: hidden;
             transition: var(--transition);
         }
-
+        
         .form-card:hover {
             box-shadow: var(--shadow-md);
         }
-
+        
         .card-header {
             background: var(--primary-color);
             color: white;
             padding: 1.25rem 1.5rem;
         }
-
+        
         .card-header h3 {
             font-size: 1.25rem;
             font-weight: 600;
@@ -668,16 +451,16 @@
             align-items: center;
             gap: 0.75rem;
         }
-
+        
         .card-body {
             padding: 1.5rem;
         }
-
+        
         /* Form Styles */
         .form-group {
             margin-bottom: 1.25rem;
         }
-
+        
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
@@ -685,16 +468,16 @@
             color: var(--primary-color);
             font-size: 0.95rem;
         }
-
+        
         .form-group.required label::after {
             content: " *";
             color: var(--danger-color);
         }
-
+        
         .input-with-icon {
             position: relative;
         }
-
+        
         .input-with-icon i {
             position: absolute;
             left: 1rem;
@@ -703,7 +486,7 @@
             color: var(--gray-color);
             z-index: 1;
         }
-
+        
         .form-control {
             width: 100%;
             padding: 0.75rem 1rem 0.75rem 2.5rem;
@@ -713,18 +496,18 @@
             transition: var(--transition);
             background: white;
         }
-
+        
         .form-control:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.25);
             outline: none;
         }
-
+        
         textarea.form-control {
             min-height: 120px;
             resize: vertical;
         }
-
+        
         select.form-control {
             appearance: none;
             background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23343a40' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
@@ -733,80 +516,37 @@
             background-size: 16px 12px;
             padding-right: 2.5rem;
         }
-
+        
         .form-row {
             display: grid;
             grid-template-columns: 1fr;
             gap: 1rem;
         }
-
+        
         @media (min-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr 1fr;
             }
         }
-
-        /* AI Suggestions in Form */
-        .ai-suggestions-container {
-            background: #F9FAFB;
-            border: 1px dashed #D1D5DB;
-            border-radius: 6px;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-
-        .ai-suggestion-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .ai-suggestions-text {
-            margin-top: 0.5rem;
-            padding: 0.75rem;
-            background: white;
-            border-radius: 4px;
-            border: 1px solid #E5E7EB;
-            font-size: 0.9rem;
-            color: #374151;
-            display: none;
-        }
-
-        .ai-suggestions-text.show {
-            display: block;
-        }
-
-        .ai-validation-warning {
-            background: #FEF3C7;
-            border: 1px solid #F59E0B;
-            color: #92400E;
-            padding: 0.5rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
+        
         .form-actions {
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
             margin-top: 2rem;
         }
-
+        
         @media (min-width: 576px) {
             .form-actions {
                 flex-direction: row;
             }
         }
-
+        
         .btn-full {
             flex: 1;
             min-width: 0;
         }
-
+        
         /* Calendar Styles */
         .calendar-container {
             background: white;
@@ -815,11 +555,11 @@
             overflow: hidden;
             transition: var(--transition);
         }
-
+        
         .calendar-container:hover {
             box-shadow: var(--shadow-md);
         }
-
+        
         .calendar-header {
             background: var(--primary-color);
             color: white;
@@ -830,13 +570,13 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-
+        
         .calendar-nav {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         .calendar-nav-btn {
             background: rgba(255, 255, 255, 0.2);
             border: none;
@@ -850,29 +590,29 @@
             cursor: pointer;
             transition: var(--transition);
         }
-
+        
         .calendar-nav-btn:hover {
             background: rgba(255, 255, 255, 0.3);
         }
-
+        
         .calendar-title {
             font-size: 1.25rem;
             font-weight: 600;
             text-align: center;
             min-width: 200px;
         }
-
+        
         .calendar-controls {
             display: flex;
             gap: 0.75rem;
             flex-wrap: wrap;
         }
-
+        
         /* Calendar Grid */
         .calendar-grid {
             padding: 1.5rem;
         }
-
+        
         .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -882,18 +622,18 @@
             font-weight: 600;
             color: var(--primary-color);
         }
-
+        
         .calendar-weekday {
             padding: 0.75rem 0.5rem;
             font-size: 0.9rem;
         }
-
+        
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 0.5rem;
         }
-
+        
         .calendar-day {
             min-height: 100px;
             border: 1px solid var(--border-color);
@@ -905,71 +645,40 @@
             position: relative;
             overflow: hidden;
         }
-
+        
         .calendar-day:hover {
             border-color: var(--primary-color);
             box-shadow: var(--shadow-sm);
         }
-
+        
         .calendar-day.empty {
             background: #f8f9fa;
             cursor: default;
         }
-
+        
         .calendar-day.empty:hover {
             border-color: var(--border-color);
             box-shadow: none;
         }
-
+        
         .calendar-day.today {
             border-color: var(--secondary-color);
             background: #fff9e6;
         }
-
-        .calendar-day.ai-highlight {
-            border-color: var(--ai-color);
-            background: #F0F9FF;
-        }
-
+        
         .calendar-day-number {
             font-weight: 600;
             margin-bottom: 0.25rem;
             font-size: 0.9rem;
             color: var(--dark-color);
         }
-
-        /* Calendar AI Indicators */
-        .ai-day-indicators {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            display: flex;
-            gap: 2px;
-        }
-
-        .ai-day-indicators i {
-            font-size: 0.7rem;
-            color: #6B7280;
-        }
-
-        .ai-day-indicators i.fa-fire {
-            color: #EF4444;
-        }
-
-        .ai-day-indicators i.fa-user-clock {
-            color: #F59E0B;
-        }
-
-        .ai-day-indicators i.fa-cloud-rain {
-            color: #3B82F6;
-        }
-
+        
         .calendar-day-work-entries {
             font-size: 0.75rem;
             max-height: 70px;
             overflow-y: auto;
         }
-
+        
         .work-entry-item {
             background: #e6f0ff;
             border-radius: 2px;
@@ -979,7 +688,7 @@
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .work-entry-worker {
             font-weight: 600;
             color: var(--primary-color);
@@ -988,7 +697,7 @@
             text-overflow: ellipsis;
             max-width: 70%;
         }
-
+        
         .work-entry-hours {
             background: var(--primary-color);
             color: white;
@@ -999,7 +708,7 @@
             min-width: 2.5rem;
             text-align: center;
         }
-
+        
         .calendar-day-total {
             position: absolute;
             bottom: 0.25rem;
@@ -1011,7 +720,7 @@
             font-size: 0.7rem;
             font-weight: 600;
         }
-
+        
         /* Work Days List */
         .workdays-list {
             background: white;
@@ -1020,11 +729,11 @@
             overflow: hidden;
             transition: var(--transition);
         }
-
+        
         .workdays-list:hover {
             box-shadow: var(--shadow-md);
         }
-
+        
         .list-header {
             display: flex;
             flex-direction: column;
@@ -1032,7 +741,7 @@
             padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
         }
-
+        
         @media (min-width: 768px) {
             .list-header {
                 flex-direction: row;
@@ -1040,7 +749,7 @@
                 align-items: center;
             }
         }
-
+        
         .list-title {
             font-size: 1.25rem;
             color: var(--primary-color);
@@ -1049,14 +758,14 @@
             align-items: center;
             gap: 0.75rem;
         }
-
+        
         .list-controls {
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
             width: 100%;
         }
-
+        
         @media (min-width: 576px) {
             .list-controls {
                 flex-direction: row;
@@ -1064,13 +773,13 @@
                 width: auto;
             }
         }
-
+        
         .search-box {
             position: relative;
             flex: 1;
             min-width: 200px;
         }
-
+        
         .search-box i {
             position: absolute;
             left: 1rem;
@@ -1078,7 +787,7 @@
             transform: translateY(-50%);
             color: var(--gray-color);
         }
-
+        
         .search-input {
             width: 100%;
             padding: 0.75rem 1rem 0.75rem 2.5rem;
@@ -1087,13 +796,13 @@
             font-size: 0.95rem;
             transition: var(--transition);
         }
-
+        
         .search-input:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.25);
             outline: none;
         }
-
+        
         .filter-select {
             padding: 0.75rem 2.5rem 0.75rem 1rem;
             border: 1px solid var(--border-color);
@@ -1104,19 +813,19 @@
             min-width: 160px;
             cursor: pointer;
         }
-
+        
         /* Table Styles */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
-
+        
         .workdays-table {
             width: 100%;
             border-collapse: collapse;
             min-width: 800px;
         }
-
+        
         .workdays-table th {
             background: #f8f9fa;
             padding: 1rem;
@@ -1127,38 +836,38 @@
             font-size: 0.9rem;
             white-space: nowrap;
         }
-
+        
         .workdays-table td {
             padding: 1rem;
             border-bottom: 1px solid var(--border-color);
             vertical-align: middle;
         }
-
+        
         .workdays-table tr:last-child td {
             border-bottom: none;
         }
-
+        
         .workdays-table tr:hover {
             background: #f8f9fa;
         }
-
+        
         .workday-date {
             font-weight: 600;
             color: var(--primary-color);
         }
-
+        
         .workday-day {
             font-size: 0.85rem;
             color: var(--gray-color);
             margin-top: 0.25rem;
         }
-
+        
         .worker-info {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
-
+        
         .worker-avatar {
             width: 40px;
             height: 40px;
@@ -1172,17 +881,17 @@
             font-size: 1rem;
             flex-shrink: 0;
         }
-
+        
         .worker-name {
             font-weight: 600;
             color: var(--primary-color);
         }
-
+        
         .worker-role {
             font-size: 0.85rem;
             color: var(--gray-color);
         }
-
+        
         .hours-badge {
             background: #e6f0ff;
             color: var(--primary-color);
@@ -1194,68 +903,19 @@
             min-width: 60px;
             text-align: center;
         }
-
+        
         .hours-badge.overtime {
             background: #fff3cd;
             color: #856404;
         }
-
-        /* AI Planning Widget */
-        .ai-planning-widget {
-            background: linear-gradient(135deg, var(--ai-color) 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-        }
-
-        .ai-planning-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .ai-planning-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .ai-planning-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .ai-planning-item {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 1rem;
-            backdrop-filter: blur(10px);
-        }
-
-        .ai-planning-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 0.5rem 0;
-        }
-
-        .ai-planning-suggestion {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-top: 0.5rem;
-        }
-
+        
         /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 0.5rem;
             flex-wrap: nowrap;
         }
-
+        
         .action-btn {
             background: transparent;
             border: none;
@@ -1271,53 +931,53 @@
             min-width: 36px;
             min-height: 36px;
         }
-
+        
         .action-btn:hover {
             color: var(--primary-color);
             background: rgba(0, 51, 102, 0.1);
         }
-
+        
         .action-btn-danger:hover {
             color: var(--danger-color);
             background: rgba(220, 53, 69, 0.1);
         }
-
+        
         /* No Data Message */
         .no-data {
             text-align: center;
             padding: 3rem 1rem;
             color: var(--gray-color);
         }
-
+        
         .no-data i {
             font-size: 3rem;
             margin-bottom: 1rem;
             color: #dee2e6;
         }
-
+        
         .no-data h3 {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
             color: var(--dark-color);
         }
-
+        
         .no-data p {
             font-size: 1rem;
         }
-
+        
         /* Loading Spinner */
         .loading-spinner {
             text-align: center;
             padding: 3rem 1rem;
             color: var(--gray-color);
         }
-
+        
         .loading-spinner i {
             font-size: 2rem;
             margin-bottom: 1rem;
             color: var(--primary-color);
         }
-
+        
         /* Alerts */
         .alert {
             padding: 1rem;
@@ -1328,36 +988,36 @@
             align-items: flex-start;
             gap: 0.75rem;
         }
-
+        
         .alert i {
             font-size: 1.25rem;
             flex-shrink: 0;
         }
-
+        
         .alert-success {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-
+        
         .alert-error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-
+        
         .alert-warning {
             background: #fff3cd;
             color: #856404;
             border: 1px solid #ffeaa7;
         }
-
+        
         .alert-info {
             background: #d1ecf1;
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
-
+        
         /* Pagination */
         .pagination {
             display: flex;
@@ -1367,7 +1027,7 @@
             flex-wrap: wrap;
             gap: 0.5rem;
         }
-
+        
         .pagination button {
             padding: 0.5rem 1rem;
             margin: 0 0.25rem;
@@ -1382,17 +1042,17 @@
             align-items: center;
             justify-content: center;
         }
-
+        
         .pagination button:hover {
             background: #f8f9fa;
         }
-
+        
         .pagination button.active {
             background: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
         }
-
+        
         /* Footer */
         .footer {
             background: var(--primary-color);
@@ -1400,7 +1060,7 @@
             padding: 2rem 0;
             margin-top: auto;
         }
-
+        
         .footer-content {
             display: flex;
             flex-direction: column;
@@ -1408,29 +1068,29 @@
             text-align: center;
             gap: 1.5rem;
         }
-
+        
         .developer-info {
             margin-bottom: 15px;
         }
-
+        
         .developer-info h3 {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
             color: var(--secondary-color);
         }
-
+        
         .company-info {
             font-size: 0.95rem;
             opacity: 0.9;
             max-width: 600px;
         }
-
+        
         .copyright {
             font-size: 0.85rem;
             opacity: 0.7;
         }
-
+        
         /* Modal */
         .modal {
             display: none;
@@ -1445,11 +1105,11 @@
             justify-content: center;
             padding: 1rem;
         }
-
+        
         .modal.show {
             display: flex;
         }
-
+        
         .modal-content {
             background: white;
             border-radius: 8px;
@@ -1459,7 +1119,7 @@
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
         }
-
+        
         .modal-header {
             padding: 1.5rem;
             border-bottom: 1px solid var(--border-color);
@@ -1467,13 +1127,13 @@
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .modal-title {
             font-size: 1.25rem;
             font-weight: 600;
             color: var(--primary-color);
         }
-
+        
         .modal-close {
             background: transparent;
             border: none;
@@ -1483,11 +1143,11 @@
             padding: 0.25rem;
             line-height: 1;
         }
-
+        
         .modal-body {
             padding: 1.5rem;
         }
-
+        
         .modal-footer {
             padding: 1.5rem;
             border-top: 1px solid var(--border-color);
@@ -1495,7 +1155,7 @@
             justify-content: flex-end;
             gap: 0.75rem;
         }
-
+        
         /* Work Details in Modal */
         .work-details-list {
             max-height: 300px;
@@ -1504,7 +1164,7 @@
             border-radius: 4px;
             padding: 0.5rem;
         }
-
+        
         .work-detail-item {
             display: flex;
             justify-content: space-between;
@@ -1512,17 +1172,17 @@
             padding: 0.75rem;
             border-bottom: 1px solid var(--border-color);
         }
-
+        
         .work-detail-item:last-child {
             border-bottom: none;
         }
-
+        
         .work-detail-worker {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
-
+        
         .work-detail-avatar {
             width: 36px;
             height: 36px;
@@ -1536,22 +1196,22 @@
             font-size: 0.9rem;
             flex-shrink: 0;
         }
-
+        
         .work-detail-info {
             flex: 1;
         }
-
+        
         .work-detail-name {
             font-weight: 600;
             color: var(--primary-color);
         }
-
+        
         .work-detail-description {
             font-size: 0.85rem;
             color: var(--gray-color);
             margin-top: 0.25rem;
         }
-
+        
         .work-detail-hours {
             background: var(--primary-color);
             color: white;
@@ -1562,80 +1222,19 @@
             min-width: 60px;
             text-align: center;
         }
-
-        /* Voice Assistant */
-        .voice-assistant-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--ai-color);
-            color: white;
-            border: none;
-            box-shadow: var(--shadow-lg);
-            cursor: pointer;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .voice-assistant-btn:hover {
-            transform: scale(1.1);
-            background: #4338CA;
-        }
-
-        .voice-assistant-btn.listening {
-            background: #EF4444;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-            }
-        }
-
-        .voice-transcript {
-            position: fixed;
-            bottom: 7rem;
-            right: 2rem;
-            background: white;
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
-            max-width: 300px;
-            z-index: 100;
-            display: none;
-        }
-
-        .voice-transcript.show {
-            display: block;
-        }
-
+        
         /* Responsive Adjustments */
         @media (max-width: 768px) {
             .logo-container {
                 min-width: auto;
                 margin-bottom: 1rem;
             }
-
+            
             .user-menu {
                 width: 100%;
                 justify-content: space-between;
             }
-
+            
             .nav-menu {
                 order: 2;
                 width: 100%;
@@ -1644,233 +1243,210 @@
                 overflow-x: auto;
                 padding-bottom: 0.5rem;
             }
-
+            
             .page-title {
                 font-size: 1.75rem;
             }
-
+            
             .stat-card {
                 padding: 1.25rem;
             }
-
+            
             .stat-icon {
                 width: 50px;
                 height: 50px;
                 font-size: 1.5rem;
                 margin-right: 1rem;
             }
-
+            
             .stat-value {
                 font-size: 1.5rem;
             }
-
+            
             .card-body {
                 padding: 1.25rem;
             }
-
+            
             .calendar-day {
                 min-height: 80px;
             }
-
+            
             .calendar-weekday,
             .calendar-day-number {
                 font-size: 0.8rem;
             }
-
+            
             .work-entry-item {
                 padding: 0.15rem 0.25rem;
                 font-size: 0.7rem;
             }
-
-            .ai-planning-content {
-                grid-template-columns: 1fr;
-            }
-
-            .voice-assistant-btn {
-                bottom: 1rem;
-                right: 1rem;
-            }
-
-            .voice-transcript {
-                bottom: 5rem;
-                right: 1rem;
-            }
         }
-
+        
         @media (max-width: 576px) {
             .header-container {
                 flex-direction: column;
                 align-items: stretch;
             }
-
+            
             .logo-container {
                 justify-content: center;
                 text-align: center;
                 margin-bottom: 1rem;
             }
-
+            
             .logo-icon {
                 margin-right: 0;
                 margin-bottom: 0.5rem;
             }
-
+            
             .user-menu {
                 flex-direction: column;
                 align-items: center;
                 gap: 1rem;
             }
-
+            
             .user-info {
                 text-align: center;
             }
-
+            
             .nav-menu {
                 justify-content: center;
             }
-
+            
             .page-header {
                 flex-direction: column;
                 align-items: stretch;
             }
-
+            
             .page-actions {
                 justify-content: center;
             }
-
+            
             .stats-cards {
                 grid-template-columns: 1fr;
             }
-
+            
             .btn {
                 width: 100%;
                 justify-content: center;
             }
-
+            
             .form-actions {
                 flex-direction: column;
             }
-
+            
             .btn-full {
                 width: 100%;
             }
-
+            
             .list-controls {
                 flex-direction: column;
             }
-
+            
             .search-box,
             .filter-select {
                 width: 100%;
             }
-
+            
             .calendar-header {
                 flex-direction: column;
                 align-items: stretch;
             }
-
+            
             .calendar-nav {
                 justify-content: center;
             }
-
+            
             .calendar-controls {
                 justify-content: center;
             }
-
+            
             .calendar-day {
                 min-height: 70px;
                 padding: 0.25rem;
             }
-
+            
             .calendar-day-work-entries {
                 font-size: 0.65rem;
             }
-
-            .ai-suggestion-buttons {
-                flex-direction: column;
-            }
-
-            .ai-suggestion-buttons button {
-                width: 100%;
-            }
         }
-
+        
         @media (max-width: 360px) {
             .logo-text {
                 font-size: 1.3rem;
             }
-
+            
             .page-title {
                 font-size: 1.5rem;
             }
-
+            
             .nav-btn {
                 padding: 0.5rem;
                 font-size: 0.85rem;
             }
-
+            
             .nav-btn span {
                 display: none;
             }
-
+            
             .nav-btn i {
                 margin-right: 0;
                 font-size: 1.1rem;
             }
-
+            
             .btn {
                 padding: 0.75rem 1rem;
                 font-size: 0.9rem;
             }
-
+            
             .calendar-weekday {
                 padding: 0.5rem 0.25rem;
                 font-size: 0.75rem;
             }
-
+            
             .calendar-day {
                 min-height: 60px;
             }
         }
-
+        
         /* Extra small devices (xxs) */
         @media (max-width: 320px) {
             .logo-text {
                 font-size: 1.1rem;
             }
-
+            
             .subtitle {
                 font-size: 0.8rem;
             }
-
+            
             .page-title {
                 font-size: 1.3rem;
             }
-
+            
             .page-subtitle {
                 font-size: 0.9rem;
             }
-
+            
             .nav-btn {
                 padding: 0.4rem;
                 font-size: 0.8rem;
             }
-
+            
             .btn {
                 padding: 0.6rem 0.8rem;
                 font-size: 0.85rem;
             }
-
+            
             .stat-card {
                 padding: 1rem;
             }
-
+            
             .stat-value {
                 font-size: 1.3rem;
             }
         }
     </style>
 </head>
-
 <body>
     <!-- Header -->
     <header class="header">
@@ -1879,12 +1455,15 @@
                 <i class="fas fa-building logo-icon"></i>
                 <div>
                     <div class="logo-text">Cuffari Restauri Edili</div>
-                    <div class="subtitle">Piattaforma di Management con AI</div>
+                    <div class="subtitle">Piattaforma di Management Interno</div>
                 </div>
             </div>
-
+            
             <div class="user-menu">
                 <div class="nav-menu">
+                    <a href="profile.html" class="nav-btn">
+                        <i class="fas fa-tachometer-alt"></i> <span>Profilo</span>
+                    </a>
                     <a href="profile.html" class="nav-btn">
                         <i class="fas fa-user-circle"></i> <span>Profilo</span>
                     </a>
@@ -1910,7 +1489,7 @@
                         <i class="fas fa-file-invoice"></i> <span>Fatture</span>
                     </a>
                 </div>
-
+                
                 <div class="user-info">
                     <div class="user-name" id="userName">Caricamento...</div>
                     <div class="user-role" id="userRole">Utente</div>
@@ -1921,7 +1500,7 @@
             </div>
         </div>
     </header>
-
+    
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
@@ -1929,59 +1508,19 @@
                 <div>
                     <h1 class="page-title">
                         <i class="fas fa-calendar-day"></i> Giornate Lavorative
-                        <span class="badge"
-                            style="background: var(--ai-color); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; vertical-align: middle;">AI
-                            Powered</span>
                     </h1>
-                    <p class="page-subtitle">Gestisci le ore lavorative del personale con l'assistenza dell'Intelligenza
-                        Artificiale</p>
+                    <p class="page-subtitle">Gestisci le ore lavorative del personale</p>
                 </div>
                 <div class="page-actions">
                     <button class="btn btn-secondary" id="exportBtn">
                         <i class="fas fa-file-export"></i> <span>Esporta</span>
-                    </button>
-                    <button class="btn btn-ai" id="aiPlanningBtn">
-                        <i class="fas fa-robot"></i> <span>Pianificazione AI</span>
                     </button>
                     <button class="btn btn-primary" id="addWorkDayBtn">
                         <i class="fas fa-plus-circle"></i> <span>Nuova Voce</span>
                     </button>
                 </div>
             </div>
-
-            <!-- AI Planning Widget -->
-            <div class="ai-planning-widget" id="aiPlanningWidget" style="display: none;">
-                <div class="ai-planning-header">
-                    <h3 class="ai-planning-title">
-                        <i class="fas fa-robot"></i> Pianificazione Intelligente
-                    </h3>
-                    <button class="ai-refresh-btn" id="refreshAIPlanning">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                </div>
-                <div class="ai-planning-content" id="aiPlanningContent">
-                    <!-- AI Planning content will be loaded here -->
-                </div>
-            </div>
-
-            <!-- AI Insights Widget -->
-            <div class="ai-insights-widget" id="aiInsightsWidget">
-                <div class="ai-header">
-                    <h3>
-                        <i class="fas fa-robot"></i> Insights AI
-                    </h3>
-                    <button class="ai-refresh-btn" id="refreshAIInsights">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                </div>
-                <div class="ai-content" id="aiInsightsContent">
-                    <div class="ai-loading">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <span>Caricamento insights AI...</span>
-                    </div>
-                </div>
-            </div>
-
+            
             <!-- Statistics -->
             <div class="stats-cards">
                 <div class="stat-card">
@@ -1994,7 +1533,7 @@
                         <div class="stat-change positive" id="totalChange">Ore lavorate</div>
                     </div>
                 </div>
-
+                
                 <div class="stat-card">
                     <div class="stat-icon" style="background-color: #d4edda; color: #155724;">
                         <i class="fas fa-user-clock"></i>
@@ -2005,7 +1544,7 @@
                         <div class="stat-change positive" id="avgChange">Per dipendente</div>
                     </div>
                 </div>
-
+                
                 <div class="stat-card">
                     <div class="stat-icon" style="background-color: #fff3cd; color: #856404;">
                         <i class="fas fa-user-friends"></i>
@@ -2016,7 +1555,7 @@
                         <div class="stat-change positive" id="workersChange">Nel mese</div>
                     </div>
                 </div>
-
+                
                 <div class="stat-card">
                     <div class="stat-icon" style="background-color: #d1ecf1; color: #0c5460;">
                         <i class="fas fa-euro-sign"></i>
@@ -2028,7 +1567,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <!-- Main Content -->
             <div class="content-container">
                 <!-- Form Card -->
@@ -2039,7 +1578,7 @@
                     <div class="card-body">
                         <form id="workDayForm">
                             <input type="hidden" id="workDayId" value="">
-
+                            
                             <div class="form-group required">
                                 <label for="workDate">Data</label>
                                 <div class="input-with-icon">
@@ -2047,7 +1586,7 @@
                                     <input type="date" id="workDate" class="form-control" required>
                                 </div>
                             </div>
-
+                            
                             <div class="form-group required">
                                 <label for="worker">Lavoratore</label>
                                 <div class="input-with-icon">
@@ -2057,27 +1596,25 @@
                                     </select>
                                 </div>
                             </div>
-
+                            
                             <div class="form-row">
                                 <div class="form-group required">
                                     <label for="hours">Ore Lavorate</label>
                                     <div class="input-with-icon">
                                         <i class="fas fa-clock"></i>
-                                        <input type="number" id="hours" class="form-control" min="0.5" max="24"
-                                            step="0.5" placeholder="8" required>
+                                        <input type="number" id="hours" class="form-control" min="0.5" max="24" step="0.5" placeholder="8" required>
                                     </div>
                                 </div>
-
+                                
                                 <div class="form-group">
                                     <label for="overtime">Straordinario</label>
                                     <div class="input-with-icon">
                                         <i class="fas fa-clock"></i>
-                                        <input type="number" id="overtime" class="form-control" min="0" max="12"
-                                            step="0.5" placeholder="0">
+                                        <input type="number" id="overtime" class="form-control" min="0" max="12" step="0.5" placeholder="0">
                                     </div>
                                 </div>
                             </div>
-
+                            
                             <div class="form-group required">
                                 <label for="constructionSite">Cantiere</label>
                                 <div class="input-with-icon">
@@ -2087,47 +1624,28 @@
                                     </select>
                                 </div>
                             </div>
-
+                            
                             <div class="form-group">
                                 <label for="description">Descrizione Lavori</label>
-                                <textarea id="description" class="form-control"
-                                    placeholder="Descrizione delle attività svolte..." rows="3"></textarea>
+                                <textarea id="description" class="form-control" placeholder="Descrizione delle attività svolte..." rows="3"></textarea>
                             </div>
-
-                            <!-- AI Suggestions -->
-                            <div class="ai-suggestions-container">
-                                <div class="ai-suggestion-buttons">
-                                    <button type="button" class="btn btn-sm btn-info" id="aiSuggestHours">
-                                        <i class="fas fa-magic"></i> Suggerisci ore
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-info" id="aiSuggestDesc">
-                                        <i class="fas fa-robot"></i> Genera descrizione
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-secondary" id="aiValidateBtn">
-                                        <i class="fas fa-check-circle"></i> Valida con AI
-                                    </button>
-                                </div>
-                                <div id="aiSuggestionsText" class="ai-suggestions-text"></div>
-                                <div id="aiValidationWarnings" class="d-none"></div>
-                            </div>
-
+                            
                             <!-- Alerts -->
                             <div id="successAlert" class="alert alert-success d-none">
                                 <i class="fas fa-check-circle"></i>
                                 <div>Voce lavorativa salvata con successo!</div>
                             </div>
-
+                            
                             <div id="errorAlert" class="alert alert-error d-none">
                                 <i class="fas fa-exclamation-circle"></i>
                                 <div id="errorMessage">Si è verificato un errore. Controlla i dati inseriti.</div>
                             </div>
-
+                            
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary btn-full">
                                     <i class="fas fa-save"></i> <span id="submitBtnText">Salva Voce</span>
                                 </button>
-                                <button type="button" class="btn btn-secondary btn-full" id="cancelBtn"
-                                    style="display: none;">
+                                <button type="button" class="btn btn-secondary btn-full" id="cancelBtn" style="display: none;">
                                     <i class="fas fa-times"></i> <span>Annulla</span>
                                 </button>
                                 <button type="reset" class="btn btn-secondary btn-full" id="resetFormBtn">
@@ -2137,7 +1655,7 @@
                         </form>
                     </div>
                 </div>
-
+                
                 <!-- Calendar and List -->
                 <div class="d-flex flex-column gap-3">
                     <!-- Calendar -->
@@ -2182,7 +1700,7 @@
                             </div>
                         </div>
                     </div>
-
+                    
                     <!-- Work Days List -->
                     <div class="workdays-list">
                         <div class="list-header">
@@ -2192,8 +1710,7 @@
                             <div class="list-controls">
                                 <div class="search-box">
                                     <i class="fas fa-search"></i>
-                                    <input type="text" class="search-input" id="searchInput"
-                                        placeholder="Cerca lavoratore...">
+                                    <input type="text" class="search-input" id="searchInput" placeholder="Cerca lavoratore...">
                                 </div>
                                 <select class="filter-select" id="dateFilter">
                                     <option value="current">Mese Corrente</option>
@@ -2206,7 +1723,7 @@
                                 </select>
                             </div>
                         </div>
-
+                        
                         <div class="table-responsive">
                             <table class="workdays-table">
                                 <thead>
@@ -2229,14 +1746,14 @@
                                     </tr>
                                 </tbody>
                             </table>
-
+                            
                             <div id="noWorkdaysMessage" class="no-data d-none">
                                 <i class="fas fa-calendar-times"></i>
                                 <h3>Nessuna giornata lavorativa trovata</h3>
                                 <p>Aggiungi la prima voce utilizzando il form.</p>
                             </div>
                         </div>
-
+                        
                         <div class="pagination d-none" id="pagination">
                             <button id="prevPage"><i class="fas fa-chevron-left"></i></button>
                             <button class="active">1</button>
@@ -2249,7 +1766,7 @@
             </div>
         </div>
     </main>
-
+    
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -2258,25 +1775,18 @@
                     <h3>Sviluppatore della Piattaforma</h3>
                     <p>Cristian Felice Cuffari</p>
                 </div>
-
+                
                 <div class="company-info">
-                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità con AI integrata</p>
+                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità</p>
                 </div>
-
+                
                 <div class="copyright">
                     <p>&copy; 2023 Cuffari Restauri Edili. Tutti i diritti riservati.</p>
                 </div>
             </div>
         </div>
     </footer>
-
-    <!-- Voice Assistant Button -->
-    <button class="voice-assistant-btn" id="voiceAssistantBtn" title="Inserisci con voce">
-        <i class="fas fa-microphone"></i>
-    </button>
-
-    <div class="voice-transcript" id="voiceTranscript"></div>
-
+    
     <!-- Day Details Modal -->
     <div class="modal" id="dayDetailsModal">
         <div class="modal-content">
@@ -2306,7 +1816,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Delete Confirmation Modal -->
     <div class="modal" id="deleteModal">
         <div class="modal-content">
@@ -2324,15 +1834,15 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Element references
             const workDayForm = document.getElementById('workDayForm');
             const workDayIdInput = document.getElementById('workDayId');
@@ -2354,23 +1864,7 @@
             const logoutBtn = document.getElementById('logoutBtn');
             const userNameElement = document.getElementById('userName');
             const userRoleElement = document.getElementById('userRole');
-
-            // AI Elements
-            const aiInsightsWidget = document.getElementById('aiInsightsWidget');
-            const aiInsightsContent = document.getElementById('aiInsightsContent');
-            const refreshAIInsights = document.getElementById('refreshAIInsights');
-            const aiSuggestHoursBtn = document.getElementById('aiSuggestHours');
-            const aiSuggestDescBtn = document.getElementById('aiSuggestDesc');
-            const aiValidateBtn = document.getElementById('aiValidateBtn');
-            const aiSuggestionsText = document.getElementById('aiSuggestionsText');
-            const aiValidationWarnings = document.getElementById('aiValidationWarnings');
-            const aiPlanningBtn = document.getElementById('aiPlanningBtn');
-            const aiPlanningWidget = document.getElementById('aiPlanningWidget');
-            const aiPlanningContent = document.getElementById('aiPlanningContent');
-            const refreshAIPlanning = document.getElementById('refreshAIPlanning');
-            const voiceAssistantBtn = document.getElementById('voiceAssistantBtn');
-            const voiceTranscript = document.getElementById('voiceTranscript');
-
+            
             // Calendar elements
             const calendarTitle = document.getElementById('calendarTitle');
             const calendarDays = document.getElementById('calendarDays');
@@ -2378,20 +1872,20 @@
             const nextMonthBtn = document.getElementById('nextMonth');
             const todayBtn = document.getElementById('todayBtn');
             const calendarWorkerFilter = document.getElementById('calendarWorkerFilter');
-
+            
             // Work days list elements
             const workdaysTableBody = document.getElementById('workdaysTableBody');
             const noWorkdaysMessage = document.getElementById('noWorkdaysMessage');
             const searchInput = document.getElementById('searchInput');
             const dateFilter = document.getElementById('dateFilter');
             const workerFilter = document.getElementById('workerFilter');
-
+            
             // Statistics elements
             const totalHoursSpan = document.getElementById('totalHours');
             const avgHoursSpan = document.getElementById('avgHours');
             const activeWorkersSpan = document.getElementById('activeWorkers');
             const estimatedCostSpan = document.getElementById('estimatedCost');
-
+            
             // Modal elements
             const dayDetailsModal = document.getElementById('dayDetailsModal');
             const closeDayDetailsModal = document.getElementById('closeDayDetailsModal');
@@ -2401,13 +1895,13 @@
             const dayTotalHours = document.getElementById('dayTotalHours');
             const dayWorkDetails = document.getElementById('dayWorkDetails');
             const addEntryBtn = document.getElementById('addEntryBtn');
-
+            
             const deleteModal = document.getElementById('deleteModal');
             const closeDeleteModal = document.getElementById('closeDeleteModal');
             const cancelDelete = document.getElementById('cancelDelete');
             const confirmDelete = document.getElementById('confirmDelete');
             const deleteWorkDayInfo = document.getElementById('deleteWorkDayInfo');
-
+            
             // Global variables
             let db = null;
             let auth = null;
@@ -2416,58 +1910,39 @@
             let workDays = [];
             let workers = [];
             let constructionSites = [];
-
+            
             // Calendar variables
             let currentDate = new Date();
             let currentMonth = currentDate.getMonth();
             let currentYear = currentDate.getFullYear();
             let selectedDate = null;
             let workDayToDelete = null;
-
-            // Voice recognition
-            let recognition = null;
-            let isListening = false;
-
-            // AI Configuration
-            const AIConfig = {
-                hourlyRateDefaults: {
-                    'operaio': 15,
-                    'capocantiere': 25,
-                    'direttore': 40,
-                    'tecnico': 30,
-                    'responsabile': 30,
-                    'project manager': 35,
-                    'amministrativo': 20
-                },
-
-                productivityThresholds: {
-                    high: 10, // hours per day for high productivity
-                    low: 4,  // hours per day for low productivity
-                    consecutiveDaysWarning: 6, // consecutive days warning
-                    weeklyHoursWarning: 50 // weekly hours warning
-                },
-
-                anomalyDetection: {
-                    maxHoursWithoutOvertime: 12,
-                    maxOvertime: 4,
-                    minHours: 1
-                }
+            
+            // Worker hourly rates (in a real app, this would come from the database)
+            const hourlyRates = {
+                'operaio': 15,
+                'capocantiere': 25,
+                'direttore': 40,
+                'tecnico': 30,
+                'responsabile': 30,
+                'project manager': 35,
+                'amministrativo': 20
             };
-
+            
             // Funzione per ottenere la data italiana (Roma, UTC+1 o UTC+2 per ora legale)
             function getItalianDate(date = new Date()) {
                 // Imposta il fuso orario di Roma (Italia)
                 const options = { timeZone: 'Europe/Rome' };
                 const romeDate = new Date(date.toLocaleString('en-US', options));
-
+                
                 // Formatta come YYYY-MM-DD
                 const year = romeDate.getFullYear();
                 const month = String(romeDate.getMonth() + 1).padStart(2, '0');
                 const day = String(romeDate.getDate()).padStart(2, '0');
-
+                
                 return `${year}-${month}-${day}`;
             }
-
+            
             // Funzione per convertire una data nel formato YYYY-MM-DD (locale Roma)
             function formatDateToLocal(date) {
                 // Usa il fuso orario di Roma
@@ -2477,29 +1952,35 @@
                 const day = String(romeDate.getDate()).padStart(2, '0');
                 return `${year}-${month}-${day}`;
             }
-
+            
             // Funzione per ottenere il nome del giorno della settimana in italiano
             function getItalianDayName(date) {
                 const days = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
                 return days[date.getDay()];
             }
-
+            
             // Funzione per ottenere il nome del mese in italiano
             function getItalianMonthName(monthIndex) {
                 const months = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
-                    'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+                               'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
                 return months[monthIndex];
             }
-
-            // Initialize Firebase
+            
             // Initialize Firebase
             async function initializeFirebase() {
-                // Try multiple configuration sources
                 let firebaseConfig;
-
-                // Source 1: Try from environment or hardcoded config
+                
                 try {
-                    // Configuration for your specific project
+                    const response = await fetch('firebase_config.json');
+                    if (response.ok) {
+                        firebaseConfig = await response.json();
+                        console.log("Firebase config loaded from JSON file");
+                    } else {
+                        throw new Error("Config file not found");
+                    }
+                } catch (error) {
+                    console.warn("Could not load firebase_config.json, using hardcoded config:", error);
+                    
                     firebaseConfig = {
                         apiKey: "AIzaSyA7JiQrPYfvkRWZtdXQFw2Hj2LK0aidXYs",
                         authDomain: "work-tracker-v120400.firebaseapp.com",
@@ -2509,72 +1990,26 @@
                         appId: "1:437459935839:web:cb0b54608314dcb25731ea",
                         measurementId: "G-2LPKL9WREX"
                     };
-
-                    console.log("Using hardcoded Firebase configuration");
-
-                } catch (error) {
-                    console.error("Error loading Firebase config:", error);
-                    return null;
                 }
-
+                
                 try {
-                    // Check if Firebase is already initialized
                     if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
-                        const app = firebase.initializeApp(firebaseConfig);
+                        firebase.initializeApp(firebaseConfig);
                         console.log("Firebase initialized successfully");
-
-                        // Initialize services
+                        
                         db = firebase.firestore();
                         auth = firebase.auth();
                         storage = firebase.storage();
-
-                        // Enable offline persistence for Firestore
-                        if (db) {
-                            try {
-                                await db.enablePersistence({ synchronizeTabs: true })
-                                    .catch(err => {
-                                        console.warn("Firestore persistence error:", err);
-                                    });
-                            } catch (persistenceError) {
-                                console.warn("Cannot enable persistence:", persistenceError);
+                        
+                        auth.onAuthStateChanged(user => {
+                            if (user) {
+                                currentUser = user;
+                                updateUserInfo(user);
+                            } else {
+                                window.location.href = 'index.html';
                             }
-                        }
-
-                        // Set up auth state listener
-                        if (auth) {
-                            auth.onAuthStateChanged(async (user) => {
-                                if (user) {
-                                    currentUser = user;
-                                    await updateUserInfo(user);
-
-                                    // Load data after user is authenticated
-                                    await Promise.all([
-                                        loadWorkers(),
-                                        loadConstructionSites(),
-                                        loadWorkDays()
-                                    ]);
-
-                                    // Enable AI insights
-                                    loadAIInsights();
-
-                                } else {
-                                    // Try to sign in anonymously for demo purposes
-                                    try {
-                                        const authResult = await auth.signInAnonymously();
-                                        currentUser = authResult.user;
-                                        console.log("Signed in anonymously:", currentUser.uid);
-                                    } catch (authError) {
-                                        console.error("Anonymous auth failed:", authError);
-                                        // Continue in offline mode
-                                        loadWorkersFallback();
-                                        loadConstructionSitesFallback();
-                                        loadWorkDaysFallback();
-                                        loadAIInsights();
-                                    }
-                                }
-                            });
-                        }
-
+                        });
+                        
                         return { db, auth, storage };
                     } else if (typeof firebase !== 'undefined') {
                         console.log("Firebase already initialized");
@@ -2582,30 +2017,20 @@
                         auth = firebase.auth();
                         storage = firebase.storage();
                         return { db, auth, storage };
-                    } else {
-                        console.error("Firebase SDK not loaded");
-                        return null;
                     }
                 } catch (error) {
                     console.error("Error initializing Firebase:", error);
-                    showErrorAlert("Errore di connessione al database. Modalità offline attivata.");
-
-                    // Fallback to local data
-                    loadWorkersFallback();
-                    loadConstructionSitesFallback();
-                    loadWorkDaysFallback();
-                    loadAIInsights();
-
+                    showErrorAlert("Errore di connessione a Firebase. I dati verranno gestiti localmente.");
                     return null;
                 }
             }
-
+            
             // Update user info in header
             function updateUserInfo(user) {
                 if (user) {
                     userNameElement.textContent = user.displayName || user.email || "Utente";
                     userRoleElement.textContent = "Amministratore";
-
+                    
                     if (db) {
                         db.collection('users').doc(user.uid).get()
                             .then(doc => {
@@ -2620,7 +2045,7 @@
                     }
                 }
             }
-
+            
             // Load workers from Firestore users collection
             async function loadWorkers() {
                 try {
@@ -2629,18 +2054,18 @@
                         loadWorkersFallback();
                         return;
                     }
-
+                    
                     const workersSnapshot = await db.collection('users').get();
-
+                    
                     workers = [];
-
+                    
                     workersSnapshot.forEach(doc => {
                         const workerData = doc.data();
-
+                        
                         // Verifica che l'utente sia un lavoratore (escludi admin, manager, etc.)
                         const userRole = workerData.role ? workerData.role.toLowerCase() : '';
                         const isWorker = !['admin', 'administratore', 'manager', 'direttore'].includes(userRole);
-
+                        
                         workers.push({
                             id: doc.id,
                             name: workerData.name || workerData.displayName || workerData.email || 'Senza nome',
@@ -2651,20 +2076,20 @@
                             hourlyRate: workerData.hourlyRate || getDefaultHourlyRate(workerData.role)
                         });
                     });
-
+                    
                     console.log(`Loaded ${workers.length} users from Firebase, ${workers.filter(w => w.isWorker).length} are workers`);
                     populateWorkerSelects();
-
+                    
                 } catch (error) {
                     console.error("Error loading workers:", error);
                     loadWorkersFallback();
                 }
             }
-
+            
             // Get default hourly rate based on role
             function getDefaultHourlyRate(role) {
                 const roleLower = role ? role.toLowerCase() : '';
-
+                
                 if (roleLower.includes('capo') || roleLower.includes('responsabile')) {
                     return 25;
                 } else if (roleLower.includes('direttore') || roleLower.includes('manager')) {
@@ -2677,7 +2102,7 @@
                     return 15; // Default per operaio
                 }
             }
-
+            
             // Load workers fallback
             function loadWorkersFallback() {
                 workers = [
@@ -2690,7 +2115,7 @@
                 ];
                 populateWorkerSelects();
             }
-
+            
             // Load construction sites from Firestore
             async function loadConstructionSites() {
                 try {
@@ -2699,13 +2124,13 @@
                         loadConstructionSitesFallback();
                         return;
                     }
-
+                    
                     const sitesSnapshot = await db.collection('constructionSites')
                         .where('status', 'in', ['active', 'planning'])
                         .get();
-
+                    
                     constructionSites = [];
-
+                    
                     sitesSnapshot.forEach(doc => {
                         const siteData = doc.data();
                         constructionSites.push({
@@ -2716,16 +2141,16 @@
                             status: siteData.status
                         });
                     });
-
+                    
                     console.log(`Loaded ${constructionSites.length} construction sites from Firebase`);
                     populateConstructionSiteSelect();
-
+                    
                 } catch (error) {
                     console.error("Error loading construction sites:", error);
                     loadConstructionSitesFallback();
                 }
             }
-
+            
             // Load construction sites fallback
             function loadConstructionSitesFallback() {
                 constructionSites = [
@@ -2735,7 +2160,7 @@
                 ];
                 populateConstructionSiteSelect();
             }
-
+            
             // Populate worker selects (only show actual workers, not admins)
             function populateWorkerSelects() {
                 // Main form select
@@ -2748,7 +2173,7 @@
                         workerSelect.appendChild(option);
                     }
                 });
-
+                
                 // Filter selects
                 const filterSelects = [workerFilter, calendarWorkerFilter];
                 filterSelects.forEach(select => {
@@ -2763,7 +2188,7 @@
                     });
                 });
             }
-
+            
             // Populate construction site select
             function populateConstructionSiteSelect() {
                 constructionSiteSelect.innerHTML = '<option value="">Seleziona cantiere</option>';
@@ -2774,7 +2199,7 @@
                     constructionSiteSelect.appendChild(option);
                 });
             }
-
+            
             // Load work days from Firestore
             async function loadWorkDays() {
                 try {
@@ -2783,25 +2208,25 @@
                         loadWorkDaysFallback();
                         return;
                     }
-
+                    
                     // Get date range for current month in Italian timezone
                     const firstDay = new Date(currentYear, currentMonth, 1);
                     const lastDay = new Date(currentYear, currentMonth + 1, 0);
-
+                    
                     // Format dates for query (using Italian timezone)
                     const firstDayStr = formatDateToLocal(firstDay);
                     const lastDayStr = formatDateToLocal(lastDay);
-
+                    
                     console.log(`Loading work days from ${firstDayStr} to ${lastDayStr}`);
-
+                    
                     const workDaysSnapshot = await db.collection('workDays')
                         .where('date', '>=', firstDayStr)
                         .where('date', '<=', lastDayStr)
                         .orderBy('date', 'desc')
                         .get();
-
+                    
                     workDays = [];
-
+                    
                     workDaysSnapshot.forEach(doc => {
                         const workDayData = doc.data();
                         workDays.push({
@@ -2809,19 +2234,18 @@
                             ...workDayData
                         });
                     });
-
+                    
                     console.log(`Loaded ${workDays.length} work days from Firebase for ${currentMonth + 1}/${currentYear}`);
                     renderCalendar();
                     renderWorkDaysList();
                     updateStatistics();
-                    loadAIInsights(); // Load AI insights after work days are loaded
-
+                    
                 } catch (error) {
                     console.error("Error loading work days:", error);
                     loadWorkDaysFallback();
                 }
             }
-
+            
             // Load work days fallback
             function loadWorkDaysFallback() {
                 // Generate sample work days for current month with Italian dates
@@ -2829,23 +2253,23 @@
                 const currentMonth = today.getMonth();
                 const currentYear = today.getFullYear();
                 const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
+                
                 workDays = [];
-
+                
                 // Filter only workers (not admins)
                 const sampleWorkers = workers.filter(w => w.isWorker).slice(0, 4);
                 const sampleSites = ['Ristrutturazione Palazzo Storico', 'Ampliamento Sede Aziendale'];
-
+                
                 // Generate 20 sample work days
                 for (let i = 0; i < 20; i++) {
                     const day = Math.floor(Math.random() * daysInMonth) + 1;
                     const date = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
+                    
                     if (sampleWorkers.length > 0) {
                         const worker = sampleWorkers[Math.floor(Math.random() * sampleWorkers.length)];
                         const site = sampleSites[Math.floor(Math.random() * sampleSites.length)];
                         const hours = 8 + Math.floor(Math.random() * 3); // 8-10 hours
-
+                        
                         workDays.push({
                             id: `local_${i}`,
                             date: date,
@@ -2860,35 +2284,31 @@
                         });
                     }
                 }
-
+                
                 renderCalendar();
                 renderWorkDaysList();
                 updateStatistics();
-                loadAIInsights(); // Load AI insights after work days are loaded
-
+                
                 showWarningAlert("Modalità offline: dati di esempio visualizzati.");
             }
-
+            
             // Initialize page
             async function initPage() {
                 // Set today's date as default (Italian timezone)
                 workDateInput.value = getItalianDate();
-
+                
                 // Initialize Firebase
                 await initializeFirebase();
-
+                
                 // Load data
                 await loadWorkers();
                 await loadConstructionSites();
                 await loadWorkDays();
-
+                
                 // Setup event listeners
                 setupEventListeners();
-
-                // Initialize voice recognition if available
-                initVoiceRecognition();
             }
-
+            
             // Setup all event listeners
             function setupEventListeners() {
                 // Form buttons
@@ -2898,27 +2318,19 @@
                     submitBtnText.textContent = "Salva Voce";
                     cancelBtn.style.display = 'none';
                 });
-
+                
                 resetFormBtn.addEventListener('click', resetForm);
                 cancelBtn.addEventListener('click', resetForm);
-
+                
                 // Form submission
                 workDayForm.addEventListener('submit', handleFormSubmit);
-
-                // AI Buttons
-                aiSuggestHoursBtn.addEventListener('click', suggestHoursWithAI);
-                aiSuggestDescBtn.addEventListener('click', suggestDescriptionWithAI);
-                aiValidateBtn.addEventListener('click', validateFormWithAI);
-                refreshAIInsights.addEventListener('click', loadAIInsights);
-                aiPlanningBtn.addEventListener('click', toggleAIPlanning);
-                refreshAIPlanning.addEventListener('click', loadAIPlanning);
-
+                
                 // Export button
                 exportBtn.addEventListener('click', exportData);
-
+                
                 // Logout button
                 logoutBtn.addEventListener('click', handleLogout);
-
+                
                 // Calendar navigation
                 prevMonthBtn.addEventListener('click', () => {
                     currentMonth--;
@@ -2928,7 +2340,7 @@
                     }
                     loadWorkDays();
                 });
-
+                
                 nextMonthBtn.addEventListener('click', () => {
                     currentMonth++;
                     if (currentMonth > 11) {
@@ -2937,22 +2349,22 @@
                     }
                     loadWorkDays();
                 });
-
+                
                 todayBtn.addEventListener('click', () => {
                     currentDate = new Date();
                     currentMonth = currentDate.getMonth();
                     currentYear = currentDate.getFullYear();
                     loadWorkDays();
                 });
-
+                
                 // Calendar filter
                 calendarWorkerFilter.addEventListener('change', renderCalendar);
-
+                
                 // List filters
                 searchInput.addEventListener('input', filterWorkDays);
                 dateFilter.addEventListener('change', filterWorkDays);
                 workerFilter.addEventListener('change', filterWorkDays);
-
+                
                 // Modal buttons
                 closeDayDetailsModal.addEventListener('click', () => dayDetailsModal.classList.remove('show'));
                 closeModalBtn.addEventListener('click', () => dayDetailsModal.classList.remove('show'));
@@ -2962,22 +2374,19 @@
                         workDateInput.value = selectedDate;
                         resetForm();
                         setTimeout(() => {
-                            document.getElementById('workDayFormCard').scrollIntoView({
+                            document.getElementById('workDayFormCard').scrollIntoView({ 
                                 behavior: 'smooth',
                                 block: 'start'
                             });
                         }, 300);
                     }
                 });
-
+                
                 // Delete modal buttons
                 closeDeleteModal.addEventListener('click', () => deleteModal.classList.remove('show'));
                 cancelDelete.addEventListener('click', () => deleteModal.classList.remove('show'));
                 confirmDelete.addEventListener('click', confirmWorkDayDelete);
-
-                // Voice assistant button
-                voiceAssistantBtn.addEventListener('click', toggleVoiceRecognition);
-
+                
                 // Close modals on outside click
                 [dayDetailsModal, deleteModal].forEach(modal => {
                     modal.addEventListener('click', (e) => {
@@ -2987,752 +2396,87 @@
                     });
                 });
             }
-
-            // =============================
-            // AI FUNCTIONS
-            // =============================
-
-            // Load AI Insights
-            async function loadAIInsights() {
-                aiInsightsContent.innerHTML = '<div class="ai-loading"><i class="fas fa-spinner fa-spin"></i><span>Analisi dati con AI...</span></div>';
-
-                // Simulate API call delay
-                setTimeout(() => {
-                    const insights = generateAIInsights();
-                    let html = '';
-
-                    if (insights.alerts.length === 0 && insights.suggestions.length === 0 && insights.predictions.length === 0) {
-                        html = '<div class="ai-suggestion"><i class="fas fa-check-circle"></i><span>Tutto nella norma! Nessun avviso o suggerimento per questo periodo.</span></div>';
-                    } else {
-                        // Add alerts
-                        insights.alerts.forEach(alert => {
-                            html += `<div class="ai-alert"><i class="fas fa-exclamation-triangle"></i><span>${alert}</span></div>`;
-                        });
-
-                        // Add suggestions
-                        insights.suggestions.forEach(suggestion => {
-                            html += `<div class="ai-suggestion"><i class="fas fa-lightbulb"></i><span>${suggestion}</span></div>`;
-                        });
-
-                        // Add predictions
-                        insights.predictions.forEach(prediction => {
-                            html += `<div class="ai-prediction"><i class="fas fa-chart-line"></i><span>${prediction}</span></div>`;
-                        });
-                    }
-
-                    aiInsightsContent.innerHTML = html;
-                }, 1000);
-            }
-
-            // Generate AI insights based on work data
-            function generateAIInsights() {
-                const insights = {
-                    alerts: [],
-                    suggestions: [],
-                    predictions: []
-                };
-
-                // Analyze current month work days
-                const currentMonthStart = new Date(currentYear, currentMonth, 1);
-                const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0);
-                const monthWorkDays = workDays.filter(wd => {
-                    const workDate = new Date(wd.date + 'T12:00:00');
-                    return workDate >= currentMonthStart && workDate <= currentMonthEnd;
-                });
-
-                if (monthWorkDays.length === 0) {
-                    insights.suggestions.push("Nessuna giornata lavorativa registrata per questo mese. Inizia ad aggiungere le prime voci!");
-                    return insights;
-                }
-
-                // Group work days by worker
-                const workerStats = {};
-                monthWorkDays.forEach(wd => {
-                    if (!workerStats[wd.workerId]) {
-                        workerStats[wd.workerId] = {
-                            totalHours: 0,
-                            days: 0,
-                            dates: [],
-                            overtime: 0
-                        };
-                    }
-                    workerStats[wd.workerId].totalHours += wd.hours + (wd.overtime || 0);
-                    workerStats[wd.workerId].days++;
-                    workerStats[wd.workerId].dates.push(new Date(wd.date));
-                    workerStats[wd.workerId].overtime += wd.overtime || 0;
-                });
-
-                // Check for overtime warnings
-                Object.keys(workerStats).forEach(workerId => {
-                    const stats = workerStats[workerId];
-                    const worker = workers.find(w => w.id === workerId);
-
-                    if (worker) {
-                        // Weekly hours check (simplified - assuming 5 day work week)
-                        const avgWeeklyHours = (stats.totalHours / stats.days) * 5;
-                        if (avgWeeklyHours > AIConfig.productivityThresholds.weeklyHoursWarning) {
-                            insights.alerts.push(`<strong>${worker.name}</strong> ha una media di ${avgWeeklyHours.toFixed(1)} ore settimanali (soglia: ${AIConfig.productivityThresholds.weeklyHoursWarning}h)`);
-                        }
-
-                        // Consecutive days check
-                        if (stats.dates.length > 1) {
-                            const sortedDates = stats.dates.sort((a, b) => a - b);
-                            let consecutive = 1;
-                            for (let i = 1; i < sortedDates.length; i++) {
-                                const diff = (sortedDates[i] - sortedDates[i - 1]) / (1000 * 60 * 60 * 24);
-                                if (diff === 1) {
-                                    consecutive++;
-                                } else {
-                                    consecutive = 1;
-                                }
-                            }
-                            if (consecutive >= AIConfig.productivityThresholds.consecutiveDaysWarning) {
-                                insights.alerts.push(`<strong>${worker.name}</strong> ha lavorato ${consecutive} giorni consecutivi`);
-                            }
-                        }
-
-                        // Overtime check
-                        if (stats.overtime > 20) {
-                            insights.alerts.push(`<strong>${worker.name}</strong> ha accumulato ${stats.overtime}h di straordinario questo mese`);
-                        }
-                    }
-                });
-
-                // Check for underutilized workers
-                const avgHoursPerWorker = monthWorkDays.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0) / Object.keys(workerStats).length;
-
-                workers.forEach(worker => {
-                    if (worker.isWorker && worker.active) {
-                        const workerTotal = workerStats[worker.id] ? workerStats[worker.id].totalHours : 0;
-                        if (workerTotal < avgHoursPerWorker * 0.5 && workerTotal > 0) {
-                            insights.suggestions.push(`<strong>${worker.name}</strong> è sottoutilizzato (${workerTotal}h vs media ${avgHoursPerWorker.toFixed(1)}h)`);
-                        }
-                    }
-                });
-
-                // Predict end of month costs
-                const daysPassed = Math.min(currentDate.getDate(), 30);
-                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-                const costSoFar = calculateMonthCost(monthWorkDays);
-                const predictedCost = costSoFar * (daysInMonth / daysPassed);
-
-                insights.predictions.push(`Costo previsto fine mese: <strong>${predictedCost.toFixed(0)}€</strong> (attuale: ${costSoFar.toFixed(0)}€)`);
-
-                // Check for high productivity days
-                const highProductivityDays = monthWorkDays.filter(wd => {
-                    const totalHours = wd.hours + (wd.overtime || 0);
-                    return totalHours > AIConfig.productivityThresholds.high;
-                }).length;
-
-                if (highProductivityDays > 5) {
-                    insights.predictions.push(`${highProductivityDays} giorni con produttività >${AIConfig.productivityThresholds.high}h`);
-                }
-
-                return insights;
-            }
-
-            // Load AI Planning
-            async function loadAIPlanning() {
-                aiPlanningContent.innerHTML = '<div class="ai-loading"><i class="fas fa-spinner fa-spin"></i><span>Generazione pianificazione ottimale...</span></div>';
-
-                // Simulate API call delay
-                setTimeout(() => {
-                    const planning = generateAIPlanning();
-                    let html = '';
-
-                    planning.forEach(item => {
-                        html += `
-                            <div class="ai-planning-item">
-                                <div class="ai-planning-title">${item.title}</div>
-                                <div class="ai-planning-value">${item.value}</div>
-                                <div class="ai-planning-suggestion">${item.suggestion}</div>
-                            </div>
-                        `;
-                    });
-
-                    aiPlanningContent.innerHTML = html;
-                }, 1500);
-            }
-
-            // Generate AI Planning suggestions
-            function generateAIPlanning() {
-                const planning = [];
-
-                // Calculate next week forecast
-                const nextWeekHours = estimateNextWeekHours();
-                planning.push({
-                    title: 'Previsione Settimana Prossima',
-                    value: `${nextWeekHours} ore`,
-                    suggestion: 'Prepara materiali per 3 cantieri'
-                });
-
-                // Check for understaffed days
-                const understaffedDays = findUnderstaffedDays();
-                if (understaffedDays.length > 0) {
-                    planning.push({
-                        title: 'Giorni Sottodimensionati',
-                        value: understaffedDays.length + ' giorni',
-                        suggestion: `Assumi ${understaffedDays.length} giornate extra`
-                    });
-                }
-
-                // Optimal worker assignment
-                const optimalAssignment = suggestOptimalAssignment();
-                planning.push({
-                    title: 'Assegnazione Ottimale',
-                    value: optimalAssignment.savings + '€ risparmio',
-                    suggestion: optimalAssignment.suggestion
-                });
-
-                // Material forecast
-                planning.push({
-                    title: 'Previsione Materiali',
-                    value: 'Calcestruzzo: 12m³',
-                    suggestion: 'Ordinare entro venerdì'
-                });
-
-                return planning;
-            }
-
-            // Estimate next week hours based on historical data
-            function estimateNextWeekHours() {
-                const currentMonthWorkDays = workDays.filter(wd => {
-                    const workDate = new Date(wd.date + 'T12:00:00');
-                    return workDate.getMonth() === currentMonth && workDate.getFullYear() === currentYear;
-                });
-
-                if (currentMonthWorkDays.length === 0) return 240; // Default estimate
-
-                const avgDailyHours = currentMonthWorkDays.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0) / currentMonthWorkDays.length;
-                return Math.round(avgDailyHours * 5); // 5 day work week
-            }
-
-            // Find understaffed days
-            function findUnderstaffedDays() {
-                const understaffed = [];
-                const currentMonthStart = new Date(currentYear, currentMonth, 1);
-                const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0);
-
-                // Simplified logic - in reality would check against project requirements
-                for (let day = 1; day <= currentMonthEnd.getDate(); day++) {
-                    const date = new Date(currentYear, currentMonth, day);
-                    const dateStr = formatDateToLocal(date);
-                    const dayWorkDays = workDays.filter(wd => wd.date === dateStr);
-
-                    // Weekend check
-                    if (date.getDay() === 0 || date.getDay() === 6) continue;
-
-                    if (dayWorkDays.length < 3) { // Assuming minimum 3 workers per day
-                        understaffed.push(dateStr);
-                    }
-                }
-
-                return understaffed.slice(0, 3); // Return max 3 days
-            }
-
-            // Suggest optimal worker assignment
-            function suggestOptimalAssignment() {
-                // This would be a complex optimization algorithm
-                // Simplified version for demo
-                return {
-                    savings: Math.floor(Math.random() * 500) + 200,
-                    suggestion: "Spostare Mario Rossi al cantiere centrale"
-                };
-            }
-
-            // Toggle AI Planning widget
-            function toggleAIPlanning() {
-                if (aiPlanningWidget.style.display === 'none' || aiPlanningWidget.style.display === '') {
-                    aiPlanningWidget.style.display = 'block';
-                    loadAIPlanning();
-                } else {
-                    aiPlanningWidget.style.display = 'none';
-                }
-            }
-
-            // Suggest hours with AI
-            function suggestHoursWithAI() {
-                const workerId = workerSelect.value;
-                const siteId = constructionSiteSelect.value;
-                const date = workDateInput.value;
-
-                if (!workerId || !siteId || !date) {
-                    showAIWarning('Seleziona prima lavoratore, cantiere e data per ottenere suggerimenti');
-                    return;
-                }
-
-                const worker = workers.find(w => w.id === workerId);
-                const site = constructionSites.find(s => s.id === siteId);
-                const selectedDate = new Date(date);
-                const dayOfWeek = selectedDate.getDay();
-
-                // Analyze historical data for this worker at this site
-                const workerHistory = workDays.filter(wd =>
-                    wd.workerId === workerId &&
-                    wd.constructionSiteId === siteId
-                );
-
-                let suggestedHours = 8; // Default
-
-                if (workerHistory.length > 0) {
-                    // Calculate average hours for this worker at this site
-                    const avgHours = workerHistory.reduce((sum, wd) => sum + wd.hours, 0) / workerHistory.length;
-                    suggestedHours = Math.round(avgHours * 2) / 2; // Round to nearest 0.5
-                }
-
-                // Adjust for day of week
-                if (dayOfWeek === 5) { // Friday
-                    suggestedHours = Math.max(6, suggestedHours - 1);
-                } else if (dayOfWeek === 0 || dayOfWeek === 6) { // Weekend
-                    suggestedHours = 0; // Weekend work is overtime
-                }
-
-                // Apply to form
-                hoursInput.value = suggestedHours;
-
-                // Show explanation
-                let explanation = `Suggerimento: <strong>${suggestedHours} ore</strong><br>`;
-                explanation += `Basato su:<br>`;
-                explanation += `• Lavoratore: ${worker ? worker.name : 'N/A'}<br>`;
-                explanation += `• Cantiere: ${site ? site.name : 'N/A'}<br>`;
-                explanation += `• Giorno: ${getItalianDayName(selectedDate)}`;
-
-                if (workerHistory.length > 0) {
-                    explanation += `<br>• Media storica: ${(workerHistory.reduce((sum, wd) => sum + wd.hours, 0) / workerHistory.length).toFixed(1)} ore`;
-                }
-
-                aiSuggestionsText.innerHTML = explanation;
-                aiSuggestionsText.classList.add('show');
-            }
-
-            // Suggest description with AI
-            function suggestDescriptionWithAI() {
-                const workerId = workerSelect.value;
-                const siteId = constructionSiteSelect.value;
-
-                if (!workerId || !siteId) {
-                    showAIWarning('Seleziona prima lavoratore e cantiere');
-                    return;
-                }
-
-                const worker = workers.find(w => w.id === workerId);
-                const site = constructionSites.find(s => s.id === siteId);
-                const workerRole = worker ? worker.role.toLowerCase() : '';
-
-                // Activity templates based on role and site
-                const activities = {
-                    'operaio': [
-                        'Preparazione area di lavoro e allestimento cantiere',
-                        'Movimentazione materiali e attrezzature',
-                        'Supporto attività di muratura e posa in opera',
-                        'Pulizia e riordino area cantiere',
-                        'Montaggio e smontaggio ponteggi'
-                    ],
-                    'capocantiere': [
-                        'Coordinamento squadra e verifica avanzamento lavori',
-                        'Controllo qualità esecuzione e rispetto normative',
-                        'Pianificazione attività giornaliera e assegnazione compiti',
-                        'Gestione rapporti con committente e fornitori',
-                        'Sicurezza cantiere e rispetto procedure'
-                    ],
-                    'tecnico': [
-                        'Rilievi tecnici e misurazioni di precisione',
-                        'Controllo documentazione progettuale',
-                        'Verifica conformità esecuzione a progetto',
-                        'Collaudi e prove su materiali e strutture',
-                        'Redazione rapporti tecnici e schede di controllo'
-                    ]
-                };
-
-                // Default activities if role not found
-                const defaultActivities = [
-                    'Esecuzione lavori in base alle indicazioni del capocantiere',
-                    'Controllo e manutenzione attrezzature',
-                    'Supporto alle diverse fasi del processo costruttivo',
-                    'Rispetto procedure di sicurezza e qualità'
-                ];
-
-                const roleActivities = activities[workerRole] || defaultActivities;
-                const randomActivity = roleActivities[Math.floor(Math.random() * roleActivities.length)];
-
-                // Site-specific additions
-                let siteSpecific = '';
-                if (site && site.name) {
-                    if (site.name.includes('Ristrutturazione')) {
-                        siteSpecific = ' - Lavori di restauro conservativo';
-                    } else if (site.name.includes('Ampliamento')) {
-                        siteSpecific = ' - Lavori di ampliamento strutturale';
-                    } else if (site.name.includes('Restauro')) {
-                        siteSpecific = ' - Interventi di restauro artistico';
-                    }
-                }
-
-                const description = `${randomActivity}${siteSpecific}`;
-                descriptionInput.value = description;
-
-                // Show suggestion
-                aiSuggestionsText.innerHTML = `
-                    <strong>Descrizione generata automaticamente:</strong><br>
-                    "${description}"<br><br>
-                    <small>Basata sul ruolo "${workerRole}" e sul tipo di cantiere.</small>
-                `;
-                aiSuggestionsText.classList.add('show');
-            }
-
-            // Validate form with AI
-            function validateFormWithAI() {
-                const formData = {
-                    date: workDateInput.value,
-                    workerId: workerSelect.value,
-                    hours: parseFloat(hoursInput.value) || 0,
-                    overtime: parseFloat(overtimeInput.value) || 0,
-                    constructionSiteId: constructionSiteSelect.value,
-                    description: descriptionInput.value
-                };
-
-                const warnings = validateWithAI(formData);
-                aiValidationWarnings.innerHTML = '';
-
-                if (warnings.length === 0) {
-                    aiValidationWarnings.innerHTML = '<div class="ai-validation-warning"><i class="fas fa-check-circle"></i> Nessuna anomalia rilevata</div>';
-                    aiValidationWarnings.classList.remove('d-none');
-                } else {
-                    let warningsHtml = '<div class="ai-validation-warning"><i class="fas fa-exclamation-triangle"></i> <strong>Avvisi:</strong><ul>';
-                    warnings.forEach(warning => {
-                        warningsHtml += `<li>${warning}</li>`;
-                    });
-                    warningsHtml += '</ul></div>';
-                    aiValidationWarnings.innerHTML = warningsHtml;
-                    aiValidationWarnings.classList.remove('d-none');
-                }
-            }
-
-            // AI Validation logic
-            function validateWithAI(formData) {
-                const warnings = [];
-
-                // Check for unusually long hours without overtime
-                if (formData.hours > AIConfig.anomalyDetection.maxHoursWithoutOvertime && formData.overtime === 0) {
-                    warnings.push(`Ore lavorate (${formData.hours}) superiori a ${AIConfig.anomalyDetection.maxHoursWithoutOvertime} senza straordinario registrato`);
-                }
-
-                // Check for excessive overtime
-                if (formData.overtime > AIConfig.anomalyDetection.maxOvertime) {
-                    warnings.push(`Straordinario (${formData.overtime}h) superiore alla soglia massima consigliata (${AIConfig.anomalyDetection.maxOvertime}h)`);
-                }
-
-                // Check for very short work day
-                if (formData.hours < AIConfig.anomalyDetection.minHours) {
-                    warnings.push(`Giornata molto breve (${formData.hours}h). Verifica la correttezza dei dati`);
-                }
-
-                // Check for duplicate entry (same worker, same day)
-                if (formData.workerId && formData.date) {
-                    const sameDayEntries = workDays.filter(wd =>
-                        wd.workerId === formData.workerId &&
-                        wd.date === formData.date &&
-                        wd.id !== workDayIdInput.value // Exclude current entry if editing
-                    );
-
-                    if (sameDayEntries.length > 0) {
-                        warnings.push(`Questo lavoratore ha già ${sameDayEntries.length} registrazione/i per il ${formData.date}`);
-                    }
-                }
-
-                // Check if worker is assigned to multiple sites on same day
-                if (formData.workerId && formData.date && formData.constructionSiteId) {
-                    const workerOtherSites = workDays.filter(wd =>
-                        wd.workerId === formData.workerId &&
-                        wd.date === formData.date &&
-                        wd.constructionSiteId !== formData.constructionSiteId &&
-                        wd.id !== workDayIdInput.value
-                    );
-
-                    if (workerOtherSites.length > 0) {
-                        const otherSiteNames = workerOtherSites.map(wd => wd.constructionSiteName).join(', ');
-                        warnings.push(`Attenzione: questo lavoratore è già assegnato al cantiere "${otherSiteNames}" nello stesso giorno`);
-                    }
-                }
-
-                // Check for weekend work without note
-                if (formData.date) {
-                    const date = new Date(formData.date);
-                    const dayOfWeek = date.getDay();
-                    if ((dayOfWeek === 0 || dayOfWeek === 6) && formData.hours > 0 && (!formData.description || formData.description.length < 10)) {
-                        warnings.push('Lavoro nel weekend: considera di aggiungere una descrizione dettagliata');
-                    }
-                }
-
-                return warnings;
-            }
-
-            // Show AI warning
-            function showAIWarning(message) {
-                aiSuggestionsText.innerHTML = `<div class="ai-alert" style="margin:0"><i class="fas fa-exclamation-triangle"></i> ${message}</div>`;
-                aiSuggestionsText.classList.add('show');
-            }
-
-            // Calculate month cost
-            function calculateMonthCost(monthWorkDays) {
-                let totalCost = 0;
-
-                monthWorkDays.forEach(wd => {
-                    const worker = workers.find(w => w.id === wd.workerId);
-                    const hourlyRate = worker ? worker.hourlyRate : getDefaultHourlyRate(worker ? worker.role : '');
-                    const totalDayHours = wd.hours + (wd.overtime || 0);
-                    totalCost += totalDayHours * hourlyRate;
-                });
-
-                return totalCost;
-            }
-
-            // =============================
-            // VOICE ASSISTANT FUNCTIONS
-            // =============================
-
-            // Initialize voice recognition
-            function initVoiceRecognition() {
-                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                    recognition = new SpeechRecognition();
-                    recognition.continuous = false;
-                    recognition.interimResults = false;
-                    recognition.lang = 'it-IT';
-
-                    recognition.onstart = function () {
-                        isListening = true;
-                        voiceAssistantBtn.classList.add('listening');
-                        voiceTranscript.innerHTML = '<i class="fas fa-microphone"></i> Ascoltando...';
-                        voiceTranscript.classList.add('show');
-                    };
-
-                    recognition.onresult = function (event) {
-                        const transcript = event.results[0][0].transcript;
-                        voiceTranscript.innerHTML = `<i class="fas fa-check-circle"></i> Riconosciuto: "${transcript}"`;
-                        processVoiceCommand(transcript);
-                    };
-
-                    recognition.onerror = function (event) {
-                        console.error('Voice recognition error', event.error);
-                        voiceTranscript.innerHTML = `<i class="fas fa-times-circle"></i> Errore: ${event.error}`;
-                        setTimeout(() => voiceTranscript.classList.remove('show'), 3000);
-                        isListening = false;
-                        voiceAssistantBtn.classList.remove('listening');
-                    };
-
-                    recognition.onend = function () {
-                        isListening = false;
-                        voiceAssistantBtn.classList.remove('listening');
-                        setTimeout(() => voiceTranscript.classList.remove('show'), 3000);
-                    };
-                } else {
-                    voiceAssistantBtn.style.display = 'none';
-                    console.log('Voice recognition not supported');
-                }
-            }
-
-            // Toggle voice recognition
-            function toggleVoiceRecognition() {
-                if (!recognition) {
-                    showAIWarning('Riconoscimento vocale non supportato dal tuo browser');
-                    return;
-                }
-
-                if (isListening) {
-                    recognition.stop();
-                } else {
-                    recognition.start();
-                }
-            }
-
-            // Process voice command
-            function processVoiceCommand(transcript) {
-                const lowerTranscript = transcript.toLowerCase();
-
-                // Extract hours
-                const hourMatch = lowerTranscript.match(/(\d+)(?:\s*ore|h)/);
-                if (hourMatch) {
-                    const hours = parseInt(hourMatch[1]);
-                    if (hours >= 1 && hours <= 24) {
-                        hoursInput.value = hours;
-                    }
-                }
-
-                // Extract overtime
-                const overtimeMatch = lowerTranscript.match(/(\d+)(?:\s*straordinari|straordinario)/);
-                if (overtimeMatch) {
-                    const overtime = parseInt(overtimeMatch[1]);
-                    if (overtime >= 0 && overtime <= 12) {
-                        overtimeInput.value = overtime;
-                    }
-                }
-
-                // Extract worker name
-                workers.forEach(worker => {
-                    if (worker.isWorker && worker.active) {
-                        const firstName = worker.name.split(' ')[0].toLowerCase();
-                        if (lowerTranscript.includes(firstName.toLowerCase())) {
-                            workerSelect.value = worker.id;
-                        }
-                    }
-                });
-
-                // Extract date references
-                if (lowerTranscript.includes('oggi')) {
-                    workDateInput.value = getItalianDate();
-                } else if (lowerTranscript.includes('ieri')) {
-                    const yesterday = new Date();
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    workDateInput.value = getItalianDate(yesterday);
-                } else if (lowerTranscript.includes('domani')) {
-                    const tomorrow = new Date();
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    workDateInput.value = getItalianDate(tomorrow);
-                }
-
-                // Extract description
-                const workKeywords = ['muratura', 'intonaco', 'pittura', 'restauro', 'demolizione', 'scavo', 'getto', 'ferro', 'legno'];
-                for (const keyword of workKeywords) {
-                    if (lowerTranscript.includes(keyword)) {
-                        descriptionInput.value = transcript;
-                        break;
-                    }
-                }
-
-                // Auto-submit if all fields are filled
-                if (workDateInput.value && workerSelect.value && hoursInput.value && constructionSiteSelect.value) {
-                    setTimeout(() => {
-                        if (confirm('Vuoi salvare la voce con i dati riconosciuti?')) {
-                            workDayForm.dispatchEvent(new Event('submit'));
-                        }
-                    }, 1000);
-                }
-            }
-
-            // =============================
-            // EXISTING FUNCTIONS (UPDATED)
-            // =============================
-
-            // Render calendar with AI indicators
+            
+            // Render calendar
             function renderCalendar() {
+                // Update calendar title with Italian month name
                 calendarTitle.textContent = `${getItalianMonthName(currentMonth)} ${currentYear}`;
+                
+                // Clear calendar
                 calendarDays.innerHTML = '';
-
+                
+                // Get first day of month and total days
                 const firstDay = new Date(currentYear, currentMonth, 1);
                 const lastDay = new Date(currentYear, currentMonth + 1, 0);
                 const totalDays = lastDay.getDate();
-                const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-
-                // Add empty cells
+                const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // Monday = 0
+                
+                // Add empty cells for days before first day of month
                 for (let i = 0; i < firstDayIndex; i++) {
                     const emptyDay = document.createElement('div');
                     emptyDay.className = 'calendar-day empty';
                     calendarDays.appendChild(emptyDay);
                 }
-
-                // Today's date string
+                
+                // Add cells for each day of month
                 const todayStr = getItalianDate();
-
+                
                 for (let day = 1; day <= totalDays; day++) {
                     const date = new Date(currentYear, currentMonth, day);
                     const dateStr = formatDateToLocal(date);
-
+                    
                     const dayElement = document.createElement('div');
                     dayElement.className = 'calendar-day';
-
+                    
                     // Check if today
                     if (dateStr === todayStr) {
                         dayElement.classList.add('today');
                     }
-
+                    
                     // Day number
                     const dayNumber = document.createElement('div');
                     dayNumber.className = 'calendar-day-number';
                     dayNumber.textContent = day;
                     dayElement.appendChild(dayNumber);
-
+                    
                     // Get work entries for this day
                     const dayWorkDays = workDays.filter(wd => wd.date === dateStr);
-
+                    
                     // Filter by selected worker if any
                     const selectedWorkerId = calendarWorkerFilter.value;
-                    const filteredWorkDays = selectedWorkerId
+                    const filteredWorkDays = selectedWorkerId 
                         ? dayWorkDays.filter(wd => wd.workerId === selectedWorkerId)
                         : dayWorkDays;
-
-                    // Add AI indicators
-                    if (filteredWorkDays.length > 0) {
-                        const aiIndicators = document.createElement('div');
-                        aiIndicators.className = 'ai-day-indicators';
-
-                        // Calculate total hours for the day
-                        const totalDayHours = filteredWorkDays.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0);
-
-                        // High productivity indicator
-                        if (totalDayHours > AIConfig.productivityThresholds.high) {
-                            aiIndicators.innerHTML += '<i class="fas fa-fire" title="Alta produttività"></i>';
-                        }
-
-                        // Check for consecutive work days for any worker
-                        const dayOfWeek = date.getDay();
-                        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Not weekend
-                            // Simplified check - in reality would check each worker's history
-                            const yesterday = new Date(date);
-                            yesterday.setDate(yesterday.getDate() - 1);
-                            const yesterdayStr = formatDateToLocal(yesterday);
-                            const yesterdayWorkDays = workDays.filter(wd => wd.date === yesterdayStr);
-
-                            if (yesterdayWorkDays.length > 0 && filteredWorkDays.length > 0) {
-                                // Check if same workers worked yesterday
-                                const yesterdayWorkerIds = yesterdayWorkDays.map(wd => wd.workerId);
-                                const todayWorkerIds = filteredWorkDays.map(wd => wd.workerId);
-                                const consecutiveWorkers = todayWorkerIds.filter(id => yesterdayWorkerIds.includes(id));
-
-                                if (consecutiveWorkers.length > 0) {
-                                    aiIndicators.innerHTML += '<i class="fas fa-user-clock" title="Lavoratori in giorni consecutivi"></i>';
-                                }
-                            }
-                        }
-
-                        // Weekend work indicator
-                        if ((dayOfWeek === 0 || dayOfWeek === 6) && filteredWorkDays.length > 0) {
-                            aiIndicators.innerHTML += '<i class="fas fa-calendar-plus" title="Lavoro nel weekend"></i>';
-                        }
-
-                        if (aiIndicators.innerHTML !== '') {
-                            dayElement.appendChild(aiIndicators);
-                        }
-                    }
-
+                    
                     // Add work entries
                     if (filteredWorkDays.length > 0) {
                         const entriesContainer = document.createElement('div');
                         entriesContainer.className = 'calendar-day-work-entries';
-
+                        
                         // Show only first 3 entries
                         const entriesToShow = filteredWorkDays.slice(0, 3);
                         let totalHours = 0;
-
+                        
                         entriesToShow.forEach(workDay => {
                             totalHours += workDay.hours + (workDay.overtime || 0);
-
+                            
                             const entryElement = document.createElement('div');
                             entryElement.className = 'work-entry-item';
-
+                            
                             const workerName = document.createElement('div');
                             workerName.className = 'work-entry-worker';
-                            workerName.textContent = workDay.workerName.split(' ')[0];
+                            workerName.textContent = workDay.workerName.split(' ')[0]; // First name only
                             entryElement.appendChild(workerName);
-
+                            
                             const hoursElement = document.createElement('div');
                             hoursElement.className = 'work-entry-hours';
                             hoursElement.textContent = workDay.hours + (workDay.overtime ? '+' + workDay.overtime : '');
                             entryElement.appendChild(hoursElement);
-
+                            
                             entriesContainer.appendChild(entryElement);
                         });
-
-                        // Show "more entries" indicator
+                        
+                        // Show "more entries" indicator if there are more than 3
                         if (filteredWorkDays.length > 3) {
                             const moreElement = document.createElement('div');
                             moreElement.className = 'work-entry-item';
@@ -3741,44 +2485,41 @@
                             moreElement.textContent = `+${filteredWorkDays.length - 3} altre`;
                             entriesContainer.appendChild(moreElement);
                         }
-
+                        
                         dayElement.appendChild(entriesContainer);
-
+                        
                         // Add total hours
                         const totalElement = document.createElement('div');
                         totalElement.className = 'calendar-day-total';
                         totalElement.textContent = `${totalHours}h`;
                         dayElement.appendChild(totalElement);
-
-                        // Highlight high productivity days
-                        if (totalHours > AIConfig.productivityThresholds.high) {
-                            dayElement.classList.add('ai-highlight');
-                        }
                     }
-
-                    // Add click event
+                    
+                    // Add click event to view day details
                     dayElement.addEventListener('click', () => {
                         selectedDate = dateStr;
                         showDayDetails(dateStr, filteredWorkDays);
                     });
-
+                    
                     calendarDays.appendChild(dayElement);
                 }
             }
-
+            
             // Show day details modal
             function showDayDetails(dateStr, dayWorkDays) {
-                const date = new Date(dateStr + 'T12:00:00');
+                const date = new Date(dateStr + 'T12:00:00'); // Add time to avoid timezone issues
                 const formattedDate = `${getItalianDayName(date)} ${date.getDate()} ${getItalianMonthName(date.getMonth())} ${date.getFullYear()}`;
-
+                
                 dayDetailsTitle.textContent = 'Dettaglio Giornata';
                 dayDetailsDate.textContent = formattedDate;
-
+                
+                // Calculate total hours
                 const totalHours = dayWorkDays.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0);
                 dayTotalHours.textContent = `${totalHours}h`;
-
+                
+                // Clear previous details
                 dayWorkDetails.innerHTML = '';
-
+                
                 if (dayWorkDays.length === 0) {
                     const noData = document.createElement('div');
                     noData.className = 'text-center p-3';
@@ -3796,57 +2537,59 @@
                         }
                         workerGroups[workDay.workerId].entries.push(workDay);
                     });
-
-                    // Create details
+                    
+                    // Create details for each worker
                     Object.values(workerGroups).forEach(workerGroup => {
+                        const workerTotal = workerGroup.entries.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0);
+                        
                         workerGroup.entries.forEach(workDay => {
                             const detailItem = document.createElement('div');
                             detailItem.className = 'work-detail-item';
-
+                            
                             const workerInfo = document.createElement('div');
                             workerInfo.className = 'work-detail-worker';
-
+                            
                             const avatar = document.createElement('div');
                             avatar.className = 'work-detail-avatar';
                             avatar.textContent = workDay.workerName.split(' ').map(n => n[0]).join('').toUpperCase();
                             workerInfo.appendChild(avatar);
-
+                            
                             const info = document.createElement('div');
                             info.className = 'work-detail-info';
-
+                            
                             const name = document.createElement('div');
                             name.className = 'work-detail-name';
                             name.textContent = workDay.workerName;
                             info.appendChild(name);
-
+                            
                             if (workDay.description) {
                                 const desc = document.createElement('div');
                                 desc.className = 'work-detail-description';
                                 desc.textContent = workDay.description;
                                 info.appendChild(desc);
                             }
-
+                            
                             const site = document.createElement('div');
                             site.className = 'work-detail-description';
                             site.textContent = workDay.constructionSiteName || 'Cantiere non specificato';
                             info.appendChild(site);
-
+                            
                             workerInfo.appendChild(info);
                             detailItem.appendChild(workerInfo);
-
+                            
                             const hours = document.createElement('div');
                             hours.className = 'work-detail-hours';
                             hours.textContent = `${workDay.hours}${workDay.overtime ? '+' + workDay.overtime : ''}h`;
                             detailItem.appendChild(hours);
-
+                            
                             dayWorkDetails.appendChild(detailItem);
                         });
                     });
                 }
-
+                
                 dayDetailsModal.classList.add('show');
             }
-
+            
             // Render work days list
             function renderWorkDaysList(workDaysToShow = workDays) {
                 if (workDaysToShow.length === 0) {
@@ -3854,20 +2597,20 @@
                     noWorkdaysMessage.classList.remove('d-none');
                     return;
                 }
-
+                
                 noWorkdaysMessage.classList.add('d-none');
-
+                
                 let tableHTML = '';
-
+                
                 workDaysToShow.forEach(workDay => {
-                    const date = new Date(workDay.date + 'T12:00:00');
+                    const date = new Date(workDay.date + 'T12:00:00'); // Add time to avoid timezone issues
                     const dayName = getItalianDayName(date).substring(0, 3);
                     const monthName = getItalianMonthName(date.getMonth()).substring(0, 3);
                     const formattedDate = `${dayName} ${date.getDate().toString().padStart(2, '0')} ${monthName}`;
-
+                    
                     const totalHours = workDay.hours + (workDay.overtime || 0);
                     const hoursClass = totalHours > 8 ? 'overtime' : '';
-
+                    
                     tableHTML += `
                         <tr>
                             <td>
@@ -3903,36 +2646,39 @@
                         </tr>
                     `;
                 });
-
+                
                 workdaysTableBody.innerHTML = tableHTML;
             }
-
+            
             // Get worker role
             function getWorkerRole(workerId) {
                 const worker = workers.find(w => w.id === workerId);
                 return worker ? worker.role : 'N/A';
             }
-
+            
             // Filter work days
             function filterWorkDays() {
                 const searchTerm = searchInput.value.toLowerCase();
                 const dateFilterValue = dateFilter.value;
                 const workerFilterValue = workerFilter.value;
-
+                
                 let filteredWorkDays = workDays;
-
+                
+                // Filter by search term
                 if (searchTerm) {
-                    filteredWorkDays = filteredWorkDays.filter(wd =>
+                    filteredWorkDays = filteredWorkDays.filter(wd => 
                         wd.workerName.toLowerCase().includes(searchTerm) ||
                         (wd.constructionSiteName && wd.constructionSiteName.toLowerCase().includes(searchTerm)) ||
                         (wd.description && wd.description.toLowerCase().includes(searchTerm))
                     );
                 }
-
+                
+                // Filter by worker
                 if (workerFilterValue) {
                     filteredWorkDays = filteredWorkDays.filter(wd => wd.workerId === workerFilterValue);
                 }
-
+                
+                // Filter by date range
                 if (dateFilterValue === 'current') {
                     const currentMonthStart = new Date(currentYear, currentMonth, 1);
                     const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0);
@@ -3949,25 +2695,31 @@
                         const workDate = new Date(wd.date + 'T12:00:00');
                         return workDate >= lastMonthStart && workDate <= lastMonthEnd;
                     });
+                } else if (dateFilterValue === 'custom') {
+                    // In a real app, you would show date pickers here
                 }
-
+                // 'all' shows all work days without date filtering
+                
                 renderWorkDaysList(filteredWorkDays);
             }
-
+            
             // Update statistics
             function updateStatistics() {
+                // Filter work days for current month
                 const currentMonthStart = new Date(currentYear, currentMonth, 1);
                 const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0);
                 const monthWorkDays = workDays.filter(wd => {
                     const workDate = new Date(wd.date + 'T12:00:00');
                     return workDate >= currentMonthStart && workDate <= currentMonthEnd;
                 });
-
+                
+                // Calculate statistics
                 const totalHours = monthWorkDays.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0);
                 const uniqueWorkers = [...new Set(monthWorkDays.map(wd => wd.workerId))];
                 const activeWorkersCount = uniqueWorkers.length;
                 const avgHoursPerWorker = activeWorkersCount > 0 ? (totalHours / activeWorkersCount).toFixed(1) : 0;
-
+                
+                // Calculate estimated cost
                 let estimatedCost = 0;
                 monthWorkDays.forEach(wd => {
                     const worker = workers.find(w => w.id === wd.workerId);
@@ -3975,63 +2727,55 @@
                     const totalDayHours = wd.hours + (wd.overtime || 0);
                     estimatedCost += totalDayHours * hourlyRate;
                 });
-
+                
+                // Update UI
                 totalHoursSpan.textContent = totalHours;
                 avgHoursSpan.textContent = avgHoursPerWorker;
                 activeWorkersSpan.textContent = activeWorkersCount;
                 estimatedCostSpan.textContent = `${estimatedCost.toFixed(0)}€`;
+                
+                // Update change indicators
+                document.getElementById('totalChange').textContent = 'Ore lavorate';
+                document.getElementById('avgChange').textContent = 'Per dipendente';
+                document.getElementById('workersChange').textContent = 'Nel mese';
+                document.getElementById('costChange').textContent = 'Totale mese';
             }
-
-            // Handle form submission with AI validation
+            
+            // Handle form submission
             async function handleFormSubmit(e) {
                 e.preventDefault();
-
+                
                 hideAlerts();
-                aiValidationWarnings.classList.add('d-none');
-
+                
                 if (!validateForm()) {
                     return;
                 }
-
-                // AI validation before submission
-                const formData = {
-                    date: workDateInput.value,
-                    workerId: workerSelect.value,
-                    hours: parseFloat(hoursInput.value),
-                    overtime: parseFloat(overtimeInput.value) || 0,
-                    constructionSiteId: constructionSiteSelect.value,
-                    description: descriptionInput.value.trim() || ''
-                };
-
-                const aiWarnings = validateWithAI(formData);
-                if (aiWarnings.length > 0) {
-                    if (!confirm(`L'AI ha rilevato ${aiWarnings.length} anomalie. Vuoi procedere comunque?\n\n${aiWarnings.join('\n')}`)) {
-                        return;
-                    }
-                }
-
+                
+                // Get worker name
                 const workerId = workerSelect.value;
                 const worker = workers.find(w => w.id === workerId);
                 const workerName = worker ? worker.name : '';
-
+                
+                // Get construction site name
                 const siteId = constructionSiteSelect.value;
                 const site = constructionSites.find(s => s.id === siteId);
                 const siteName = site ? site.name : '';
-
+                
+                // Prepare work day data
                 const workDayData = {
-                    date: formData.date,
+                    date: workDateInput.value,
                     workerId: workerId,
                     workerName: workerName,
                     constructionSiteId: siteId,
                     constructionSiteName: siteName,
-                    hours: formData.hours,
-                    overtime: formData.overtime,
-                    description: formData.description,
+                    hours: parseFloat(hoursInput.value),
+                    overtime: overtimeInput.value ? parseFloat(overtimeInput.value) : 0,
+                    description: descriptionInput.value.trim() || '',
                     lastUpdated: new Date().toISOString()
                 };
-
+                
                 const workDayId = workDayIdInput.value;
-
+                
                 try {
                     if (workDayId) {
                         await updateWorkDay(workDayId, workDayData);
@@ -4040,16 +2784,16 @@
                         workDayData.createdBy = currentUser ? currentUser.uid : 'anonymous';
                         await createWorkDay(workDayData);
                     }
-
+                    
                     showSuccessAlert();
                     setTimeout(resetForm, 2000);
-
+                    
                 } catch (error) {
                     console.error("Error saving work day:", error);
                     showErrorAlert("Errore nel salvataggio: " + error.message);
                 }
             }
-
+            
             // Validate form
             function validateForm() {
                 if (!workDateInput.value) {
@@ -4057,35 +2801,35 @@
                     workDateInput.focus();
                     return false;
                 }
-
+                
                 if (!workerSelect.value) {
                     showErrorAlert("Il lavoratore è obbligatorio");
                     workerSelect.focus();
                     return false;
                 }
-
+                
                 if (!hoursInput.value || parseFloat(hoursInput.value) <= 0) {
                     showErrorAlert("Le ore lavorate devono essere maggiori di 0");
                     hoursInput.focus();
                     return false;
                 }
-
+                
                 if (!constructionSiteSelect.value) {
                     showErrorAlert("Il cantiere è obbligatorio");
                     constructionSiteSelect.focus();
                     return false;
                 }
-
+                
                 return true;
             }
-
+            
             // Create new work day
             async function createWorkDay(workDayData) {
                 try {
                     if (db) {
                         const docRef = await db.collection('workDays').add(workDayData);
                         console.log("Work day saved to Firebase with ID:", docRef.id);
-
+                        
                         workDays.unshift({
                             id: docRef.id,
                             ...workDayData
@@ -4097,19 +2841,19 @@
                             ...workDayData
                         });
                     }
-
+                    
+                    // Update UI
                     renderCalendar();
                     renderWorkDaysList();
                     updateStatistics();
                     filterWorkDays();
-                    loadAIInsights(); // Refresh AI insights
-
+                    
                 } catch (error) {
                     console.error("Error saving to Firebase:", error);
                     throw error;
                 }
             }
-
+            
             // Update existing work day
             async function updateWorkDay(workDayId, workDayData) {
                 try {
@@ -4117,27 +2861,28 @@
                         await db.collection('workDays').doc(workDayId).update(workDayData);
                         console.log("Work day updated in Firebase:", workDayId);
                     }
-
+                    
+                    // Update local array
                     const index = workDays.findIndex(wd => wd.id === workDayId);
                     if (index !== -1) {
                         workDays[index] = {
                             ...workDays[index],
                             ...workDayData
                         };
-
+                        
+                        // Update UI
                         renderCalendar();
                         renderWorkDaysList();
                         updateStatistics();
                         filterWorkDays();
-                        loadAIInsights(); // Refresh AI insights
                     }
-
+                    
                 } catch (error) {
                     console.error("Error updating work day:", error);
                     throw error;
                 }
             }
-
+            
             // Reset form
             function resetForm() {
                 workDayForm.reset();
@@ -4145,33 +2890,31 @@
                 cancelBtn.style.display = 'none';
                 formTitle.textContent = "Nuova Voce Lavorativa";
                 submitBtnText.textContent = "Salva Voce";
-
+                
+                // Set default date to today (Italian timezone)
                 workDateInput.value = getItalianDate();
-
+                
+                // Hide alerts
                 hideAlerts();
-                aiSuggestionsText.classList.remove('show');
-                aiValidationWarnings.classList.add('d-none');
-                aiValidationWarnings.innerHTML = '';
             }
-
+            
             // Export data
             function exportData() {
                 if (workDays.length === 0) {
                     showWarningAlert("Nessun dato da esportare");
                     return;
                 }
-
+                
+                // Prepare CSV data
                 const csvData = [
-                    ['Data', 'Lavoratore', 'Ruolo', 'Cantiere', 'Ore Normali', 'Straordinario', 'Ore Totali', 'Descrizione', 'Costo Stimato']
+                    ['Data', 'Lavoratore', 'Ruolo', 'Cantiere', 'Ore Normali', 'Straordinario', 'Ore Totali', 'Descrizione']
                 ];
-
+                
                 workDays.forEach(workDay => {
                     const worker = workers.find(w => w.id === workDay.workerId);
                     const role = worker ? worker.role : 'N/A';
                     const totalHours = workDay.hours + (workDay.overtime || 0);
-                    const hourlyRate = worker ? worker.hourlyRate : getDefaultHourlyRate(worker ? worker.role : '');
-                    const cost = totalHours * hourlyRate;
-
+                    
                     csvData.push([
                         workDay.date,
                         workDay.workerName,
@@ -4180,28 +2923,29 @@
                         workDay.hours,
                         workDay.overtime || 0,
                         totalHours,
-                        workDay.description || '',
-                        cost.toFixed(2)
+                        workDay.description || ''
                     ]);
                 });
-
-                const csvString = csvData.map(row =>
+                
+                // Convert to CSV string
+                const csvString = csvData.map(row => 
                     row.map(cell => `"${cell.toString().replace(/"/g, '""')}"`).join(',')
                 ).join('\n');
-
+                
+                // Create download link
                 const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
                 link.setAttribute('href', url);
-                link.setAttribute('download', `giornate_lavorative_ai_${getItalianDate()}.csv`);
+                link.setAttribute('download', `giornate_lavorative_${getItalianDate()}.csv`);
                 link.style.visibility = 'hidden';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-
+                
                 showSuccessAlert("Esportazione completata. Il file CSV è stato scaricato.");
             }
-
+            
             // Handle logout
             async function handleLogout() {
                 if (confirm("Sei sicuro di voler uscire dalla piattaforma?")) {
@@ -4211,51 +2955,54 @@
                         }
                         localStorage.clear();
                         sessionStorage.clear();
-
+                        
                         window.location.href = 'index.html';
-
+                        
                     } catch (error) {
                         console.error("Error during logout:", error);
                         showErrorAlert("Errore durante il logout: " + error.message);
                     }
                 }
             }
-
+            
             // Show delete modal (global function)
-            window.showDeleteModal = function (workDayId, workDayInfo) {
+            window.showDeleteModal = function(workDayId, workDayInfo) {
                 workDayToDelete = workDayId;
                 deleteWorkDayInfo.textContent = workDayInfo;
                 deleteModal.classList.add('show');
             };
-
+            
             // Confirm work day deletion
             async function confirmWorkDayDelete() {
                 if (!workDayToDelete) return;
-
+                
                 try {
                     if (db) {
                         await db.collection('workDays').doc(workDayToDelete).delete();
                         console.log("Work day deleted from Firebase:", workDayToDelete);
                     }
-
+                    
+                    // Remove from local array
                     const index = workDays.findIndex(wd => wd.id === workDayToDelete);
                     if (index !== -1) {
                         workDays.splice(index, 1);
                     }
-
+                    
+                    // Update UI
                     renderCalendar();
                     renderWorkDaysList();
                     updateStatistics();
                     filterWorkDays();
-                    loadAIInsights(); // Refresh AI insights
-
+                    
+                    // Reset form if editing deleted work day
                     if (workDayIdInput.value === workDayToDelete) {
                         resetForm();
                     }
-
+                    
+                    // Close modal and show success message
                     deleteModal.classList.remove('show');
                     showSuccessAlert("Voce lavorativa eliminata con successo");
-
+                    
                 } catch (error) {
                     console.error("Error deleting work day:", error);
                     showErrorAlert("Errore nell'eliminazione: " + error.message);
@@ -4263,12 +3010,13 @@
                     workDayToDelete = null;
                 }
             }
-
+            
             // Edit work day (global function)
-            window.editWorkDay = function (workDayId) {
+            window.editWorkDay = function(workDayId) {
                 const workDay = workDays.find(wd => wd.id === workDayId);
-
+                
                 if (workDay) {
+                    // Populate form
                     workDayIdInput.value = workDay.id;
                     workDateInput.value = workDay.date;
                     workerSelect.value = workDay.workerId;
@@ -4276,55 +3024,56 @@
                     overtimeInput.value = workDay.overtime || '';
                     constructionSiteSelect.value = workDay.constructionSiteId;
                     descriptionInput.value = workDay.description || '';
-
+                    
+                    // Update UI
                     formTitle.textContent = "Modifica Voce Lavorativa";
                     submitBtnText.textContent = "Aggiorna Voce";
                     cancelBtn.style.display = 'block';
-
-                    document.getElementById('workDayFormCard').scrollIntoView({
+                    
+                    // Scroll to form
+                    document.getElementById('workDayFormCard').scrollIntoView({ 
                         behavior: 'smooth',
                         block: 'start'
                     });
                 }
             };
-
+            
             // Alert functions
             function showSuccessAlert(message = "Voce lavorativa salvata con successo!") {
                 successAlert.querySelector('div').textContent = message;
                 successAlert.classList.remove('d-none');
                 errorAlert.classList.add('d-none');
-
+                
                 setTimeout(() => {
                     successAlert.classList.add('d-none');
                 }, 5000);
             }
-
+            
             function showErrorAlert(message) {
                 errorMessage.textContent = message;
                 errorAlert.classList.remove('d-none');
                 successAlert.classList.add('d-none');
             }
-
+            
             function showWarningAlert(message) {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = 'alert alert-warning';
                 alertDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i><div>${message}</div>`;
                 document.querySelector('.card-body').prepend(alertDiv);
-
+                
                 setTimeout(() => {
                     alertDiv.remove();
                 }, 5000);
             }
-
+            
             function hideAlerts() {
                 successAlert.classList.add('d-none');
                 errorAlert.classList.add('d-none');
             }
-
+            
             // Initialize the page
             initPage();
         });
     </script>
 </body>
-
 </html>
