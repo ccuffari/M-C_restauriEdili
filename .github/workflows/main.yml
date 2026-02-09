@@ -1,4 +1,5 @@
-name: Basic Deploy
+name: Simple Deploy Pipeline
+
 on:
   push:
     branches: [main]
@@ -6,13 +7,59 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    
     steps:
-    - uses: actions/checkout@v4
-    - run: npm install -g firebase-tools
-    - run: |
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Firebase CLI
+      run: npm install -g firebase-tools
+    
+    - name: Generate Version Number
+      id: version
+      run: |
+        # Versione basata sulla data (sempre funzionante)
         VERSION="v$(date +'%Y.%m.%d.%H%M%S')"
-        git tag -a "$VERSION" -m "Release $VERSION"
-        git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git "$VERSION"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Generated version: $VERSION"
+    
+    - name: Create Git Tag
       env:
         GH_PAT: ${{ secrets.GH_PAT }}
-    - run: firebase deploy --only hosting --token "${{ secrets.FIREBASE_TOKEN }}"
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        
+        # Configura git
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        
+        # Crea e push tag
+        git tag -a "$VERSION" -m "Release $VERSION - ${{ github.sha }}"
+        git push https://x-access-token:$GH_PAT@github.com/${{ github.repository }}.git "$VERSION"
+        
+        echo "✅ Tag $VERSION created"
+    
+    - name: Deploy to Firebase
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      run: |
+        echo "🚀 Deploying version ${{ steps.version.outputs.version }}..."
+        
+        firebase deploy \
+          --token "$FIREBASE_TOKEN" \
+          --only hosting \
+          --message "Release ${{ steps.version.outputs.version }}"
+        
+        echo "✅ Deployed successfully!"
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: Release ${{ steps.version.outputs.version }}
+        draft: false
+        prerelease: false
