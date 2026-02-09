@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuffari - Gestione Preventivi</title>
+    <title>Cuffari - Gestione Preventivi AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/docx@7.8.0/build/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     <style>
-        /* CSS Reset e Base */
         :root {
             --primary-color: #003366;
             --primary-dark: #002244;
@@ -55,7 +55,6 @@
             flex-direction: column;
         }
         
-        /* Container Responsive */
         .container {
             width: 100%;
             padding-right: 15px;
@@ -64,44 +63,35 @@
             margin-left: auto;
         }
         
-        /* Breakpoint per xxl (>=1400px) */
-        @media (min-width: 1400px) {
-            .container { max-width: 1320px; }
-            html { font-size: 17px; }
+        @media (max-width: 359.98px) {
+            .container { padding: 0 8px; }
+            html { font-size: 14px; }
         }
         
-        /* Breakpoint per xl (>=1200px) */
-        @media (min-width: 1200px) and (max-width: 1399.98px) {
-            .container { max-width: 1140px; }
+        @media (min-width: 360px) and (max-width: 575.98px) {
+            .container { max-width: 100%; }
         }
         
-        /* Breakpoint per lg (>=992px) */
-        @media (min-width: 992px) and (max-width: 1199.98px) {
-            .container { max-width: 960px; }
-        }
-        
-        /* Breakpoint per md (>=768px) */
-        @media (min-width: 768px) and (max-width: 991.98px) {
-            .container { max-width: 720px; }
-        }
-        
-        /* Breakpoint per sm (>=576px) */
         @media (min-width: 576px) and (max-width: 767.98px) {
             .container { max-width: 540px; }
         }
         
-        /* Breakpoint per xs (<576px) */
-        @media (max-width: 575.98px) {
-            .container { padding-right: 10px; padding-left: 10px; }
-            html { font-size: 14px; }
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .container { max-width: 720px; }
         }
         
-        /* Breakpoint per xxs (molto piccoli) */
-        @media (max-width: 359.98px) {
-            html { font-size: 13px; }
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            .container { max-width: 960px; }
         }
         
-        /* Utility Classes */
+        @media (min-width: 1200px) and (max-width: 1399.98px) {
+            .container { max-width: 1140px; }
+        }
+        
+        @media (min-width: 1400px) {
+            .container { max-width: 1320px; }
+        }
+        
         .text-center { text-align: center; }
         .text-right { text-align: right; }
         .text-left { text-align: left; }
@@ -129,7 +119,525 @@
         .p-4 { padding: 2rem; }
         .w-100 { width: 100%; }
         
-        /* Header Styles */
+        /* AI Dashboard Styles */
+        .ai-dashboard {
+            margin-bottom: 2.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .ai-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .ai-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .ai-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .ai-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ai-card-title i {
+            color: var(--secondary-color);
+        }
+        
+        .ai-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--primary-light);
+            color: white;
+        }
+        
+        .ai-insight {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .ai-insight.warning {
+            border-left-color: var(--warning-color);
+            background: #fff3cd;
+        }
+        
+        .ai-insight.critical {
+            border-left-color: var(--danger-color);
+            background: #f8d7da;
+        }
+        
+        .ai-insight.success {
+            border-left-color: var(--success-color);
+            background: #d4edda;
+        }
+        
+        .ai-insight.info {
+            border-left-color: var(--info-color);
+            background: #d1ecf1;
+        }
+        
+        .ai-insight-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ai-insight-content {
+            font-size: 0.9rem;
+            color: var(--dark-color);
+        }
+        
+        .ai-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            margin-top: 0.5rem;
+        }
+        
+        .ai-action-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .chart-container {
+            height: 200px;
+            margin-top: 1rem;
+        }
+        
+        .ai-recommendations {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .ai-recommendation {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ai-recommendation:last-child {
+            border-bottom: none;
+        }
+        
+        .recommendation-info {
+            flex: 1;
+        }
+        
+        .recommendation-title {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .recommendation-details {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            margin-top: 0.25rem;
+        }
+        
+        .recommendation-action {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .profit-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .trend-up {
+            color: var(--success-color);
+        }
+        
+        .trend-down {
+            color: var(--danger-color);
+        }
+        
+        .trend-stable {
+            color: var(--gray-color);
+        }
+        
+        .notification-settings {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .notification-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .ai-loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-color);
+        }
+        
+        .ai-loading i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Modal AI Insights */
+        .ai-modal-body {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .ai-analysis-section {
+            margin-bottom: 2rem;
+        }
+        
+        .analysis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .analysis-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .analysis-confidence {
+            font-size: 0.8rem;
+            background: var(--primary-light);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .prediction-card {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .prediction-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .prediction-label {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            margin-top: 0.5rem;
+        }
+        
+        /* AI Suggestion for Items */
+        .ai-suggestion-panel {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+        
+        .suggestion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .suggestion-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .suggestion-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .suggestion-item {
+            background: white;
+            border-radius: 4px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .suggestion-item:hover {
+            border-color: var(--primary-color);
+            background: #e6f0ff;
+        }
+        
+        .suggestion-item-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+        
+        .suggestion-item-details {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+        
+        .suggestion-item-price {
+            margin-top: 0.5rem;
+            font-weight: 600;
+            color: var(--success-color);
+        }
+        
+        /* AI Price Assistant */
+        .price-assistant {
+            position: relative;
+        }
+        
+        .ai-price-suggestions {
+            position: absolute;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-shadow: var(--shadow-md);
+            z-index: 1000;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .price-suggestion {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .price-suggestion:hover {
+            background: #f8f9fa;
+        }
+        
+        .price-suggestion:last-child {
+            border-bottom: none;
+        }
+        
+        .price-suggestion-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .price-suggestion-details {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+        
+        .ai-quote-analysis {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid var(--info-color);
+        }
+        
+        .analysis-result {
+            margin-top: 1rem;
+        }
+        
+        .analysis-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        
+        .analysis-metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .metric-value {
+            font-weight: 600;
+        }
+        
+        .metric-good {
+            color: var(--success-color);
+        }
+        
+        .metric-warning {
+            color: var(--warning-color);
+        }
+        
+        .metric-danger {
+            color: var(--danger-color);
+        }
+        
+        /* Smart Material Suggestions */
+        .material-suggestions {
+            margin-top: 1rem;
+        }
+        
+        .material-suggestion-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .material-suggestion-item:hover {
+            border-color: var(--primary-color);
+            background: #e6f0ff;
+        }
+        
+        .material-info {
+            flex: 1;
+        }
+        
+        .material-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .material-stock {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            margin-top: 0.25rem;
+        }
+        
+        .material-price {
+            font-weight: 600;
+            color: var(--success-color);
+        }
+        
+        /* Responsive AI Dashboard */
+        @media (max-width: 768px) {
+            .ai-dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .prediction-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .suggestion-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Existing styles from previous code */
         .header {
             background-color: var(--primary-color);
             color: white;
@@ -253,7 +761,6 @@
             margin-right: 0.5rem;
         }
         
-        /* Main Content */
         .main-content {
             flex: 1;
             padding: 2rem 0;
@@ -293,7 +800,6 @@
             flex-wrap: wrap;
         }
         
-        /* Button Styles */
         .btn {
             padding: 0.75rem 1.5rem;
             border: none;
@@ -360,21 +866,18 @@
             font-size: 0.875rem;
         }
         
-        /* Content Layout */
         .content-container {
             display: grid;
             grid-template-columns: 1fr;
             gap: 2rem;
         }
         
-        /* Layout responsive per lg e superiori */
         @media (min-width: 992px) {
             .content-container {
                 grid-template-columns: 1fr 1fr;
             }
         }
         
-        /* Form Card */
         .form-card {
             background: white;
             border-radius: 8px;
@@ -406,7 +909,6 @@
             padding: 1.5rem;
         }
         
-        /* Form Styles */
         .form-group {
             margin-bottom: 1.25rem;
         }
@@ -473,16 +975,9 @@
             gap: 1rem;
         }
         
-        /* Form responsive */
         @media (min-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        @media (max-width: 767.98px) {
-            .form-row {
-                grid-template-columns: 1fr;
             }
         }
         
@@ -504,7 +999,6 @@
             min-width: 0;
         }
         
-        /* Preview Card */
         .preview-card {
             background: white;
             border-radius: 8px;
@@ -524,7 +1018,6 @@
             min-height: 600px;
         }
         
-        /* Preview Styles */
         .preview-header {
             border-bottom: 3px solid var(--primary-color);
             padding-bottom: 1rem;
@@ -671,7 +1164,6 @@
             white-space: nowrap;
         }
         
-        /* Items Management */
         .items-management {
             margin: 1.5rem 0;
             overflow-x: auto;
@@ -731,7 +1223,6 @@
             flex-shrink: 0;
         }
         
-        /* Alerts */
         .alert {
             padding: 1rem;
             border-radius: 4px;
@@ -771,7 +1262,6 @@
             border: 1px solid #bee5eb;
         }
         
-        /* Footer */
         .footer {
             background: var(--primary-color);
             color: white;
@@ -809,17 +1299,30 @@
             opacity: 0.7;
         }
         
-        /* Responsive Design */
-        /* Per schermi grandi (lg e superiori) */
-        @media (min-width: 992px) {
-            .item-row, .items-header {
-                min-width: 0;
-                grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+        @media (max-width: 768px) {
+            .logo-container {
+                min-width: auto;
+                margin-bottom: 1rem;
             }
-        }
-        
-        /* Per tablet (md) */
-        @media (max-width: 991.98px) and (min-width: 768px) {
+            
+            .user-menu {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-menu {
+                order: 2;
+                width: 100%;
+                margin-top: 1rem;
+                justify-content: center;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.75rem;
+            }
+            
             .item-row, .items-header {
                 min-width: 700px;
             }
@@ -833,60 +1336,40 @@
             }
         }
         
-        /* Per tablet piccoli e mobile (sm e xs) */
-        @media (max-width: 767.98px) {
-            .item-row, .items-header {
-                min-width: 650px;
-            }
-            
-            .quote-info {
-                flex-direction: column;
-            }
-            
-            .client-info, .quote-details {
-                min-width: 100%;
-            }
-            
-            .quote-title {
-                font-size: 1.6rem;
-            }
-            
-            .company-name {
-                font-size: 1.4rem;
-            }
-            
-            .watermark {
-                font-size: 4rem;
-                left: 5%;
-            }
-            
-            .items-table {
-                font-size: 0.8rem;
-            }
-            
-            .items-table th,
-            .items-table td {
-                padding: 0.5rem;
-            }
-            
-            .card-body {
-                padding: 1rem;
-            }
-            
-            .preview-content {
-                padding: 1rem;
-            }
-        }
-        
-        /* Per mobile piccoli (xs) */
-        @media (max-width: 575.98px) {
-            .page-header {
+        @media (max-width: 576px) {
+            .header-container {
                 flex-direction: column;
                 align-items: stretch;
             }
             
-            .page-title {
-                font-size: 1.5rem;
+            .logo-container {
+                justify-content: center;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            
+            .logo-icon {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+            
+            .user-menu {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .user-info {
+                text-align: center;
+            }
+            
+            .nav-menu {
+                justify-content: center;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
             }
             
             .page-actions {
@@ -910,11 +1393,6 @@
                 min-width: 550px;
             }
             
-            .watermark {
-                font-size: 3rem;
-                top: 40%;
-            }
-            
             .company-name {
                 font-size: 1.2rem;
             }
@@ -924,36 +1402,18 @@
             }
         }
         
-        /* Per mobile molto piccoli (xxs) */
         @media (max-width: 359.98px) {
-            .logo-container {
-                min-width: auto;
-                flex-direction: column;
-                text-align: center;
+            .logo-text {
+                font-size: 1.3rem;
             }
             
-            .logo-icon {
-                margin-right: 0;
-                margin-bottom: 0.5rem;
-            }
-            
-            .user-menu {
-                flex-direction: column;
-                align-items: center;
-                width: 100%;
-            }
-            
-            .user-info {
-                text-align: center;
-            }
-            
-            .nav-menu {
-                justify-content: center;
-                width: 100%;
+            .page-title {
+                font-size: 1.5rem;
             }
             
             .nav-btn {
                 padding: 0.5rem;
+                font-size: 0.85rem;
             }
             
             .nav-btn span {
@@ -965,12 +1425,13 @@
                 font-size: 1.1rem;
             }
             
-            .item-row, .items-header {
-                min-width: 450px;
+            .btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
             }
             
-            .watermark {
-                font-size: 2.5rem;
+            .item-row, .items-header {
+                min-width: 450px;
             }
             
             .company-name {
@@ -982,7 +1443,6 @@
             }
         }
         
-        /* Scrollbar personalizzata */
         .preview-card::-webkit-scrollbar {
             width: 8px;
         }
@@ -1014,62 +1474,6 @@
             background: var(--gray-color);
             border-radius: 4px;
         }
-        
-        /* Aggiustamenti per evitare overflow */
-        .form-control, .item-input, select, textarea {
-            max-width: 100%;
-        }
-        
-        /* Garantire che le tabelle siano responsive */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        /* Miglioramenti per i select su mobile */
-        @media (max-width: 767.98px) {
-            select.form-control {
-                font-size: 16px; /* Previene lo zoom su iOS */
-            }
-        }
-
-        /* Stili specifici per menu responsive */
-        @media (max-width: 768px) {
-            .nav-menu {
-                order: 2;
-                width: 100%;
-                margin-top: 1rem;
-                justify-content: center;
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
-            }
-            
-            .nav-btn {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.85rem;
-            }
-            
-            .nav-btn i {
-                margin-right: 0.25rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .nav-btn span {
-                display: none;
-            }
-            
-            .nav-btn i {
-                margin-right: 0;
-                font-size: 1rem;
-            }
-            
-            .nav-btn {
-                padding: 0.5rem;
-                min-width: 40px;
-                justify-content: center;
-            }
-        }
     </style>
 </head>
 <body>
@@ -1080,15 +1484,12 @@
                 <i class="fas fa-building logo-icon"></i>
                 <div>
                     <div class="logo-text">Cuffari Restauri Edili</div>
-                    <div class="subtitle">Piattaforma di Management Interno</div>
+                    <div class="subtitle">Sistema AI per Preventivi Intelligenti</div>
                 </div>
             </div>
             
             <div class="user-menu">
                 <div class="nav-menu">
-                    <a href="dashboard.html" class="nav-btn">
-                        <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
-                    </a>
                     <a href="profile.html" class="nav-btn">
                         <i class="fas fa-user-circle"></i> <span>Profilo</span>
                     </a>
@@ -1114,7 +1515,7 @@
                         <i class="fas fa-file-invoice"></i> <span>Fatture</span>
                     </a>
                     <a href="preventivi.html" class="nav-btn active">
-                        <i class="fas fa-file-contract"></i> <span>Preventivi DOCX</span>
+                        <i class="fas fa-robot"></i> <span>AI Preventivi</span>
                     </a>
                 </div>
                 
@@ -1135,13 +1536,16 @@
             <div class="page-header">
                 <div>
                     <h1 class="page-title">
-                        <i class="fas fa-file-contract"></i> Gestione Preventivi DOCX
+                        <i class="fas fa-robot"></i> Preventivi Intelligenti AI
                     </h1>
-                    <p class="page-subtitle">Crea preventivi professionali in formato Word per i tuoi clienti</p>
+                    <p class="page-subtitle">Analisi AI, suggerimenti prezzi e ottimizzazione automatica</p>
                 </div>
                 <div class="page-actions">
                     <button class="btn btn-warning" id="clearFormBtn">
                         <i class="fas fa-broom"></i> <span>Pulisci</span>
+                    </button>
+                    <button class="btn btn-info" id="aiAnalyzeBtn">
+                        <i class="fas fa-brain"></i> <span>Analizza AI</span>
                     </button>
                     <button class="btn btn-primary" id="generateDocxBtn">
                         <i class="fas fa-file-word"></i> <span>Genera DOCX</span>
@@ -1149,11 +1553,19 @@
                 </div>
             </div>
             
+            <!-- AI Dashboard per Preventivi -->
+            <div class="ai-dashboard" id="aiDashboard">
+                <div class="ai-loading">
+                    <i class="fas fa-cog fa-spin"></i>
+                    <p>Caricamento analisi AI preventivi...</p>
+                </div>
+            </div>
+            
             <div class="content-container">
                 <!-- Form Card -->
                 <div class="form-card">
                     <div class="card-header">
-                        <h3><i class="fas fa-edit"></i> Dati Preventivo</h3>
+                        <h3><i class="fas fa-edit"></i> Dati Preventivo AI</h3>
                     </div>
                     <div class="card-body">
                         <form id="quoteForm">
@@ -1267,18 +1679,38 @@
                                 </div>
                             </div>
                             
-                            <!-- Voci di Preventivo -->
+                            <!-- Voci di Preventivo con AI -->
                             <div class="form-group">
-                                <h4 style="color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                                    <i class="fas fa-list-ol"></i> Voci di Preventivo
-                                </h4>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                                    <h4 style="color: var(--primary-color); margin: 0;">
+                                        <i class="fas fa-list-ol"></i> Voci di Preventivo AI
+                                    </h4>
+                                    <button type="button" class="btn btn-sm btn-info" id="aiSuggestItemsBtn">
+                                        <i class="fas fa-lightbulb"></i> Suggerimenti AI
+                                    </button>
+                                </div>
+                                
+                                <!-- AI Suggestion Panel -->
+                                <div class="ai-suggestion-panel d-none" id="aiSuggestionPanel">
+                                    <div class="suggestion-header">
+                                        <div class="suggestion-title">
+                                            <i class="fas fa-lightbulb"></i> Suggerimenti AI per Voci
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-secondary" id="closeSuggestionPanel">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <div class="suggestion-content" id="suggestionContent">
+                                        <!-- Suggestions will be loaded here -->
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="items-management">
                                 <div class="items-header">
                                     <div>Descrizione</div>
                                     <div>Quantità</div>
-                                    <div>Unità</div>
+                                    <div>Unià</div>
                                     <div>Prezzo Unitario (€)</div>
                                     <div>Totale (€)</div>
                                     <div>Azioni</div>
@@ -1287,8 +1719,26 @@
                                     <!-- Items will be added here -->
                                 </div>
                                 
-                                <button type="button" class="btn btn-secondary btn-sm mt-2" id="addItemBtn">
-                                    <i class="fas fa-plus"></i> Aggiungi Voce
+                                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="addItemBtn">
+                                        <i class="fas fa-plus"></i> Aggiungi Voce
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-sm" id="optimizePricesBtn">
+                                        <i class="fas fa-magic"></i> Ottimizza Prezzi AI
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- AI Analysis Results -->
+                            <div class="ai-quote-analysis d-none" id="aiQuoteAnalysis">
+                                <div class="ai-insight-title">
+                                    <i class="fas fa-chart-line"></i> Analisi AI Preventivo
+                                </div>
+                                <div class="analysis-result" id="analysisResult">
+                                    <!-- Analysis results will be loaded here -->
+                                </div>
+                                <button type="button" class="ai-action-btn" id="applyAISuggestionsBtn">
+                                    <i class="fas fa-check-circle"></i> Applica Suggerimenti AI
                                 </button>
                             </div>
                             
@@ -1308,6 +1758,15 @@
                                 <i class="fas fa-exclamation-circle"></i>
                                 <div id="errorMessage">Si è verificato un errore. Controlla i dati inseriti.</div>
                             </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-primary btn-full" id="generateDocxBtnForm">
+                                    <i class="fas fa-file-word"></i> <span>Genera DOCX</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-full" id="saveDraftBtn">
+                                    <i class="fas fa-save"></i> <span>Salva Bozza</span>
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -1319,7 +1778,7 @@
                     </div>
                     <div class="card-body">
                         <div class="preview-content" id="previewContent">
-                            <div class="watermark">CUFFARI</div>
+                            <div class="watermark">CUFFARI AI</div>
                             <div class="preview-header">
                                 <div class="company-info">
                                     <div class="company-name"> CUFFARI RESTAURI EDILI SRL</div>
@@ -1403,7 +1862,7 @@
                             </div>
                             
                             <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--gray-color); text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
-                                Documento generato digitalmente da Cuffari Restauri Edili SRL
+                                Documento generato digitalmente da Cuffari Restauri Edili SRL - Sistema AI
                             </div>
                         </div>
                     </div>
@@ -1422,15 +1881,36 @@
                 </div>
                 
                 <div class="company-info">
-                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità dal 1995</p>
+                    <p><strong>Cuffari Restauri Edili</strong> - Sistema AI per preventivi ottimizzati dal 1995</p>
                 </div>
                 
                 <div class="copyright">
-                    <p>&copy; 2023 Cuffari Restauri Edili. Tutti i diritti riservati.</p>
+                    <p>&copy; 2026 Cuffari Restauri Edili. Tutti i diritti riservati.</p>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- AI Insights Modal -->
+    <div class="modal" id="aiInsightsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-brain"></i> Analisi AI Avanzata Preventivi
+                </h3>
+                <button class="modal-close" id="closeAiInsightsModal">&times;</button>
+            </div>
+            <div class="modal-body ai-modal-body" id="aiInsightsContent">
+                <!-- Contenuto AI verrà caricato qui -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="closeAiModalBtn">Chiudi</button>
+                <button class="btn btn-primary" id="generateAIReportBtn">
+                    <i class="fas fa-file-pdf"></i> Genera Report AI
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Firebase Configuration
@@ -1446,6 +1926,17 @@
 
         // Initialize Firebase
         let auth, db, currentUser = null;
+        
+        // Global variables
+        let materials = [];
+        let historicalQuotes = [];
+        let aiConfig = {
+            priceSuggestions: true,
+            profitAnalysis: true,
+            materialSuggestions: true,
+            autoOptimize: false
+        };
+        let aiAnalysis = null;
         
         document.addEventListener('DOMContentLoaded', function() {
             // Element references
@@ -1465,12 +1956,24 @@
             const addItemBtn = document.getElementById('addItemBtn');
             const clearFormBtn = document.getElementById('clearFormBtn');
             const generateDocxBtn = document.getElementById('generateDocxBtn');
+            const generateDocxBtnForm = document.getElementById('generateDocxBtnForm');
+            const aiAnalyzeBtn = document.getElementById('aiAnalyzeBtn');
+            const aiSuggestItemsBtn = document.getElementById('aiSuggestItemsBtn');
+            const optimizePricesBtn = document.getElementById('optimizePricesBtn');
+            const applyAISuggestionsBtn = document.getElementById('applyAISuggestionsBtn');
             const successAlert = document.getElementById('successAlert');
             const errorAlert = document.getElementById('errorAlert');
             const errorMessage = document.getElementById('errorMessage');
             const logoutBtn = document.getElementById('logoutBtn');
             const userNameElement = document.getElementById('userName');
             const userRoleElement = document.getElementById('userRole');
+            const aiDashboard = document.getElementById('aiDashboard');
+            const aiSuggestionPanel = document.getElementById('aiSuggestionPanel');
+            const suggestionContent = document.getElementById('suggestionContent');
+            const closeSuggestionPanel = document.getElementById('closeSuggestionPanel');
+            const aiQuoteAnalysis = document.getElementById('aiQuoteAnalysis');
+            const analysisResult = document.getElementById('analysisResult');
+            const saveDraftBtn = document.getElementById('saveDraftBtn');
             
             // Preview elements
             const previewQuoteNumber = document.getElementById('previewQuoteNumber');
@@ -1488,6 +1991,13 @@
             const previewVat = document.getElementById('previewVat');
             const previewTotal = document.getElementById('previewTotal');
             const previewNotes = document.getElementById('previewNotes');
+            
+            // Modal elements
+            const aiInsightsModal = document.getElementById('aiInsightsModal');
+            const aiInsightsContent = document.getElementById('aiInsightsContent');
+            const closeAiInsightsModal = document.getElementById('closeAiInsightsModal');
+            const closeAiModalBtn = document.getElementById('closeAiModalBtn');
+            const generateAIReportBtn = document.getElementById('generateAIReportBtn');
             
             // Global variables
             let items = [];
@@ -1510,8 +2020,8 @@
                             currentUser = user;
                             updateUserInfo(user);
                             console.log("User logged in:", user.email);
+                            loadAIResources();
                         } else {
-                            // Redirect to login page
                             window.location.href = 'index.html';
                         }
                     });
@@ -1529,13 +2039,11 @@
                     userRoleElement.textContent = "Caricamento...";
                     
                     try {
-                        // Get user data from Firestore
                         const userDoc = await db.collection('users').doc(user.uid).get();
                         if (userDoc.exists) {
                             const userData = userDoc.data();
                             userRoleElement.textContent = userData.role || "Utente";
                             
-                            // Save user data to localStorage for quick access
                             localStorage.setItem('user', JSON.stringify({
                                 uid: user.uid,
                                 email: user.email,
@@ -1550,12 +2058,412 @@
                 }
             }
             
+            // Load AI resources
+            async function loadAIResources() {
+                try {
+                    await loadMaterials();
+                    await loadHistoricalQuotes();
+                    await loadAIConfig();
+                    renderAIDashboard();
+                } catch (error) {
+                    console.error("Error loading AI resources:", error);
+                }
+            }
+            
+            // Load materials for suggestions
+            async function loadMaterials() {
+                try {
+                    const materialsSnapshot = await db.collection('materials').get();
+                    materials = [];
+                    materialsSnapshot.forEach(doc => {
+                        materials.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    console.log(`Loaded ${materials.length} materials for AI suggestions`);
+                } catch (error) {
+                    console.error("Error loading materials:", error);
+                }
+            }
+            
+            // Load historical quotes for analysis
+            async function loadHistoricalQuotes() {
+                try {
+                    const quotesSnapshot = await db.collection('quotes')
+                        .orderBy('createdAt', 'desc')
+                        .limit(100)
+                        .get();
+                    
+                    historicalQuotes = [];
+                    quotesSnapshot.forEach(doc => {
+                        historicalQuotes.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    console.log(`Loaded ${historicalQuotes.length} historical quotes for AI analysis`);
+                } catch (error) {
+                    console.error("Error loading historical quotes:", error);
+                }
+            }
+            
+            // Load AI config
+            async function loadAIConfig() {
+                if (!db || !currentUser) return;
+                
+                try {
+                    const configDoc = await db.collection('ai_quote_config')
+                        .doc(currentUser.uid)
+                        .get();
+                    
+                    if (configDoc.exists) {
+                        aiConfig = { ...aiConfig, ...configDoc.data() };
+                    }
+                } catch (error) {
+                    console.error("Error loading AI config:", error);
+                }
+            }
+            
+            // Render AI Dashboard
+            function renderAIDashboard() {
+                if (!historicalQuotes || historicalQuotes.length === 0) {
+                    showAIFallback();
+                    return;
+                }
+                
+                const analysis = analyzeHistoricalQuotes();
+                
+                let dashboardHTML = '';
+                
+                // Card: Analisi Redditività
+                dashboardHTML += `
+                    <div class="ai-card">
+                        <div class="ai-card-header">
+                            <h3 class="ai-card-title">
+                                <i class="fas fa-chart-line"></i> Analisi Redditività
+                            </h3>
+                            <span class="ai-badge">${analysis.acceptedRate}%</span>
+                        </div>
+                        
+                        <div class="ai-insight ${analysis.profitMargin > 30 ? 'success' : analysis.profitMargin > 20 ? 'warning' : 'critical'}">
+                            <div class="ai-insight-title">
+                                <i class="fas fa-money-bill-wave"></i> Margine di Profitto Medio
+                            </div>
+                            <div class="ai-insight-content">
+                                <h4>${analysis.profitMargin.toFixed(1)}%</h4>
+                                <p>Basato su ${historicalQuotes.length} preventivi storici</p>
+                                ${analysis.profitMargin > 30 ? 
+                                    '<p><i class="fas fa-check-circle"></i> Ottimo margine di profitto</p>' : 
+                                    analysis.profitMargin > 20 ? 
+                                    '<p><i class="fas fa-exclamation-triangle"></i> Margine nella media</p>' : 
+                                    '<p><i class="fas fa-exclamation-circle"></i> Margine inferiore alla media</p>'
+                                }
+                            </div>
+                        </div>
+                        
+                        <div class="prediction-grid">
+                            <div class="prediction-card">
+                                <div class="prediction-value">${analysis.totalValue.toLocaleString()}</div>
+                                <div class="prediction-label">€ Totale preventivi</div>
+                            </div>
+                            <div class="prediction-card">
+                                <div class="prediction-value">${analysis.avgQuoteValue.toLocaleString()}</div>
+                                <div class="prediction-label">€ Medio/preventivo</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Card: Suggerimenti Prezzi
+                const priceSuggestions = analyzePriceTrends();
+                dashboardHTML += `
+                    <div class="ai-card">
+                        <div class="ai-card-header">
+                            <h3 class="ai-card-title">
+                                <i class="fas fa-tags"></i> Suggerimenti Prezzi
+                            </h3>
+                            <span class="ai-badge">AI</span>
+                        </div>
+                        
+                        ${priceSuggestions.length > 0 ? priceSuggestions.slice(0, 3).map(suggestion => `
+                            <div class="ai-insight info">
+                                <div class="ai-insight-title">
+                                    <i class="fas fa-lightbulb"></i> ${suggestion.category}
+                                </div>
+                                <div class="ai-insight-content">
+                                    <p>Prezzo suggerito: <strong>${suggestion.suggestedPrice.toFixed(2)}€</strong></p>
+                                    <p>Basato su ${suggestion.sampleSize} preventivi</p>
+                                    <div class="profit-trend ${suggestion.trend === 'up' ? 'trend-up' : suggestion.trend === 'down' ? 'trend-down' : 'trend-stable'}">
+                                        <i class="fas fa-${suggestion.trend === 'up' ? 'arrow-up' : suggestion.trend === 'down' ? 'arrow-down' : 'minus'}"></i>
+                                        Trend: ${suggestion.trend === 'up' ? '↑' : suggestion.trend === 'down' ? '↓' : '→'}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('') : `
+                            <div class="ai-insight">
+                                <div class="ai-insight-title">
+                                    <i class="fas fa-info-circle"></i> Dati insufficienti
+                                </div>
+                                <div class="ai-insight-content">
+                                    <p>Crea più preventivi per avere suggerimenti precisi sui prezzi.</p>
+                                </div>
+                            </div>
+                        `}
+                        
+                        <button class="ai-action-btn" onclick="showPriceTrendsModal()">
+                            <i class="fas fa-chart-bar"></i> Vedi Tutti i Trend
+                        </button>
+                    </div>
+                `;
+                
+                // Card: Statistiche Clienti
+                const clientStats = analyzeClientBehavior();
+                dashboardHTML += `
+                    <div class="ai-card">
+                        <div class="ai-card-header">
+                            <h3 class="ai-card-title">
+                                <i class="fas fa-users"></i> Analisi Clienti
+                            </h3>
+                            <span class="ai-badge">${clientStats.totalClients}</span>
+                        </div>
+                        
+                        <div class="ai-insight success">
+                            <div class="ai-insight-title">
+                                <i class="fas fa-star"></i> Clienti Fedeli
+                            </div>
+                            <div class="ai-insight-content">
+                                <h4>${clientStats.repeatClients}</h4>
+                                <p>Clienti con più di un preventivo</p>
+                            </div>
+                        </div>
+                        
+                        <div class="prediction-grid">
+                            <div class="prediction-card">
+                                <div class="prediction-value">${clientStats.avgQuotesPerClient.toFixed(1)}</div>
+                                <div class="prediction-label">Preventivi/cliente</div>
+                            </div>
+                            <div class="prediction-card">
+                                <div class="prediction-value">${clientStats.acceptanceRate}%</div>
+                                <div class="prediction-label">Tasso accettazione</div>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-settings">
+                            <div class="notification-toggle">
+                                <span>Suggerimenti Prezzi AI</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="priceSuggestionsToggle" ${aiConfig.priceSuggestions ? 'checked' : ''}>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-toggle">
+                                <span>Analisi Redditività</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="profitAnalysisToggle" ${aiConfig.profitAnalysis ? 'checked' : ''}>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                aiDashboard.innerHTML = dashboardHTML;
+                
+                // Add event listeners for toggles
+                document.getElementById('priceSuggestionsToggle')?.addEventListener('change', updateAIConfig);
+                document.getElementById('profitAnalysisToggle')?.addEventListener('change', updateAIConfig);
+            }
+            
+            // Analyze historical quotes
+            function analyzeHistoricalQuotes() {
+                if (historicalQuotes.length === 0) {
+                    return {
+                        totalValue: 0,
+                        avgQuoteValue: 0,
+                        profitMargin: 0,
+                        acceptedRate: 0,
+                        avgItemsPerQuote: 0
+                    };
+                }
+                
+                const totalValue = historicalQuotes.reduce((sum, quote) => sum + (quote.total || 0), 0);
+                const avgQuoteValue = totalValue / historicalQuotes.length;
+                
+                // Calculate profit margin (simplified)
+                const profitMargin = historicalQuotes.reduce((sum, quote) => {
+                    const costEstimate = (quote.total || 0) * 0.7; // Assuming 70% cost
+                    const profit = (quote.total || 0) - costEstimate;
+                    return sum + (profit / (quote.total || 1) * 100);
+                }, 0) / historicalQuotes.length;
+                
+                // Calculate acceptance rate (if status field exists)
+                const acceptedQuotes = historicalQuotes.filter(q => q.status === 'accepted' || q.status === 'won').length;
+                const acceptedRate = (acceptedQuotes / historicalQuotes.length) * 100;
+                
+                // Calculate average items per quote
+                const avgItemsPerQuote = historicalQuotes.reduce((sum, quote) => 
+                    sum + (quote.items?.length || 0), 0) / historicalQuotes.length;
+                
+                return {
+                    totalValue,
+                    avgQuoteValue,
+                    profitMargin,
+                    acceptedRate,
+                    avgItemsPerQuote
+                };
+            }
+            
+            // Analyze price trends
+            function analyzePriceTrends() {
+                const categories = {};
+                
+                historicalQuotes.forEach(quote => {
+                    if (quote.items && Array.isArray(quote.items)) {
+                        quote.items.forEach(item => {
+                            const category = categorizeItem(item.description);
+                            if (!categories[category]) {
+                                categories[category] = {
+                                    prices: [],
+                                    total: 0,
+                                    count: 0
+                                };
+                            }
+                            categories[category].prices.push(item.price || 0);
+                            categories[category].total += item.price || 0;
+                            categories[category].count++;
+                        });
+                    }
+                });
+                
+                const suggestions = [];
+                Object.entries(categories).forEach(([category, data]) => {
+                    if (data.count >= 3) {
+                        const avgPrice = data.total / data.count;
+                        const sortedPrices = data.prices.sort((a, b) => a - b);
+                        const medianPrice = sortedPrices[Math.floor(sortedPrices.length / 2)];
+                        
+                        // Calculate trend
+                        let trend = 'stable';
+                        if (data.count >= 5) {
+                            const recentPrices = data.prices.slice(-3);
+                            const olderPrices = data.prices.slice(0, 3);
+                            const recentAvg = recentPrices.reduce((a, b) => a + b, 0) / recentPrices.length;
+                            const olderAvg = olderPrices.reduce((a, b) => a + b, 0) / olderPrices.length;
+                            
+                            if (recentAvg > olderAvg * 1.1) trend = 'up';
+                            else if (recentAvg < olderAvg * 0.9) trend = 'down';
+                        }
+                        
+                        suggestions.push({
+                            category,
+                            suggestedPrice: medianPrice * 1.1, // Add 10% margin
+                            averagePrice: avgPrice,
+                            medianPrice,
+                            sampleSize: data.count,
+                            trend
+                        });
+                    }
+                });
+                
+                return suggestions.sort((a, b) => b.sampleSize - a.sampleSize);
+            }
+            
+            // Categorize item based on description
+            function categorizeItem(description) {
+                const desc = description.toLowerCase();
+                if (desc.includes('manodopera') || desc.includes('ora') || desc.includes('lavoro')) return 'Manodopera';
+                if (desc.includes('cemento') || desc.includes('malta') || desc.includes('calcestruzzo')) return 'Materiali Cementizi';
+                if (desc.includes('matton') || desc.includes('lateriz')) return 'Laterizi';
+                if (desc.includes('legno') || desc.includes('trav')) return 'Legname';
+                if (desc.includes('ferro') || desc.includes('acciaio') || desc.includes('metall')) return 'Metalli';
+                if (desc.includes('isol') || desc.includes('cappott')) return 'Isolanti';
+                if (desc.includes('idraul') || desc.includes('tubo') || desc.includes('scarico')) return 'Idraulica';
+                if (desc.includes('elettr') || desc.includes('cavo') || desc.includes('impianto')) return 'Elettrica';
+                if (desc.includes('intonaco') || desc.includes('pavimento') || desc.includes('rivestimento')) return 'Finiture';
+                return 'Varie';
+            }
+            
+            // Analyze client behavior
+            function analyzeClientBehavior() {
+                const clients = {};
+                
+                historicalQuotes.forEach(quote => {
+                    if (quote.clientName) {
+                        if (!clients[quote.clientName]) {
+                            clients[quote.clientName] = {
+                                quotes: 0,
+                                totalValue: 0,
+                                accepted: 0
+                            };
+                        }
+                        clients[quote.clientName].quotes++;
+                        clients[quote.clientName].totalValue += quote.total || 0;
+                        if (quote.status === 'accepted' || quote.status === 'won') {
+                            clients[quote.clientName].accepted++;
+                        }
+                    }
+                });
+                
+                const clientCount = Object.keys(clients).length;
+                const repeatClients = Object.values(clients).filter(c => c.quotes > 1).length;
+                const totalQuotes = Object.values(clients).reduce((sum, c) => sum + c.quotes, 0);
+                const totalAccepted = Object.values(clients).reduce((sum, c) => sum + c.accepted, 0);
+                
+                return {
+                    totalClients: clientCount,
+                    repeatClients,
+                    avgQuotesPerClient: totalQuotes / clientCount,
+                    acceptanceRate: (totalAccepted / totalQuotes) * 100
+                };
+            }
+            
+            // Show AI fallback
+            function showAIFallback() {
+                aiDashboard.innerHTML = `
+                    <div class="ai-card">
+                        <div class="ai-card-header">
+                            <h3 class="ai-card-title">
+                                <i class="fas fa-robot"></i> AI Preventivi
+                            </h3>
+                        </div>
+                        <div class="ai-insight">
+                            <div class="ai-insight-title">
+                                <i class="fas fa-info-circle"></i> Sistema AI in apprendimento
+                            </div>
+                            <div class="ai-insight-content">
+                                <p>Il sistema di intelligenza artificiale per i preventivi richiede dati storici per funzionare.</p>
+                                <p>Crea e salva i tuoi preventivi per permettere all'AI di imparare e fornirti suggerimenti precisi.</p>
+                            </div>
+                            <button class="ai-action-btn" onclick="enableAIFeatures()">
+                                <i class="fas fa-play"></i> Attiva Funzionalità AI
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Update AI config
+            async function updateAIConfig() {
+                const priceToggle = document.getElementById('priceSuggestionsToggle');
+                const profitToggle = document.getElementById('profitAnalysisToggle');
+                
+                if (priceToggle) aiConfig.priceSuggestions = priceToggle.checked;
+                if (profitToggle) aiConfig.profitAnalysis = profitToggle.checked;
+                
+                if (db && currentUser) {
+                    try {
+                        await db.collection('ai_quote_config').doc(currentUser.uid).set(aiConfig, { merge: true });
+                        console.log("AI config updated");
+                    } catch (error) {
+                        console.error("Error updating AI config:", error);
+                    }
+                }
+            }
+            
             // Initialize page
             async function initPage() {
-                // Initialize Firebase first
                 initializeFirebase();
-                
-                // Wait for authentication
                 await waitForAuth();
                 
                 // Set default dates
@@ -1618,11 +2526,32 @@
                 // Clear form button
                 clearFormBtn.addEventListener('click', clearForm);
                 
-                // Generate DOCX button
+                // Generate DOCX buttons
                 generateDocxBtn.addEventListener('click', generateDocxFixed);
+                generateDocxBtnForm.addEventListener('click', generateDocxFixed);
+                
+                // AI buttons
+                aiAnalyzeBtn.addEventListener('click', analyzeQuoteWithAI);
+                aiSuggestItemsBtn.addEventListener('click', showAISuggestions);
+                optimizePricesBtn.addEventListener('click', optimizePricesWithAI);
+                applyAISuggestionsBtn.addEventListener('click', applyAISuggestions);
+                closeSuggestionPanel.addEventListener('click', () => aiSuggestionPanel.classList.add('d-none'));
+                saveDraftBtn.addEventListener('click', saveQuoteAsDraft);
+                
+                // Modal buttons
+                closeAiInsightsModal.addEventListener('click', () => aiInsightsModal.classList.remove('show'));
+                closeAiModalBtn.addEventListener('click', () => aiInsightsModal.classList.remove('show'));
+                generateAIReportBtn.addEventListener('click', generateAIReport);
                 
                 // Logout button
                 logoutBtn.addEventListener('click', handleLogout);
+                
+                // Close modal on outside click
+                aiInsightsModal.addEventListener('click', (e) => {
+                    if (e.target === aiInsightsModal) {
+                        aiInsightsModal.classList.remove('show');
+                    }
+                });
             }
             
             // Format date for input (YYYY-MM-DD)
@@ -1684,6 +2613,16 @@
                 
                 itemsContainer.appendChild(itemRow);
                 
+                // Add AI price suggestion functionality
+                const priceInput = itemRow.querySelector('.item-price');
+                const descriptionInput = itemRow.querySelector('.item-description');
+                
+                descriptionInput.addEventListener('input', () => {
+                    if (descriptionInput.value.length > 3 && aiConfig.priceSuggestions) {
+                        suggestPriceForItem(itemId);
+                    }
+                });
+                
                 // Add event listeners to new item inputs
                 const inputs = itemRow.querySelectorAll('.item-input');
                 inputs.forEach(input => {
@@ -1695,6 +2634,82 @@
                 
                 updateItemTotal(itemId);
             }
+            
+            // Suggest price for item based on description
+            function suggestPriceForItem(itemId) {
+                const itemRow = document.getElementById(itemId);
+                if (!itemRow) return;
+                
+                const description = itemRow.querySelector('.item-description').value;
+                if (!description || description.length < 3) return;
+                
+                const category = categorizeItem(description);
+                const suggestions = analyzePriceTrends();
+                const categorySuggestion = suggestions.find(s => s.category === category);
+                
+                if (categorySuggestion) {
+                    // Create suggestion tooltip
+                    const priceInput = itemRow.querySelector('.item-price');
+                    
+                    // Remove existing suggestion
+                    const existingSuggestion = priceInput.parentNode.querySelector('.price-suggestion-tooltip');
+                    if (existingSuggestion) existingSuggestion.remove();
+                    
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'price-suggestion-tooltip';
+                    tooltip.style.cssText = `
+                        position: absolute;
+                        background: white;
+                        border: 1px solid var(--primary-color);
+                        border-radius: 4px;
+                        padding: 0.5rem;
+                        box-shadow: var(--shadow-md);
+                        z-index: 1000;
+                        margin-top: 2px;
+                        font-size: 0.85rem;
+                        width: 200px;
+                    `;
+                    
+                    tooltip.innerHTML = `
+                        <div style="color: var(--primary-color); font-weight: bold; margin-bottom: 0.25rem;">
+                            <i class="fas fa-lightbulb"></i> Suggerimento AI
+                        </div>
+                        <div>Prezzo suggerito: <strong>${formatCurrency(categorySuggestion.suggestedPrice)}</strong></div>
+                        <div style="font-size: 0.8rem; color: var(--gray-color); margin-top: 0.25rem;">
+                            Basato su ${categorySuggestion.sampleSize} preventivi
+                        </div>
+                        <button type="button" style="margin-top: 0.5rem; padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 2px; cursor: pointer; font-size: 0.8rem;" onclick="applySuggestedPrice('${itemId}', ${categorySuggestion.suggestedPrice})">
+                            Applica
+                        </button>
+                    `;
+                    
+                    priceInput.parentNode.style.position = 'relative';
+                    priceInput.parentNode.appendChild(tooltip);
+                    
+                    // Remove tooltip after 10 seconds
+                    setTimeout(() => {
+                        if (tooltip.parentNode) {
+                            tooltip.remove();
+                        }
+                    }, 10000);
+                }
+            }
+            
+            // Apply suggested price
+            window.applySuggestedPrice = function(itemId, price) {
+                const itemRow = document.getElementById(itemId);
+                if (itemRow) {
+                    const priceInput = itemRow.querySelector('.item-price');
+                    priceInput.value = price.toFixed(2);
+                    
+                    // Remove tooltip
+                    const tooltip = priceInput.parentNode.querySelector('.price-suggestion-tooltip');
+                    if (tooltip) tooltip.remove();
+                    
+                    updateItemTotal(itemId);
+                    updatePreview();
+                }
+            };
             
             // Remove item
             window.removeItem = function(itemId) {
@@ -1770,7 +2785,6 @@
             
             // Update preview
             function updatePreview() {
-                // Update basic info
                 previewQuoteNumber.textContent = quoteNumberInput.value || 'PREV-2023-001';
                 previewQuoteDate.textContent = formatDateForDisplay(quoteDateInput.value) || '01/01/2023';
                 previewValidUntil.textContent = formatDateForDisplay(validUntilInput.value) || '31/01/2023';
@@ -1778,17 +2792,14 @@
                 const selectedOption = paymentTermsSelect.options[paymentTermsSelect.selectedIndex];
                 previewPaymentTerms.textContent = selectedOption ? selectedOption.text : '30 giorni dalla consegna';
                 
-                // Update client info
                 previewClientName.textContent = clientNameInput.value || 'Nome Cliente';
                 previewClientVat.textContent = clientVatInput.value ? `P.IVA: ${clientVatInput.value}` : 'P.IVA: -';
                 previewClientAddress.textContent = clientAddressInput.value || 'Indirizzo';
                 previewClientPhone.textContent = clientPhoneInput.value || 'Telefono/Email';
                 
-                // Update site info
                 previewSiteAddress.textContent = siteAddressInput.value || 'Indirizzo cantiere';
                 previewSiteDescription.textContent = siteDescriptionInput.value || 'Descrizione lavori';
                 
-                // Update items
                 const itemsData = getItemsData();
                 const totals = calculateTotals(itemsData);
                 
@@ -1816,12 +2827,10 @@
                 
                 previewItems.innerHTML = itemsHTML;
                 
-                // Update totals
                 previewSubtotal.textContent = formatCurrency(totals.subtotal);
                 previewVat.textContent = formatCurrency(totals.vat);
                 previewTotal.textContent = formatCurrency(totals.total);
                 
-                // Update notes
                 previewNotes.textContent = notesInput.value || 
                     'Il presente preventivo ha validità 30 giorni dalla data di emissione. I prezzi sono comprensivi di IVA. I materiali sono di prima qualità. I lavori inizieranno entro 15 giorni dall\'accettazione.';
             }
@@ -1831,11 +2840,9 @@
                 if (confirm('Sei sicuro di voler cancellare tutti i dati inseriti?')) {
                     quoteForm.reset();
                     
-                    // Clear items
                     itemsContainer.innerHTML = '';
                     itemCounter = 0;
                     
-                    // Reset dates
                     const today = new Date();
                     quoteDateInput.value = formatDateForInput(today);
                     
@@ -1843,20 +2850,478 @@
                     validUntil.setDate(today.getDate() + 30);
                     validUntilInput.value = formatDateForInput(validUntil);
                     
-                    // Generate new quote number
                     const randomNum = Math.floor(Math.random() * 1000);
                     const formattedNum = randomNum.toString().padStart(3, '0');
                     quoteNumberInput.value = `PREV-${today.getFullYear()}-${formattedNum}`;
                     
-                    // Add first item
                     addNewItem();
                     
-                    // Update preview
                     updatePreview();
                     
-                    // Hide alerts
                     hideAlerts();
+                    aiQuoteAnalysis.classList.add('d-none');
+                    aiSuggestionPanel.classList.add('d-none');
                 }
+            }
+            
+            // Show AI suggestions for items
+            async function showAISuggestions() {
+                if (!siteDescriptionInput.value) {
+                    showErrorAlert("Inserisci prima una descrizione dei lavori per ottenere suggerimenti AI");
+                    return;
+                }
+                
+                const workDescription = siteDescriptionInput.value.toLowerCase();
+                
+                // Analyze work description to suggest items
+                const suggestions = [];
+                
+                // Check for common construction terms and suggest items
+                if (workDescription.includes('intonaco') || workDescription.includes('intonacatura')) {
+                    suggestions.push({
+                        title: 'Intonacatura pareti',
+                        description: 'Intonaco civile premiscelato, applicazione a macchina',
+                        unit: 'm²',
+                        suggestedQuantity: workDescription.includes('esterno') ? 150 : 80,
+                        suggestedPrice: 18.50,
+                        category: 'Finiture'
+                    });
+                }
+                
+                if (workDescription.includes('pavimento') || workDescription.includes('pavimentazione')) {
+                    suggestions.push({
+                        title: 'Posa pavimento in gres porcellanato',
+                        description: 'Posa pavimento 60x60, stuccatura, pulizia finale',
+                        unit: 'm²',
+                        suggestedQuantity: workDescription.includes('bagno') ? 15 : 50,
+                        suggestedPrice: 45.00,
+                        category: 'Finiture'
+                    });
+                }
+                
+                if (workDescription.includes('tinteggiatura') || workDescription.includes('verniciatura')) {
+                    suggestions.push({
+                        title: 'Tinteggiatura pareti interne',
+                        description: 'Preparazione superficie, applicazione pittura lavabile',
+                        unit: 'm²',
+                        suggestedQuantity: workDescription.includes('casa') ? 200 : 100,
+                        suggestedPrice: 12.00,
+                        category: 'Finiture'
+                    });
+                }
+                
+                if (workDescription.includes('impianto') && workDescription.includes('elettrico')) {
+                    suggestions.push({
+                        title: 'Installazione impianto elettrico civile',
+                        description: 'Quadro elettrico, punti luce, prese, cavi',
+                        unit: 'n',
+                        suggestedQuantity: 1,
+                        suggestedPrice: 2500.00,
+                        category: 'Elettrica'
+                    });
+                }
+                
+                if (workDescription.includes('idraulico') || workDescription.includes('bagno')) {
+                    suggestions.push({
+                        title: 'Ristrutturazione bagno completo',
+                        description: 'Smontaggio vecchio, installazione sanitari, piastrelle',
+                        unit: 'n',
+                        suggestedQuantity: 1,
+                        suggestedPrice: 6500.00,
+                        category: 'Idraulica'
+                    });
+                }
+                
+                // Add material suggestions based on materials database
+                if (materials.length > 0) {
+                    materials.slice(0, 5).forEach(material => {
+                        suggestions.push({
+                            title: material.name,
+                            description: material.description || 'Materiale edile',
+                            unit: material.unit,
+                            suggestedQuantity: workDescription.includes('grande') ? 100 : 50,
+                            suggestedPrice: material.unitPrice * 1.3, // Add 30% margin
+                            category: 'Materiali'
+                        });
+                    });
+                }
+                
+                if (suggestions.length === 0) {
+                    suggestions.push({
+                        title: 'Manodopera specializzata',
+                        description: 'Lavorazione edile con personale qualificato',
+                        unit: 'h',
+                        suggestedQuantity: 40,
+                        suggestedPrice: 45.00,
+                        category: 'Manodopera'
+                    });
+                    
+                    suggestions.push({
+                        title: 'Direzione lavori',
+                        description: 'Coordinamento e supervisione cantiere',
+                        unit: 'gg',
+                        suggestedQuantity: 10,
+                        suggestedPrice: 120.00,
+                        category: 'Gestione'
+                    });
+                }
+                
+                // Display suggestions
+                let suggestionsHTML = '';
+                suggestions.forEach((suggestion, index) => {
+                    suggestionsHTML += `
+                        <div class="suggestion-item" onclick="addAISuggestionItem(${index})" data-suggestion='${JSON.stringify(suggestion).replace(/'/g, "\\'")}'>
+                            <div class="suggestion-item-title">${suggestion.title}</div>
+                            <div class="suggestion-item-details">${suggestion.description}</div>
+                            <div class="suggestion-item-details">
+                                ${suggestion.suggestedQuantity} ${suggestion.unit} × ${formatCurrency(suggestion.suggestedPrice)}
+                            </div>
+                            <div class="suggestion-item-price">
+                                Totale: ${formatCurrency(suggestion.suggestedQuantity * suggestion.suggestedPrice)}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                suggestionContent.innerHTML = suggestionsHTML;
+                aiSuggestionPanel.classList.remove('d-none');
+            }
+            
+            // Add AI suggestion as item
+            window.addAISuggestionItem = function(index) {
+                const suggestionItem = document.querySelectorAll('.suggestion-item')[index];
+                const suggestion = JSON.parse(suggestionItem.dataset.suggestion);
+                
+                addNewItem();
+                
+                const itemRows = document.querySelectorAll('.item-row');
+                const lastItem = itemRows[itemRows.length - 1];
+                
+                lastItem.querySelector('.item-description').value = suggestion.title + ' - ' + suggestion.description;
+                lastItem.querySelector('.item-quantity').value = suggestion.suggestedQuantity;
+                lastItem.querySelector('.item-unit').value = suggestion.unit;
+                lastItem.querySelector('.item-price').value = suggestion.suggestedPrice.toFixed(2);
+                
+                updateItemTotal(lastItem.id);
+                updatePreview();
+                
+                aiSuggestionPanel.classList.add('d-none');
+                
+                showSuccessAlert('Voce aggiunta dai suggerimenti AI');
+            };
+            
+            // Analyze quote with AI
+            async function analyzeQuoteWithAI() {
+                const itemsData = getItemsData();
+                if (itemsData.length === 0) {
+                    showErrorAlert("Aggiungi almeno una voce al preventivo per l'analisi AI");
+                    return;
+                }
+                
+                // Show loading
+                aiAnalyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Analisi in corso...</span>';
+                aiAnalyzeBtn.disabled = true;
+                
+                try {
+                    // Perform AI analysis
+                    aiAnalysis = await performAIAnalysis(itemsData);
+                    
+                    // Display analysis results
+                    displayAnalysisResults(aiAnalysis);
+                    
+                    aiQuoteAnalysis.classList.remove('d-none');
+                    
+                    showSuccessAlert('Analisi AI completata con successo!');
+                    
+                } catch (error) {
+                    console.error("Error in AI analysis:", error);
+                    showErrorAlert("Errore nell'analisi AI: " + error.message);
+                } finally {
+                    aiAnalyzeBtn.innerHTML = '<i class="fas fa-brain"></i> <span>Analizza AI</span>';
+                    aiAnalyzeBtn.disabled = false;
+                }
+            }
+            
+            // Perform AI analysis on quote
+            async function performAIAnalysis(itemsData) {
+                const totals = calculateTotals(itemsData);
+                
+                // Calculate cost estimate
+                const costEstimate = itemsData.reduce((sum, item) => {
+                    const itemCost = calculateItemCost(item);
+                    return sum + itemCost;
+                }, 0);
+                
+                const profit = totals.subtotal - costEstimate;
+                const profitMargin = (profit / totals.subtotal) * 100;
+                
+                // Compare with historical data
+                const historicalAnalysis = analyzeHistoricalQuotes();
+                const priceTrends = analyzePriceTrends();
+                
+                // Analyze item prices
+                const itemAnalyses = itemsData.map(item => {
+                    const category = categorizeItem(item.description);
+                    const trend = priceTrends.find(t => t.category === category);
+                    
+                    return {
+                        description: item.description,
+                        category,
+                        currentPrice: item.price,
+                        suggestedPrice: trend ? trend.suggestedPrice : item.price * 1.1,
+                        variance: trend ? ((item.price - trend.suggestedPrice) / trend.suggestedPrice * 100) : 0,
+                        recommendation: trend && Math.abs((item.price - trend.suggestedPrice) / trend.suggestedPrice * 100) > 20 ? 
+                            (item.price < trend.suggestedPrice ? 'increase' : 'decrease') : 'ok'
+                    };
+                });
+                
+                // Calculate competitiveness score
+                const competitivenessScore = calculateCompetitivenessScore(itemsData, totals.subtotal);
+                
+                return {
+                    totals,
+                    costEstimate,
+                    profit,
+                    profitMargin,
+                    historicalComparison: {
+                        avgMargin: historicalAnalysis.profitMargin,
+                        variance: profitMargin - historicalAnalysis.profitMargin
+                    },
+                    itemAnalyses,
+                    competitivenessScore,
+                    recommendations: generateRecommendations(profitMargin, itemAnalyses, competitivenessScore)
+                };
+            }
+            
+            // Calculate item cost
+            function calculateItemCost(item) {
+                const category = categorizeItem(item.description);
+                let costMultiplier = 0.7; // Default 70% cost
+        
+                // Adjust cost based on category
+                switch(category) {
+                    case 'Manodopera':
+                        costMultiplier = 0.6; // 60% cost for labor
+                        break;
+                    case 'Materiali Cementizi':
+                    case 'Laterizi':
+                    case 'Legname':
+                    case 'Metalli':
+                        costMultiplier = 0.65; // 65% cost for materials
+                        break;
+                    case 'Isolanti':
+                    case 'Idraulica':
+                    case 'Elettrica':
+                        costMultiplier = 0.75; // 75% cost for specialized
+                        break;
+                    case 'Finiture':
+                        costMultiplier = 0.7; // 70% cost for finishes
+                        break;
+                }
+        
+                return item.total * costMultiplier;
+            }
+            
+            // Calculate competitiveness score
+            function calculateCompetitivenessScore(itemsData, total) {
+                let score = 75; // Base score
+        
+                // Adjust based on profit margin
+                const costEstimate = itemsData.reduce((sum, item) => sum + calculateItemCost(item), 0);
+                const profitMargin = ((total - costEstimate) / total) * 100;
+        
+                if (profitMargin > 35) score -= 15; // Too high margin
+                else if (profitMargin > 25) score += 5; // Good margin
+                else if (profitMargin > 15) score += 10; // Competitive margin
+                else if (profitMargin > 5) score -= 5; // Low margin
+                else score -= 20; // Very low margin
+        
+                // Adjust based on number of items
+                if (itemsData.length > 10) score += 5; // Detailed quote
+                else if (itemsData.length < 3) score -= 10; // Too few items
+        
+                return Math.max(0, Math.min(100, score));
+            }
+            
+            // Generate recommendations
+            function generateRecommendations(profitMargin, itemAnalyses, competitivenessScore) {
+                const recommendations = [];
+        
+                // Profit margin recommendations
+                if (profitMargin > 35) {
+                    recommendations.push({
+                        type: 'warning',
+                        title: 'Margine troppo alto',
+                        message: 'Il margine di profitto del ' + profitMargin.toFixed(1) + '% potrebbe rendere il preventivo poco competitivo. Considera di ridurre i prezzi del 10-15%.',
+                        priority: 2
+                    });
+                } else if (profitMargin < 15) {
+                    recommendations.push({
+                        type: 'danger',
+                        title: 'Margine troppo basso',
+                        message: 'Il margine di profitto del ' + profitMargin.toFixed(1) + '% è inferiore alla media del settore (20-30%). Rivaluta i costi o aumenta i prezzi.',
+                        priority: 1
+                    });
+                } else {
+                    recommendations.push({
+                        type: 'success',
+                        title: 'Margine ottimale',
+                        message: 'Margine di profitto del ' + profitMargin.toFixed(1) + '% - ben bilanciato tra competitività e redditività.',
+                        priority: 3
+                    });
+                }
+        
+                // Item price recommendations
+                const itemsToAdjust = itemAnalyses.filter(item => item.recommendation !== 'ok');
+                if (itemsToAdjust.length > 0) {
+                    recommendations.push({
+                        type: 'info',
+                        title: 'Prezzi da rivedere',
+                        message: itemsToAdjust.length + ' voci hanno prezzi significativamente diversi dalla media storica. Usa "Ottimizza Prezzi AI" per regolarli automaticamente.',
+                        priority: 2
+                    });
+                }
+        
+                // Competitiveness recommendations
+                if (competitivenessScore > 80) {
+                    recommendations.push({
+                        type: 'success',
+                        title: 'Preventivo molto competitivo',
+                        message: 'Il preventivo ha un ottimo equilibrio tra prezzi competitivi e margine di profitto.',
+                        priority: 3
+                    });
+                } else if (competitivenessScore < 60) {
+                    recommendations.push({
+                        type: 'warning',
+                        title: 'Competitività da migliorare',
+                        message: 'Il preventivo potrebbe non essere sufficientemente competitivo. Considera di ottimizzare i prezzi.',
+                        priority: 2
+                    });
+                }
+        
+                return recommendations.sort((a, b) => a.priority - b.priority);
+            }
+            
+            // Display analysis results
+            function displayAnalysisResults(analysis) {
+                let analysisHTML = '';
+        
+                // Key metrics
+                analysisHTML += `
+                    <div class="analysis-metric">
+                        <span class="metric-label">Margine di Profitto:</span>
+                        <span class="metric-value ${analysis.profitMargin > 30 ? 'metric-good' : analysis.profitMargin > 20 ? 'metric-warning' : 'metric-danger'}">
+                            ${analysis.profitMargin.toFixed(1)}%
+                        </span>
+                    </div>
+                    
+                    <div class="analysis-metric">
+                        <span class="metric-label">Profitto Stimato:</span>
+                        <span class="metric-value">${formatCurrency(analysis.profit)}</span>
+                    </div>
+                    
+                    <div class="analysis-metric">
+                        <span class="metric-label">Costo Stimato:</span>
+                        <span class="metric-value">${formatCurrency(analysis.costEstimate)}</span>
+                    </div>
+                    
+                    <div class="analysis-metric">
+                        <span class="metric-label">Punteggio Competitività:</span>
+                        <span class="metric-value ${analysis.competitivenessScore > 80 ? 'metric-good' : analysis.competitivenessScore > 60 ? 'metric-warning' : 'metric-danger'}">
+                            ${analysis.competitivenessScore}/100
+                        </span>
+                    </div>
+                    
+                    <div class="analysis-metric">
+                        <span class="metric-label">Variazione dalla Media:</span>
+                        <span class="metric-value ${analysis.historicalComparison.variance > 5 ? 'metric-good' : analysis.historicalComparison.variance < -5 ? 'metric-danger' : 'metric-warning'}">
+                            ${analysis.historicalComparison.variance > 0 ? '+' : ''}${analysis.historicalComparison.variance.toFixed(1)}%
+                        </span>
+                    </div>
+                `;
+        
+                // Recommendations
+                if (analysis.recommendations && analysis.recommendations.length > 0) {
+                    analysisHTML += `<div style="margin-top: 1rem; font-weight: bold; color: var(--primary-color);">Raccomandazioni AI:</div>`;
+                    analysis.recommendations.forEach(rec => {
+                        analysisHTML += `
+                            <div class="ai-insight ${rec.type}" style="margin-top: 0.5rem;">
+                                <div class="ai-insight-title">${rec.title}</div>
+                                <div class="ai-insight-content">${rec.message}</div>
+                            </div>
+                        `;
+                    });
+                }
+        
+                analysisResult.innerHTML = analysisHTML;
+            }
+            
+            // Optimize prices with AI
+            function optimizePricesWithAI() {
+                if (!aiAnalysis || !aiAnalysis.itemAnalyses) {
+                    showErrorAlert("Esegui prima l'analisi AI per ottimizzare i prezzi");
+                    return;
+                }
+        
+                const itemsToOptimize = aiAnalysis.itemAnalyses.filter(item => item.recommendation !== 'ok');
+                
+                if (itemsToOptimize.length === 0) {
+                    showSuccessAlert("I prezzi sono già ottimizzati secondo l'analisi AI!");
+                    return;
+                }
+        
+                // Update prices in the form
+                const itemRows = document.querySelectorAll('.item-row');
+                itemRows.forEach(row => {
+                    const descriptionInput = row.querySelector('.item-description');
+                    const description = descriptionInput.value;
+                    
+                    const matchingItem = itemsToOptimize.find(item => 
+                        item.description.includes(description) || description.includes(item.description)
+                    );
+        
+                    if (matchingItem && matchingItem.recommendation === 'increase') {
+                        const priceInput = row.querySelector('.item-price');
+                        const newPrice = matchingItem.suggestedPrice;
+                        priceInput.value = newPrice.toFixed(2);
+                        updateItemTotal(row.id);
+                    } else if (matchingItem && matchingItem.recommendation === 'decrease') {
+                        const priceInput = row.querySelector('.item-price');
+                        const newPrice = matchingItem.suggestedPrice;
+                        priceInput.value = newPrice.toFixed(2);
+                        updateItemTotal(row.id);
+                    }
+                });
+        
+                updatePreview();
+                showSuccessAlert(`${itemsToOptimize.length} prezzi ottimizzati con AI!`);
+        
+                // Re-run analysis to show updated results
+                setTimeout(() => {
+                    analyzeQuoteWithAI();
+                }, 1000);
+            }
+            
+            // Apply AI suggestions
+            function applyAISuggestions() {
+                if (!aiAnalysis || !aiAnalysis.recommendations) {
+                    showErrorAlert("Nessuna raccomandazione AI disponibile");
+                    return;
+                }
+        
+                // Apply price optimizations
+                optimizePricesWithAI();
+        
+                // Apply other suggestions
+                const highPriorityRecs = aiAnalysis.recommendations.filter(r => r.priority === 1);
+                if (highPriorityRecs.length > 0) {
+                    highPriorityRecs.forEach(rec => {
+                        console.log("Applying high priority recommendation:", rec.title);
+                        // Here you could implement specific actions for each recommendation type
+                    });
+                }
+        
+                showSuccessAlert("Suggerimenti AI applicati con successo!");
             }
             
             // Generate DOCX Document
@@ -1864,13 +3329,11 @@
                 try {
                     console.log("=== INIZIO GENERAZIONE DOCX FIXED ===");
                     
-                    // 1. Validazione di base
                     if (!quoteNumberInput.value.trim()) {
                         showErrorAlert("Inserisci il numero preventivo");
                         return;
                     }
                     
-                    // 2. Ottieni i dati
                     const itemsData = getItemsData();
                     console.log("Dati articoli ottenuti:", itemsData);
                     
@@ -1879,21 +3342,18 @@
                         return;
                     }
                     
-                    // 3. Mostra loading
                     const originalHtml = generateDocxBtn.innerHTML;
                     generateDocxBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Generazione...</span>';
                     generateDocxBtn.disabled = true;
+                    generateDocxBtnForm.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Generazione...</span>';
+                    generateDocxBtnForm.disabled = true;
                     
-                    // 4. Calcola totali
                     const totals = calculateTotals(itemsData);
                     
-                    // 5. Crea documento con approccio semplificato
                     const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, AlignmentType, WidthType } = docx;
                     
-                    // 6. Crea tabella con cicli for invece di forEach
                     const tableRows = [];
                     
-                    // Header row
                     const headerCells = [
                         new TableCell({ children: [new Paragraph("Descrizione")] }),
                         new TableCell({ children: [new Paragraph("Quantità")] }),
@@ -1902,7 +3362,6 @@
                         new TableCell({ children: [new Paragraph("Totale (€)")] })
                     ];
                     
-                    // Applica stile alle celle dell'header
                     for (let i = 0; i < headerCells.length; i++) {
                         headerCells[i].shading = { fill: "003366" };
                         const paragraph = headerCells[i].children[0];
@@ -1914,7 +3373,6 @@
                     const headerRow = new TableRow({ children: headerCells });
                     tableRows.push(headerRow);
                     
-                    // Aggiungi righe degli articoli
                     for (let i = 0; i < itemsData.length; i++) {
                         const item = itemsData[i];
                         const itemRow = new TableRow({
@@ -1929,8 +3387,6 @@
                         tableRows.push(itemRow);
                     }
                     
-                    // Aggiungi righe dei totali
-                    // Imponibile
                     tableRows.push(new TableRow({
                         children: [
                             new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
@@ -1945,7 +3401,6 @@
                         ]
                     }));
                     
-                    // IVA
                     tableRows.push(new TableRow({
                         children: [
                             new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
@@ -1960,7 +3415,6 @@
                         ]
                     }));
                     
-                    // Totale
                     const totalRow = new TableRow({
                         children: [
                             new TableCell({ children: [new Paragraph("")], columnSpan: 3 }),
@@ -1975,7 +3429,6 @@
                         ]
                     });
                     
-                    // Applica stile alle celle del totale
                     for (let i = 3; i < totalRow.children.length; i++) {
                         const cell = totalRow.children[i];
                         if (cell.children && cell.children[0]) {
@@ -1990,12 +3443,10 @@
                     
                     tableRows.push(totalRow);
                     
-                    // 7. Crea il documento completo
                     const doc = new Document({
                         sections: [{
                             properties: {},
                             children: [
-                                // Intestazione aziendale
                                 new Paragraph({
                                     children: [
                                         new TextRun({
@@ -2018,7 +3469,6 @@
                                     spacing: { after: 400 }
                                 }),
                                 
-                                // Titolo preventivo
                                 new Paragraph({
                                     children: [
                                         new TextRun({
@@ -2033,7 +3483,6 @@
                                     spacing: { before: 400, after: 400 }
                                 }),
                                 
-                                // Dettagli cliente
                                 new Paragraph({
                                     children: [
                                         new TextRun({
@@ -2076,13 +3525,11 @@
                                     spacing: { after: 400 }
                                 }),
                                 
-                                // Tabella degli articoli
                                 new Table({
                                     rows: tableRows,
                                     width: { size: 100, type: WidthType.PERCENTAGE }
                                 }),
                                 
-                                // Note e condizioni
                                 new Paragraph({
                                     children: [
                                         new TextRun({
@@ -2099,7 +3546,6 @@
                                     spacing: { before: 400, after: 400 }
                                 }),
                                 
-                                // Sezione firma
                                 new Paragraph({
                                     children: [
                                         new TextRun({
@@ -2123,7 +3569,6 @@
                                     spacing: { before: 400 }
                                 }),
                                 
-                                // Footer
                                 new Paragraph({
                                     children: [
                                         new TextRun({
@@ -2144,14 +3589,12 @@
                         }]
                     });
                     
-                    // 8. Genera e scarica
                     const blob = await Packer.toBlob(doc);
                     const fileName = `Preventivo_${quoteNumberInput.value.replace(/[^a-z0-9]/gi, '_')}.docx`;
                     saveAs(blob, fileName);
                     
                     console.log("Download completato");
                     
-                    // Salva il preventivo su Firebase se disponibile
                     if (db && currentUser) {
                         await saveQuoteToFirebase(itemsData, totals, fileName);
                     }
@@ -2177,6 +3620,8 @@
                 } finally {
                     generateDocxBtn.innerHTML = '<i class="fas fa-file-word"></i> <span>Genera DOCX</span>';
                     generateDocxBtn.disabled = false;
+                    generateDocxBtnForm.innerHTML = '<i class="fas fa-file-word"></i> <span>Genera DOCX</span>';
+                    generateDocxBtnForm.disabled = false;
                 }
             }
             
@@ -2203,7 +3648,11 @@
                         createdBy: currentUser.uid,
                         createdByEmail: currentUser.email,
                         createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString()
+                        updatedAt: new Date().toISOString(),
+                        status: 'generated',
+                        aiAnalyzed: aiAnalysis ? true : false,
+                        aiProfitMargin: aiAnalysis ? aiAnalysis.profitMargin : null,
+                        aiCompetitivenessScore: aiAnalysis ? aiAnalysis.competitivenessScore : null
                     };
                     
                     await db.collection('quotes').add(quoteData);
@@ -2211,7 +3660,100 @@
                     
                 } catch (error) {
                     console.error("Errore nel salvataggio su Firebase:", error);
-                    // Non mostrare errore all'utente, è solo un backup
+                }
+            }
+            
+            // Save quote as draft
+            async function saveQuoteAsDraft() {
+                const itemsData = getItemsData();
+                const totals = calculateTotals(itemsData);
+                
+                try {
+                    const quoteData = {
+                        quoteNumber: quoteNumberInput.value || 'DRAFT',
+                        quoteDate: quoteDateInput.value,
+                        validUntil: validUntilInput.value,
+                        paymentTerms: paymentTermsSelect.value,
+                        clientName: clientNameInput.value,
+                        clientVat: clientVatInput.value || '',
+                        clientAddress: clientAddressInput.value,
+                        clientPhone: clientPhoneInput.value || '',
+                        siteAddress: siteAddressInput.value,
+                        siteDescription: siteDescriptionInput.value || '',
+                        notes: notesInput.value || '',
+                        items: itemsData,
+                        subtotal: totals.subtotal,
+                        vat: totals.vat,
+                        total: totals.total,
+                        createdBy: currentUser.uid,
+                        createdByEmail: currentUser.email,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        status: 'draft',
+                        aiAnalyzed: aiAnalysis ? true : false
+                    };
+                    
+                    await db.collection('quote_drafts').add(quoteData);
+                    showSuccessAlert('Bozza salvata con successo!');
+                    
+                } catch (error) {
+                    console.error("Errore nel salvataggio della bozza:", error);
+                    showErrorAlert("Errore nel salvataggio della bozza: " + error.message);
+                }
+            }
+            
+            // Generate AI Report
+            async function generateAIReport() {
+                if (!aiAnalysis) {
+                    showErrorAlert("Esegui prima l'analisi AI per generare il report");
+                    return;
+                }
+                
+                try {
+                    const itemsData = getItemsData();
+                    const csvData = [
+                        ['Voce', 'Categoria', 'Prezzo Attuale (€)', 'Prezzo Suggerito (€)', 'Variazione (%)', 'Raccomandazione']
+                    ];
+                    
+                    aiAnalysis.itemAnalyses.forEach(item => {
+                        csvData.push([
+                            item.description,
+                            item.category,
+                            item.currentPrice.toFixed(2),
+                            item.suggestedPrice.toFixed(2),
+                            item.variance.toFixed(1) + '%',
+                            item.recommendation === 'increase' ? 'AUMENTARE' : item.recommendation === 'decrease' ? 'DIMINUIRE' : 'OK'
+                        ]);
+                    });
+                    
+                    csvData.push([]);
+                    csvData.push(['METRICA', 'VALORE', 'COMMENTO']);
+                    csvData.push(['Margine di Profitto', aiAnalysis.profitMargin.toFixed(1) + '%', 
+                        aiAnalysis.profitMargin > 30 ? 'Ottimo' : aiAnalysis.profitMargin > 20 ? 'Buono' : 'Da migliorare']);
+                    csvData.push(['Punteggio Competitività', aiAnalysis.competitivenessScore + '/100',
+                        aiAnalysis.competitivenessScore > 80 ? 'Eccellente' : aiAnalysis.competitivenessScore > 60 ? 'Buono' : 'Da migliorare']);
+                    csvData.push(['Profitto Stimato', formatCurrency(aiAnalysis.profit), '']);
+                    csvData.push(['Costo Stimato', formatCurrency(aiAnalysis.costEstimate), '']);
+                    
+                    const csvString = csvData.map(row => 
+                        row.map(cell => `"${cell.toString().replace(/"/g, '""')}"`).join(',')
+                    ).join('\n');
+                    
+                    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `Report_AI_Preventivo_${quoteNumberInput.value.replace(/[^a-z0-9]/gi, '_')}.csv`);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    showSuccessAlert("Report AI generato e scaricato con successo!");
+                    
+                } catch (error) {
+                    console.error("Error generating AI report:", error);
+                    showErrorAlert("Errore nella generazione del report AI: " + error.message);
                 }
             }
             
@@ -2254,6 +3796,73 @@
                 successAlert.classList.add('d-none');
                 errorAlert.classList.add('d-none');
             }
+            
+            // Global AI functions
+            window.showPriceTrendsModal = function() {
+                const priceTrends = analyzePriceTrends();
+                
+                let modalHTML = `
+                    <div class="ai-analysis-section">
+                        <div class="analysis-header">
+                            <h4 class="analysis-title">
+                                <i class="fas fa-chart-bar"></i> Trend Prezzi per Categoria
+                            </h4>
+                            <span class="analysis-confidence">Basato su ${historicalQuotes.length} preventivi</span>
+                        </div>
+                        
+                        <div class="prediction-grid">
+                `;
+                
+                if (priceTrends.length > 0) {
+                    priceTrends.forEach(trend => {
+                        modalHTML += `
+                            <div class="prediction-card">
+                                <div class="prediction-value">${formatCurrency(trend.suggestedPrice)}</div>
+                                <div class="prediction-label">${trend.category}</div>
+                                <div class="prediction-label">${trend.sampleSize} campioni</div>
+                                <div class="profit-trend ${trend.trend === 'up' ? 'trend-up' : trend.trend === 'down' ? 'trend-down' : 'trend-stable'}">
+                                    <i class="fas fa-${trend.trend === 'up' ? 'arrow-up' : trend.trend === 'down' ? 'arrow-down' : 'minus'}"></i>
+                                    Trend: ${trend.trend === 'up' ? '↑' : trend.trend === 'down' ? '↓' : '→'}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    modalHTML += `
+                        <div class="ai-insight">
+                            <div class="ai-insight-title">
+                                <i class="fas fa-info-circle"></i> Dati insufficienti
+                            </div>
+                            <div class="ai-insight-content">
+                                <p>Crea più preventivi per vedere i trend dei prezzi.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                modalHTML += `
+                        </div>
+                        
+                        <div class="ai-insight info" style="margin-top: 1rem;">
+                            <div class="ai-insight-title">
+                                <i class="fas fa-lightbulb"></i> Come usare i trend
+                            </div>
+                            <div class="ai-insight-content">
+                                <p>I prezzi suggeriti includono già un margine di profitto del 10% rispetto alla media storica.</p>
+                                <p>Usa il pulsante "Ottimizza Prezzi AI" per applicare automaticamente questi suggerimenti al tuo preventivo.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                aiInsightsContent.innerHTML = modalHTML;
+                aiInsightsModal.classList.add('show');
+            };
+            
+            window.enableAIFeatures = function() {
+                showSuccessAlert("Funzionalità AI attivate. Il sistema inizierà ad analizzare i dati.");
+                loadAIResources();
+            };
             
             // Initialize the page
             initPage();
