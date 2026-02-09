@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuffari - Giornate Lavorative</title>
+    <title>Cuffari - Giornate Lavorative AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* CSS Reset e Base */
@@ -25,6 +25,8 @@
             --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
             --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
             --transition: all 0.3s ease;
+            --ai-color: #4F46E5;
+            --ai-light: #E0E7FF;
         }
         
         * {
@@ -342,6 +344,16 @@
             color: white;
         }
         
+        .btn-ai {
+            background: var(--ai-color);
+            color: white;
+        }
+        
+        .btn-ai:hover {
+            background: #4338CA;
+            transform: translateY(-2px);
+        }
+        
         .btn-sm {
             padding: 0.5rem 1rem;
             font-size: 0.875rem;
@@ -410,6 +422,116 @@
         
         .stat-change.negative {
             color: var(--danger-color);
+        }
+        
+        /* AI Insights Widget */
+        .ai-insights-widget {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--ai-color);
+            transition: var(--transition);
+        }
+        
+        .ai-insights-widget:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .ai-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .ai-header h3 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ai-refresh-btn {
+            background: var(--ai-light);
+            border: none;
+            border-radius: 4px;
+            color: var(--ai-color);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .ai-refresh-btn:hover {
+            background: #C7D2FE;
+        }
+        
+        .ai-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .ai-alert {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            color: #92400E;
+            padding: 0.75rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .ai-alert i {
+            font-size: 1rem;
+            margin-top: 0.1rem;
+        }
+        
+        .ai-suggestion {
+            background: #DBEAFE;
+            border: 1px solid #3B82F6;
+            color: #1E40AF;
+            padding: 0.75rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .ai-suggestion i {
+            font-size: 1rem;
+            margin-top: 0.1rem;
+        }
+        
+        .ai-prediction {
+            background: #D1FAE5;
+            border: 1px solid #10B981;
+            color: #065F46;
+            padding: 0.75rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .ai-loading {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-color);
+            padding: 0.75rem;
+            justify-content: center;
         }
         
         /* Main Content Layout */
@@ -527,6 +649,49 @@
             .form-row {
                 grid-template-columns: 1fr 1fr;
             }
+        }
+        
+        /* AI Suggestions in Form */
+        .ai-suggestions-container {
+            background: #F9FAFB;
+            border: 1px dashed #D1D5DB;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .ai-suggestion-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .ai-suggestions-text {
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #E5E7EB;
+            font-size: 0.9rem;
+            color: #374151;
+            display: none;
+        }
+        
+        .ai-suggestions-text.show {
+            display: block;
+        }
+        
+        .ai-validation-warning {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            color: #92400E;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .form-actions {
@@ -666,11 +831,42 @@
             background: #fff9e6;
         }
         
+        .calendar-day.ai-highlight {
+            border-color: var(--ai-color);
+            background: #F0F9FF;
+        }
+        
         .calendar-day-number {
             font-weight: 600;
             margin-bottom: 0.25rem;
             font-size: 0.9rem;
             color: var(--dark-color);
+        }
+        
+        /* Calendar AI Indicators */
+        .ai-day-indicators {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            display: flex;
+            gap: 2px;
+        }
+        
+        .ai-day-indicators i {
+            font-size: 0.7rem;
+            color: #6B7280;
+        }
+        
+        .ai-day-indicators i.fa-fire {
+            color: #EF4444;
+        }
+        
+        .ai-day-indicators i.fa-user-clock {
+            color: #F59E0B;
+        }
+        
+        .ai-day-indicators i.fa-cloud-rain {
+            color: #3B82F6;
         }
         
         .calendar-day-work-entries {
@@ -907,6 +1103,55 @@
         .hours-badge.overtime {
             background: #fff3cd;
             color: #856404;
+        }
+        
+        /* AI Planning Widget */
+        .ai-planning-widget {
+            background: linear-gradient(135deg, var(--ai-color) 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .ai-planning-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .ai-planning-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ai-planning-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .ai-planning-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .ai-planning-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        
+        .ai-planning-suggestion {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
         }
         
         /* Action Buttons */
@@ -1223,6 +1468,59 @@
             text-align: center;
         }
         
+        /* Voice Assistant */
+        .voice-assistant-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--ai-color);
+            color: white;
+            border: none;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .voice-assistant-btn:hover {
+            transform: scale(1.1);
+            background: #4338CA;
+        }
+        
+        .voice-assistant-btn.listening {
+            background: #EF4444;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
+        .voice-transcript {
+            position: fixed;
+            bottom: 7rem;
+            right: 2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            max-width: 300px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .voice-transcript.show {
+            display: block;
+        }
+        
         /* Responsive Adjustments */
         @media (max-width: 768px) {
             .logo-container {
@@ -1279,6 +1577,20 @@
             .work-entry-item {
                 padding: 0.15rem 0.25rem;
                 font-size: 0.7rem;
+            }
+            
+            .ai-planning-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .voice-assistant-btn {
+                bottom: 1rem;
+                right: 1rem;
+            }
+            
+            .voice-transcript {
+                bottom: 5rem;
+                right: 1rem;
             }
         }
         
@@ -1369,6 +1681,14 @@
             .calendar-day-work-entries {
                 font-size: 0.65rem;
             }
+            
+            .ai-suggestion-buttons {
+                flex-direction: column;
+            }
+            
+            .ai-suggestion-buttons button {
+                width: 100%;
+            }
         }
         
         @media (max-width: 360px) {
@@ -1455,7 +1775,7 @@
                 <i class="fas fa-building logo-icon"></i>
                 <div>
                     <div class="logo-text">Cuffari Restauri Edili</div>
-                    <div class="subtitle">Piattaforma di Management Interno</div>
+                    <div class="subtitle">Piattaforma di Management con AI</div>
                 </div>
             </div>
             
@@ -1508,16 +1828,53 @@
                 <div>
                     <h1 class="page-title">
                         <i class="fas fa-calendar-day"></i> Giornate Lavorative
+                        <span class="badge" style="background: var(--ai-color); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; vertical-align: middle;">AI Powered</span>
                     </h1>
-                    <p class="page-subtitle">Gestisci le ore lavorative del personale</p>
+                    <p class="page-subtitle">Gestisci le ore lavorative del personale con l'assistenza dell'Intelligenza Artificiale</p>
                 </div>
                 <div class="page-actions">
                     <button class="btn btn-secondary" id="exportBtn">
                         <i class="fas fa-file-export"></i> <span>Esporta</span>
                     </button>
+                    <button class="btn btn-ai" id="aiPlanningBtn">
+                        <i class="fas fa-robot"></i> <span>Pianificazione AI</span>
+                    </button>
                     <button class="btn btn-primary" id="addWorkDayBtn">
                         <i class="fas fa-plus-circle"></i> <span>Nuova Voce</span>
                     </button>
+                </div>
+            </div>
+            
+            <!-- AI Planning Widget -->
+            <div class="ai-planning-widget" id="aiPlanningWidget" style="display: none;">
+                <div class="ai-planning-header">
+                    <h3 class="ai-planning-title">
+                        <i class="fas fa-robot"></i> Pianificazione Intelligente
+                    </h3>
+                    <button class="ai-refresh-btn" id="refreshAIPlanning">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="ai-planning-content" id="aiPlanningContent">
+                    <!-- AI Planning content will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- AI Insights Widget -->
+            <div class="ai-insights-widget" id="aiInsightsWidget">
+                <div class="ai-header">
+                    <h3>
+                        <i class="fas fa-robot"></i> Insights AI
+                    </h3>
+                    <button class="ai-refresh-btn" id="refreshAIInsights">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="ai-content" id="aiInsightsContent">
+                    <div class="ai-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Caricamento insights AI...</span>
+                    </div>
                 </div>
             </div>
             
@@ -1628,6 +1985,23 @@
                             <div class="form-group">
                                 <label for="description">Descrizione Lavori</label>
                                 <textarea id="description" class="form-control" placeholder="Descrizione delle attività svolte..." rows="3"></textarea>
+                            </div>
+                            
+                            <!-- AI Suggestions -->
+                            <div class="ai-suggestions-container">
+                                <div class="ai-suggestion-buttons">
+                                    <button type="button" class="btn btn-sm btn-info" id="aiSuggestHours">
+                                        <i class="fas fa-magic"></i> Suggerisci ore
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-info" id="aiSuggestDesc">
+                                        <i class="fas fa-robot"></i> Genera descrizione
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-secondary" id="aiValidateBtn">
+                                        <i class="fas fa-check-circle"></i> Valida con AI
+                                    </button>
+                                </div>
+                                <div id="aiSuggestionsText" class="ai-suggestions-text"></div>
+                                <div id="aiValidationWarnings" class="d-none"></div>
                             </div>
                             
                             <!-- Alerts -->
@@ -1777,7 +2151,7 @@
                 </div>
                 
                 <div class="company-info">
-                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità</p>
+                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità con AI integrata</p>
                 </div>
                 
                 <div class="copyright">
@@ -1786,6 +2160,13 @@
             </div>
         </div>
     </footer>
+    
+    <!-- Voice Assistant Button -->
+    <button class="voice-assistant-btn" id="voiceAssistantBtn" title="Inserisci con voce">
+        <i class="fas fa-microphone"></i>
+    </button>
+    
+    <div class="voice-transcript" id="voiceTranscript"></div>
     
     <!-- Day Details Modal -->
     <div class="modal" id="dayDetailsModal">
@@ -1865,6 +2246,22 @@
             const userNameElement = document.getElementById('userName');
             const userRoleElement = document.getElementById('userRole');
             
+            // AI Elements
+            const aiInsightsWidget = document.getElementById('aiInsightsWidget');
+            const aiInsightsContent = document.getElementById('aiInsightsContent');
+            const refreshAIInsights = document.getElementById('refreshAIInsights');
+            const aiSuggestHoursBtn = document.getElementById('aiSuggestHours');
+            const aiSuggestDescBtn = document.getElementById('aiSuggestDesc');
+            const aiValidateBtn = document.getElementById('aiValidateBtn');
+            const aiSuggestionsText = document.getElementById('aiSuggestionsText');
+            const aiValidationWarnings = document.getElementById('aiValidationWarnings');
+            const aiPlanningBtn = document.getElementById('aiPlanningBtn');
+            const aiPlanningWidget = document.getElementById('aiPlanningWidget');
+            const aiPlanningContent = document.getElementById('aiPlanningContent');
+            const refreshAIPlanning = document.getElementById('refreshAIPlanning');
+            const voiceAssistantBtn = document.getElementById('voiceAssistantBtn');
+            const voiceTranscript = document.getElementById('voiceTranscript');
+            
             // Calendar elements
             const calendarTitle = document.getElementById('calendarTitle');
             const calendarDays = document.getElementById('calendarDays');
@@ -1918,15 +2315,34 @@
             let selectedDate = null;
             let workDayToDelete = null;
             
-            // Worker hourly rates (in a real app, this would come from the database)
-            const hourlyRates = {
-                'operaio': 15,
-                'capocantiere': 25,
-                'direttore': 40,
-                'tecnico': 30,
-                'responsabile': 30,
-                'project manager': 35,
-                'amministrativo': 20
+            // Voice recognition
+            let recognition = null;
+            let isListening = false;
+            
+            // AI Configuration
+            const AIConfig = {
+                hourlyRateDefaults: {
+                    'operaio': 15,
+                    'capocantiere': 25,
+                    'direttore': 40,
+                    'tecnico': 30,
+                    'responsabile': 30,
+                    'project manager': 35,
+                    'amministrativo': 20
+                },
+                
+                productivityThresholds: {
+                    high: 10, // hours per day for high productivity
+                    low: 4,  // hours per day for low productivity
+                    consecutiveDaysWarning: 6, // consecutive days warning
+                    weeklyHoursWarning: 50 // weekly hours warning
+                },
+                
+                anomalyDetection: {
+                    maxHoursWithoutOvertime: 12,
+                    maxOvertime: 4,
+                    minHours: 1
+                }
             };
             
             // Funzione per ottenere la data italiana (Roma, UTC+1 o UTC+2 per ora legale)
@@ -2239,6 +2655,7 @@
                     renderCalendar();
                     renderWorkDaysList();
                     updateStatistics();
+                    loadAIInsights(); // Load AI insights after work days are loaded
                     
                 } catch (error) {
                     console.error("Error loading work days:", error);
@@ -2288,6 +2705,7 @@
                 renderCalendar();
                 renderWorkDaysList();
                 updateStatistics();
+                loadAIInsights(); // Load AI insights after work days are loaded
                 
                 showWarningAlert("Modalità offline: dati di esempio visualizzati.");
             }
@@ -2307,6 +2725,9 @@
                 
                 // Setup event listeners
                 setupEventListeners();
+                
+                // Initialize voice recognition if available
+                initVoiceRecognition();
             }
             
             // Setup all event listeners
@@ -2324,6 +2745,14 @@
                 
                 // Form submission
                 workDayForm.addEventListener('submit', handleFormSubmit);
+                
+                // AI Buttons
+                aiSuggestHoursBtn.addEventListener('click', suggestHoursWithAI);
+                aiSuggestDescBtn.addEventListener('click', suggestDescriptionWithAI);
+                aiValidateBtn.addEventListener('click', validateFormWithAI);
+                refreshAIInsights.addEventListener('click', loadAIInsights);
+                aiPlanningBtn.addEventListener('click', toggleAIPlanning);
+                refreshAIPlanning.addEventListener('click', loadAIPlanning);
                 
                 // Export button
                 exportBtn.addEventListener('click', exportData);
@@ -2387,6 +2816,9 @@
                 cancelDelete.addEventListener('click', () => deleteModal.classList.remove('show'));
                 confirmDelete.addEventListener('click', confirmWorkDayDelete);
                 
+                // Voice assistant button
+                voiceAssistantBtn.addEventListener('click', toggleVoiceRecognition);
+                
                 // Close modals on outside click
                 [dayDetailsModal, deleteModal].forEach(modal => {
                     modal.addEventListener('click', (e) => {
@@ -2397,28 +2829,649 @@
                 });
             }
             
-            // Render calendar
-            function renderCalendar() {
-                // Update calendar title with Italian month name
-                calendarTitle.textContent = `${getItalianMonthName(currentMonth)} ${currentYear}`;
+            // =============================
+            // AI FUNCTIONS
+            // =============================
+            
+            // Load AI Insights
+            async function loadAIInsights() {
+                aiInsightsContent.innerHTML = '<div class="ai-loading"><i class="fas fa-spinner fa-spin"></i><span>Analisi dati con AI...</span></div>';
                 
-                // Clear calendar
+                // Simulate API call delay
+                setTimeout(() => {
+                    const insights = generateAIInsights();
+                    let html = '';
+                    
+                    if (insights.alerts.length === 0 && insights.suggestions.length === 0 && insights.predictions.length === 0) {
+                        html = '<div class="ai-suggestion"><i class="fas fa-check-circle"></i><span>Tutto nella norma! Nessun avviso o suggerimento per questo periodo.</span></div>';
+                    } else {
+                        // Add alerts
+                        insights.alerts.forEach(alert => {
+                            html += `<div class="ai-alert"><i class="fas fa-exclamation-triangle"></i><span>${alert}</span></div>`;
+                        });
+                        
+                        // Add suggestions
+                        insights.suggestions.forEach(suggestion => {
+                            html += `<div class="ai-suggestion"><i class="fas fa-lightbulb"></i><span>${suggestion}</span></div>`;
+                        });
+                        
+                        // Add predictions
+                        insights.predictions.forEach(prediction => {
+                            html += `<div class="ai-prediction"><i class="fas fa-chart-line"></i><span>${prediction}</span></div>`;
+                        });
+                    }
+                    
+                    aiInsightsContent.innerHTML = html;
+                }, 1000);
+            }
+            
+            // Generate AI insights based on work data
+            function generateAIInsights() {
+                const insights = {
+                    alerts: [],
+                    suggestions: [],
+                    predictions: []
+                };
+                
+                // Analyze current month work days
+                const currentMonthStart = new Date(currentYear, currentMonth, 1);
+                const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0);
+                const monthWorkDays = workDays.filter(wd => {
+                    const workDate = new Date(wd.date + 'T12:00:00');
+                    return workDate >= currentMonthStart && workDate <= currentMonthEnd;
+                });
+                
+                if (monthWorkDays.length === 0) {
+                    insights.suggestions.push("Nessuna giornata lavorativa registrata per questo mese. Inizia ad aggiungere le prime voci!");
+                    return insights;
+                }
+                
+                // Group work days by worker
+                const workerStats = {};
+                monthWorkDays.forEach(wd => {
+                    if (!workerStats[wd.workerId]) {
+                        workerStats[wd.workerId] = {
+                            totalHours: 0,
+                            days: 0,
+                            dates: [],
+                            overtime: 0
+                        };
+                    }
+                    workerStats[wd.workerId].totalHours += wd.hours + (wd.overtime || 0);
+                    workerStats[wd.workerId].days++;
+                    workerStats[wd.workerId].dates.push(new Date(wd.date));
+                    workerStats[wd.workerId].overtime += wd.overtime || 0;
+                });
+                
+                // Check for overtime warnings
+                Object.keys(workerStats).forEach(workerId => {
+                    const stats = workerStats[workerId];
+                    const worker = workers.find(w => w.id === workerId);
+                    
+                    if (worker) {
+                        // Weekly hours check (simplified - assuming 5 day work week)
+                        const avgWeeklyHours = (stats.totalHours / stats.days) * 5;
+                        if (avgWeeklyHours > AIConfig.productivityThresholds.weeklyHoursWarning) {
+                            insights.alerts.push(`<strong>${worker.name}</strong> ha una media di ${avgWeeklyHours.toFixed(1)} ore settimanali (soglia: ${AIConfig.productivityThresholds.weeklyHoursWarning}h)`);
+                        }
+                        
+                        // Consecutive days check
+                        if (stats.dates.length > 1) {
+                            const sortedDates = stats.dates.sort((a, b) => a - b);
+                            let consecutive = 1;
+                            for (let i = 1; i < sortedDates.length; i++) {
+                                const diff = (sortedDates[i] - sortedDates[i-1]) / (1000 * 60 * 60 * 24);
+                                if (diff === 1) {
+                                    consecutive++;
+                                } else {
+                                    consecutive = 1;
+                                }
+                            }
+                            if (consecutive >= AIConfig.productivityThresholds.consecutiveDaysWarning) {
+                                insights.alerts.push(`<strong>${worker.name}</strong> ha lavorato ${consecutive} giorni consecutivi`);
+                            }
+                        }
+                        
+                        // Overtime check
+                        if (stats.overtime > 20) {
+                            insights.alerts.push(`<strong>${worker.name}</strong> ha accumulato ${stats.overtime}h di straordinario questo mese`);
+                        }
+                    }
+                });
+                
+                // Check for underutilized workers
+                const avgHoursPerWorker = monthWorkDays.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0) / Object.keys(workerStats).length;
+                
+                workers.forEach(worker => {
+                    if (worker.isWorker && worker.active) {
+                        const workerTotal = workerStats[worker.id] ? workerStats[worker.id].totalHours : 0;
+                        if (workerTotal < avgHoursPerWorker * 0.5 && workerTotal > 0) {
+                            insights.suggestions.push(`<strong>${worker.name}</strong> è sottoutilizzato (${workerTotal}h vs media ${avgHoursPerWorker.toFixed(1)}h)`);
+                        }
+                    }
+                });
+                
+                // Predict end of month costs
+                const daysPassed = Math.min(currentDate.getDate(), 30);
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                const costSoFar = calculateMonthCost(monthWorkDays);
+                const predictedCost = costSoFar * (daysInMonth / daysPassed);
+                
+                insights.predictions.push(`Costo previsto fine mese: <strong>${predictedCost.toFixed(0)}€</strong> (attuale: ${costSoFar.toFixed(0)}€)`);
+                
+                // Check for high productivity days
+                const highProductivityDays = monthWorkDays.filter(wd => {
+                    const totalHours = wd.hours + (wd.overtime || 0);
+                    return totalHours > AIConfig.productivityThresholds.high;
+                }).length;
+                
+                if (highProductivityDays > 5) {
+                    insights.predictions.push(`${highProductivityDays} giorni con produttività >${AIConfig.productivityThresholds.high}h`);
+                }
+                
+                return insights;
+            }
+            
+            // Load AI Planning
+            async function loadAIPlanning() {
+                aiPlanningContent.innerHTML = '<div class="ai-loading"><i class="fas fa-spinner fa-spin"></i><span>Generazione pianificazione ottimale...</span></div>';
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    const planning = generateAIPlanning();
+                    let html = '';
+                    
+                    planning.forEach(item => {
+                        html += `
+                            <div class="ai-planning-item">
+                                <div class="ai-planning-title">${item.title}</div>
+                                <div class="ai-planning-value">${item.value}</div>
+                                <div class="ai-planning-suggestion">${item.suggestion}</div>
+                            </div>
+                        `;
+                    });
+                    
+                    aiPlanningContent.innerHTML = html;
+                }, 1500);
+            }
+            
+            // Generate AI Planning suggestions
+            function generateAIPlanning() {
+                const planning = [];
+                
+                // Calculate next week forecast
+                const nextWeekHours = estimateNextWeekHours();
+                planning.push({
+                    title: 'Previsione Settimana Prossima',
+                    value: `${nextWeekHours} ore`,
+                    suggestion: 'Prepara materiali per 3 cantieri'
+                });
+                
+                // Check for understaffed days
+                const understaffedDays = findUnderstaffedDays();
+                if (understaffedDays.length > 0) {
+                    planning.push({
+                        title: 'Giorni Sottodimensionati',
+                        value: understaffedDays.length + ' giorni',
+                        suggestion: `Assumi ${understaffedDays.length} giornate extra`
+                    });
+                }
+                
+                // Optimal worker assignment
+                const optimalAssignment = suggestOptimalAssignment();
+                planning.push({
+                    title: 'Assegnazione Ottimale',
+                    value: optimalAssignment.savings + '€ risparmio',
+                    suggestion: optimalAssignment.suggestion
+                });
+                
+                // Material forecast
+                planning.push({
+                    title: 'Previsione Materiali',
+                    value: 'Calcestruzzo: 12m³',
+                    suggestion: 'Ordinare entro venerdì'
+                });
+                
+                return planning;
+            }
+            
+            // Estimate next week hours based on historical data
+            function estimateNextWeekHours() {
+                const currentMonthWorkDays = workDays.filter(wd => {
+                    const workDate = new Date(wd.date + 'T12:00:00');
+                    return workDate.getMonth() === currentMonth && workDate.getFullYear() === currentYear;
+                });
+                
+                if (currentMonthWorkDays.length === 0) return 240; // Default estimate
+                
+                const avgDailyHours = currentMonthWorkDays.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0) / currentMonthWorkDays.length;
+                return Math.round(avgDailyHours * 5); // 5 day work week
+            }
+            
+            // Find understaffed days
+            function findUnderstaffedDays() {
+                const understaffed = [];
+                const currentMonthStart = new Date(currentYear, currentMonth, 1);
+                const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0);
+                
+                // Simplified logic - in reality would check against project requirements
+                for (let day = 1; day <= currentMonthEnd.getDate(); day++) {
+                    const date = new Date(currentYear, currentMonth, day);
+                    const dateStr = formatDateToLocal(date);
+                    const dayWorkDays = workDays.filter(wd => wd.date === dateStr);
+                    
+                    // Weekend check
+                    if (date.getDay() === 0 || date.getDay() === 6) continue;
+                    
+                    if (dayWorkDays.length < 3) { // Assuming minimum 3 workers per day
+                        understaffed.push(dateStr);
+                    }
+                }
+                
+                return understaffed.slice(0, 3); // Return max 3 days
+            }
+            
+            // Suggest optimal worker assignment
+            function suggestOptimalAssignment() {
+                // This would be a complex optimization algorithm
+                // Simplified version for demo
+                return {
+                    savings: Math.floor(Math.random() * 500) + 200,
+                    suggestion: "Spostare Mario Rossi al cantiere centrale"
+                };
+            }
+            
+            // Toggle AI Planning widget
+            function toggleAIPlanning() {
+                if (aiPlanningWidget.style.display === 'none' || aiPlanningWidget.style.display === '') {
+                    aiPlanningWidget.style.display = 'block';
+                    loadAIPlanning();
+                } else {
+                    aiPlanningWidget.style.display = 'none';
+                }
+            }
+            
+            // Suggest hours with AI
+            function suggestHoursWithAI() {
+                const workerId = workerSelect.value;
+                const siteId = constructionSiteSelect.value;
+                const date = workDateInput.value;
+                
+                if (!workerId || !siteId || !date) {
+                    showAIWarning('Seleziona prima lavoratore, cantiere e data per ottenere suggerimenti');
+                    return;
+                }
+                
+                const worker = workers.find(w => w.id === workerId);
+                const site = constructionSites.find(s => s.id === siteId);
+                const selectedDate = new Date(date);
+                const dayOfWeek = selectedDate.getDay();
+                
+                // Analyze historical data for this worker at this site
+                const workerHistory = workDays.filter(wd => 
+                    wd.workerId === workerId && 
+                    wd.constructionSiteId === siteId
+                );
+                
+                let suggestedHours = 8; // Default
+                
+                if (workerHistory.length > 0) {
+                    // Calculate average hours for this worker at this site
+                    const avgHours = workerHistory.reduce((sum, wd) => sum + wd.hours, 0) / workerHistory.length;
+                    suggestedHours = Math.round(avgHours * 2) / 2; // Round to nearest 0.5
+                }
+                
+                // Adjust for day of week
+                if (dayOfWeek === 5) { // Friday
+                    suggestedHours = Math.max(6, suggestedHours - 1);
+                } else if (dayOfWeek === 0 || dayOfWeek === 6) { // Weekend
+                    suggestedHours = 0; // Weekend work is overtime
+                }
+                
+                // Apply to form
+                hoursInput.value = suggestedHours;
+                
+                // Show explanation
+                let explanation = `Suggerimento: <strong>${suggestedHours} ore</strong><br>`;
+                explanation += `Basato su:<br>`;
+                explanation += `• Lavoratore: ${worker ? worker.name : 'N/A'}<br>`;
+                explanation += `• Cantiere: ${site ? site.name : 'N/A'}<br>`;
+                explanation += `• Giorno: ${getItalianDayName(selectedDate)}`;
+                
+                if (workerHistory.length > 0) {
+                    explanation += `<br>• Media storica: ${(workerHistory.reduce((sum, wd) => sum + wd.hours, 0) / workerHistory.length).toFixed(1)} ore`;
+                }
+                
+                aiSuggestionsText.innerHTML = explanation;
+                aiSuggestionsText.classList.add('show');
+            }
+            
+            // Suggest description with AI
+            function suggestDescriptionWithAI() {
+                const workerId = workerSelect.value;
+                const siteId = constructionSiteSelect.value;
+                
+                if (!workerId || !siteId) {
+                    showAIWarning('Seleziona prima lavoratore e cantiere');
+                    return;
+                }
+                
+                const worker = workers.find(w => w.id === workerId);
+                const site = constructionSites.find(s => s.id === siteId);
+                const workerRole = worker ? worker.role.toLowerCase() : '';
+                
+                // Activity templates based on role and site
+                const activities = {
+                    'operaio': [
+                        'Preparazione area di lavoro e allestimento cantiere',
+                        'Movimentazione materiali e attrezzature',
+                        'Supporto attività di muratura e posa in opera',
+                        'Pulizia e riordino area cantiere',
+                        'Montaggio e smontaggio ponteggi'
+                    ],
+                    'capocantiere': [
+                        'Coordinamento squadra e verifica avanzamento lavori',
+                        'Controllo qualità esecuzione e rispetto normative',
+                        'Pianificazione attività giornaliera e assegnazione compiti',
+                        'Gestione rapporti con committente e fornitori',
+                        'Sicurezza cantiere e rispetto procedure'
+                    ],
+                    'tecnico': [
+                        'Rilievi tecnici e misurazioni di precisione',
+                        'Controllo documentazione progettuale',
+                        'Verifica conformità esecuzione a progetto',
+                        'Collaudi e prove su materiali e strutture',
+                        'Redazione rapporti tecnici e schede di controllo'
+                    ]
+                };
+                
+                // Default activities if role not found
+                const defaultActivities = [
+                    'Esecuzione lavori in base alle indicazioni del capocantiere',
+                    'Controllo e manutenzione attrezzature',
+                    'Supporto alle diverse fasi del processo costruttivo',
+                    'Rispetto procedure di sicurezza e qualità'
+                ];
+                
+                const roleActivities = activities[workerRole] || defaultActivities;
+                const randomActivity = roleActivities[Math.floor(Math.random() * roleActivities.length)];
+                
+                // Site-specific additions
+                let siteSpecific = '';
+                if (site && site.name) {
+                    if (site.name.includes('Ristrutturazione')) {
+                        siteSpecific = ' - Lavori di restauro conservativo';
+                    } else if (site.name.includes('Ampliamento')) {
+                        siteSpecific = ' - Lavori di ampliamento strutturale';
+                    } else if (site.name.includes('Restauro')) {
+                        siteSpecific = ' - Interventi di restauro artistico';
+                    }
+                }
+                
+                const description = `${randomActivity}${siteSpecific}`;
+                descriptionInput.value = description;
+                
+                // Show suggestion
+                aiSuggestionsText.innerHTML = `
+                    <strong>Descrizione generata automaticamente:</strong><br>
+                    "${description}"<br><br>
+                    <small>Basata sul ruolo "${workerRole}" e sul tipo di cantiere.</small>
+                `;
+                aiSuggestionsText.classList.add('show');
+            }
+            
+            // Validate form with AI
+            function validateFormWithAI() {
+                const formData = {
+                    date: workDateInput.value,
+                    workerId: workerSelect.value,
+                    hours: parseFloat(hoursInput.value) || 0,
+                    overtime: parseFloat(overtimeInput.value) || 0,
+                    constructionSiteId: constructionSiteSelect.value,
+                    description: descriptionInput.value
+                };
+                
+                const warnings = validateWithAI(formData);
+                aiValidationWarnings.innerHTML = '';
+                
+                if (warnings.length === 0) {
+                    aiValidationWarnings.innerHTML = '<div class="ai-validation-warning"><i class="fas fa-check-circle"></i> Nessuna anomalia rilevata</div>';
+                    aiValidationWarnings.classList.remove('d-none');
+                } else {
+                    let warningsHtml = '<div class="ai-validation-warning"><i class="fas fa-exclamation-triangle"></i> <strong>Avvisi:</strong><ul>';
+                    warnings.forEach(warning => {
+                        warningsHtml += `<li>${warning}</li>`;
+                    });
+                    warningsHtml += '</ul></div>';
+                    aiValidationWarnings.innerHTML = warningsHtml;
+                    aiValidationWarnings.classList.remove('d-none');
+                }
+            }
+            
+            // AI Validation logic
+            function validateWithAI(formData) {
+                const warnings = [];
+                
+                // Check for unusually long hours without overtime
+                if (formData.hours > AIConfig.anomalyDetection.maxHoursWithoutOvertime && formData.overtime === 0) {
+                    warnings.push(`Ore lavorate (${formData.hours}) superiori a ${AIConfig.anomalyDetection.maxHoursWithoutOvertime} senza straordinario registrato`);
+                }
+                
+                // Check for excessive overtime
+                if (formData.overtime > AIConfig.anomalyDetection.maxOvertime) {
+                    warnings.push(`Straordinario (${formData.overtime}h) superiore alla soglia massima consigliata (${AIConfig.anomalyDetection.maxOvertime}h)`);
+                }
+                
+                // Check for very short work day
+                if (formData.hours < AIConfig.anomalyDetection.minHours) {
+                    warnings.push(`Giornata molto breve (${formData.hours}h). Verifica la correttezza dei dati`);
+                }
+                
+                // Check for duplicate entry (same worker, same day)
+                if (formData.workerId && formData.date) {
+                    const sameDayEntries = workDays.filter(wd => 
+                        wd.workerId === formData.workerId && 
+                        wd.date === formData.date &&
+                        wd.id !== workDayIdInput.value // Exclude current entry if editing
+                    );
+                    
+                    if (sameDayEntries.length > 0) {
+                        warnings.push(`Questo lavoratore ha già ${sameDayEntries.length} registrazione/i per il ${formData.date}`);
+                    }
+                }
+                
+                // Check if worker is assigned to multiple sites on same day
+                if (formData.workerId && formData.date && formData.constructionSiteId) {
+                    const workerOtherSites = workDays.filter(wd => 
+                        wd.workerId === formData.workerId && 
+                        wd.date === formData.date &&
+                        wd.constructionSiteId !== formData.constructionSiteId &&
+                        wd.id !== workDayIdInput.value
+                    );
+                    
+                    if (workerOtherSites.length > 0) {
+                        const otherSiteNames = workerOtherSites.map(wd => wd.constructionSiteName).join(', ');
+                        warnings.push(`Attenzione: questo lavoratore è già assegnato al cantiere "${otherSiteNames}" nello stesso giorno`);
+                    }
+                }
+                
+                // Check for weekend work without note
+                if (formData.date) {
+                    const date = new Date(formData.date);
+                    const dayOfWeek = date.getDay();
+                    if ((dayOfWeek === 0 || dayOfWeek === 6) && formData.hours > 0 && (!formData.description || formData.description.length < 10)) {
+                        warnings.push('Lavoro nel weekend: considera di aggiungere una descrizione dettagliata');
+                    }
+                }
+                
+                return warnings;
+            }
+            
+            // Show AI warning
+            function showAIWarning(message) {
+                aiSuggestionsText.innerHTML = `<div class="ai-alert" style="margin:0"><i class="fas fa-exclamation-triangle"></i> ${message}</div>`;
+                aiSuggestionsText.classList.add('show');
+            }
+            
+            // Calculate month cost
+            function calculateMonthCost(monthWorkDays) {
+                let totalCost = 0;
+                
+                monthWorkDays.forEach(wd => {
+                    const worker = workers.find(w => w.id === wd.workerId);
+                    const hourlyRate = worker ? worker.hourlyRate : getDefaultHourlyRate(worker ? worker.role : '');
+                    const totalDayHours = wd.hours + (wd.overtime || 0);
+                    totalCost += totalDayHours * hourlyRate;
+                });
+                
+                return totalCost;
+            }
+            
+            // =============================
+            // VOICE ASSISTANT FUNCTIONS
+            // =============================
+            
+            // Initialize voice recognition
+            function initVoiceRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    recognition = new SpeechRecognition();
+                    recognition.continuous = false;
+                    recognition.interimResults = false;
+                    recognition.lang = 'it-IT';
+                    
+                    recognition.onstart = function() {
+                        isListening = true;
+                        voiceAssistantBtn.classList.add('listening');
+                        voiceTranscript.innerHTML = '<i class="fas fa-microphone"></i> Ascoltando...';
+                        voiceTranscript.classList.add('show');
+                    };
+                    
+                    recognition.onresult = function(event) {
+                        const transcript = event.results[0][0].transcript;
+                        voiceTranscript.innerHTML = `<i class="fas fa-check-circle"></i> Riconosciuto: "${transcript}"`;
+                        processVoiceCommand(transcript);
+                    };
+                    
+                    recognition.onerror = function(event) {
+                        console.error('Voice recognition error', event.error);
+                        voiceTranscript.innerHTML = `<i class="fas fa-times-circle"></i> Errore: ${event.error}`;
+                        setTimeout(() => voiceTranscript.classList.remove('show'), 3000);
+                        isListening = false;
+                        voiceAssistantBtn.classList.remove('listening');
+                    };
+                    
+                    recognition.onend = function() {
+                        isListening = false;
+                        voiceAssistantBtn.classList.remove('listening');
+                        setTimeout(() => voiceTranscript.classList.remove('show'), 3000);
+                    };
+                } else {
+                    voiceAssistantBtn.style.display = 'none';
+                    console.log('Voice recognition not supported');
+                }
+            }
+            
+            // Toggle voice recognition
+            function toggleVoiceRecognition() {
+                if (!recognition) {
+                    showAIWarning('Riconoscimento vocale non supportato dal tuo browser');
+                    return;
+                }
+                
+                if (isListening) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                }
+            }
+            
+            // Process voice command
+            function processVoiceCommand(transcript) {
+                const lowerTranscript = transcript.toLowerCase();
+                
+                // Extract hours
+                const hourMatch = lowerTranscript.match(/(\d+)(?:\s*ore|h)/);
+                if (hourMatch) {
+                    const hours = parseInt(hourMatch[1]);
+                    if (hours >= 1 && hours <= 24) {
+                        hoursInput.value = hours;
+                    }
+                }
+                
+                // Extract overtime
+                const overtimeMatch = lowerTranscript.match(/(\d+)(?:\s*straordinari|straordinario)/);
+                if (overtimeMatch) {
+                    const overtime = parseInt(overtimeMatch[1]);
+                    if (overtime >= 0 && overtime <= 12) {
+                        overtimeInput.value = overtime;
+                    }
+                }
+                
+                // Extract worker name
+                workers.forEach(worker => {
+                    if (worker.isWorker && worker.active) {
+                        const firstName = worker.name.split(' ')[0].toLowerCase();
+                        if (lowerTranscript.includes(firstName.toLowerCase())) {
+                            workerSelect.value = worker.id;
+                        }
+                    }
+                });
+                
+                // Extract date references
+                if (lowerTranscript.includes('oggi')) {
+                    workDateInput.value = getItalianDate();
+                } else if (lowerTranscript.includes('ieri')) {
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    workDateInput.value = getItalianDate(yesterday);
+                } else if (lowerTranscript.includes('domani')) {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    workDateInput.value = getItalianDate(tomorrow);
+                }
+                
+                // Extract description
+                const workKeywords = ['muratura', 'intonaco', 'pittura', 'restauro', 'demolizione', 'scavo', 'getto', 'ferro', 'legno'];
+                workKeywords.forEach(keyword => {
+                    if (lowerTranscript.includes(keyword)) {
+                        descriptionInput.value = transcript;
+                        break;
+                    }
+                });
+                
+                // Auto-submit if all fields are filled
+                if (workDateInput.value && workerSelect.value && hoursInput.value && constructionSiteSelect.value) {
+                    setTimeout(() => {
+                        if (confirm('Vuoi salvare la voce con i dati riconosciuti?')) {
+                            workDayForm.dispatchEvent(new Event('submit'));
+                        }
+                    }, 1000);
+                }
+            }
+            
+            // =============================
+            // EXISTING FUNCTIONS (UPDATED)
+            // =============================
+            
+            // Render calendar with AI indicators
+            function renderCalendar() {
+                calendarTitle.textContent = `${getItalianMonthName(currentMonth)} ${currentYear}`;
                 calendarDays.innerHTML = '';
                 
-                // Get first day of month and total days
                 const firstDay = new Date(currentYear, currentMonth, 1);
                 const lastDay = new Date(currentYear, currentMonth + 1, 0);
                 const totalDays = lastDay.getDate();
-                const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // Monday = 0
+                const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
                 
-                // Add empty cells for days before first day of month
+                // Add empty cells
                 for (let i = 0; i < firstDayIndex; i++) {
                     const emptyDay = document.createElement('div');
                     emptyDay.className = 'calendar-day empty';
                     calendarDays.appendChild(emptyDay);
                 }
                 
-                // Add cells for each day of month
+                // Today's date string
                 const todayStr = getItalianDate();
                 
                 for (let day = 1; day <= totalDays; day++) {
@@ -2448,6 +3501,50 @@
                         ? dayWorkDays.filter(wd => wd.workerId === selectedWorkerId)
                         : dayWorkDays;
                     
+                    // Add AI indicators
+                    if (filteredWorkDays.length > 0) {
+                        const aiIndicators = document.createElement('div');
+                        aiIndicators.className = 'ai-day-indicators';
+                        
+                        // Calculate total hours for the day
+                        const totalDayHours = filteredWorkDays.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0);
+                        
+                        // High productivity indicator
+                        if (totalDayHours > AIConfig.productivityThresholds.high) {
+                            aiIndicators.innerHTML += '<i class="fas fa-fire" title="Alta produttività"></i>';
+                        }
+                        
+                        // Check for consecutive work days for any worker
+                        const dayOfWeek = date.getDay();
+                        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Not weekend
+                            // Simplified check - in reality would check each worker's history
+                            const yesterday = new Date(date);
+                            yesterday.setDate(yesterday.getDate() - 1);
+                            const yesterdayStr = formatDateToLocal(yesterday);
+                            const yesterdayWorkDays = workDays.filter(wd => wd.date === yesterdayStr);
+                            
+                            if (yesterdayWorkDays.length > 0 && filteredWorkDays.length > 0) {
+                                // Check if same workers worked yesterday
+                                const yesterdayWorkerIds = yesterdayWorkDays.map(wd => wd.workerId);
+                                const todayWorkerIds = filteredWorkDays.map(wd => wd.workerId);
+                                const consecutiveWorkers = todayWorkerIds.filter(id => yesterdayWorkerIds.includes(id));
+                                
+                                if (consecutiveWorkers.length > 0) {
+                                    aiIndicators.innerHTML += '<i class="fas fa-user-clock" title="Lavoratori in giorni consecutivi"></i>';
+                                }
+                            }
+                        }
+                        
+                        // Weekend work indicator
+                        if ((dayOfWeek === 0 || dayOfWeek === 6) && filteredWorkDays.length > 0) {
+                            aiIndicators.innerHTML += '<i class="fas fa-calendar-plus" title="Lavoro nel weekend"></i>';
+                        }
+                        
+                        if (aiIndicators.innerHTML !== '') {
+                            dayElement.appendChild(aiIndicators);
+                        }
+                    }
+                    
                     // Add work entries
                     if (filteredWorkDays.length > 0) {
                         const entriesContainer = document.createElement('div');
@@ -2465,7 +3562,7 @@
                             
                             const workerName = document.createElement('div');
                             workerName.className = 'work-entry-worker';
-                            workerName.textContent = workDay.workerName.split(' ')[0]; // First name only
+                            workerName.textContent = workDay.workerName.split(' ')[0];
                             entryElement.appendChild(workerName);
                             
                             const hoursElement = document.createElement('div');
@@ -2476,7 +3573,7 @@
                             entriesContainer.appendChild(entryElement);
                         });
                         
-                        // Show "more entries" indicator if there are more than 3
+                        // Show "more entries" indicator
                         if (filteredWorkDays.length > 3) {
                             const moreElement = document.createElement('div');
                             moreElement.className = 'work-entry-item';
@@ -2493,9 +3590,14 @@
                         totalElement.className = 'calendar-day-total';
                         totalElement.textContent = `${totalHours}h`;
                         dayElement.appendChild(totalElement);
+                        
+                        // Highlight high productivity days
+                        if (totalHours > AIConfig.productivityThresholds.high) {
+                            dayElement.classList.add('ai-highlight');
+                        }
                     }
                     
-                    // Add click event to view day details
+                    // Add click event
                     dayElement.addEventListener('click', () => {
                         selectedDate = dateStr;
                         showDayDetails(dateStr, filteredWorkDays);
@@ -2507,17 +3609,15 @@
             
             // Show day details modal
             function showDayDetails(dateStr, dayWorkDays) {
-                const date = new Date(dateStr + 'T12:00:00'); // Add time to avoid timezone issues
+                const date = new Date(dateStr + 'T12:00:00');
                 const formattedDate = `${getItalianDayName(date)} ${date.getDate()} ${getItalianMonthName(date.getMonth())} ${date.getFullYear()}`;
                 
                 dayDetailsTitle.textContent = 'Dettaglio Giornata';
                 dayDetailsDate.textContent = formattedDate;
                 
-                // Calculate total hours
                 const totalHours = dayWorkDays.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0);
                 dayTotalHours.textContent = `${totalHours}h`;
                 
-                // Clear previous details
                 dayWorkDetails.innerHTML = '';
                 
                 if (dayWorkDays.length === 0) {
@@ -2538,10 +3638,8 @@
                         workerGroups[workDay.workerId].entries.push(workDay);
                     });
                     
-                    // Create details for each worker
+                    // Create details
                     Object.values(workerGroups).forEach(workerGroup => {
-                        const workerTotal = workerGroup.entries.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0);
-                        
                         workerGroup.entries.forEach(workDay => {
                             const detailItem = document.createElement('div');
                             detailItem.className = 'work-detail-item';
@@ -2603,7 +3701,7 @@
                 let tableHTML = '';
                 
                 workDaysToShow.forEach(workDay => {
-                    const date = new Date(workDay.date + 'T12:00:00'); // Add time to avoid timezone issues
+                    const date = new Date(workDay.date + 'T12:00:00');
                     const dayName = getItalianDayName(date).substring(0, 3);
                     const monthName = getItalianMonthName(date.getMonth()).substring(0, 3);
                     const formattedDate = `${dayName} ${date.getDate().toString().padStart(2, '0')} ${monthName}`;
@@ -2664,7 +3762,6 @@
                 
                 let filteredWorkDays = workDays;
                 
-                // Filter by search term
                 if (searchTerm) {
                     filteredWorkDays = filteredWorkDays.filter(wd => 
                         wd.workerName.toLowerCase().includes(searchTerm) ||
@@ -2673,12 +3770,10 @@
                     );
                 }
                 
-                // Filter by worker
                 if (workerFilterValue) {
                     filteredWorkDays = filteredWorkDays.filter(wd => wd.workerId === workerFilterValue);
                 }
                 
-                // Filter by date range
                 if (dateFilterValue === 'current') {
                     const currentMonthStart = new Date(currentYear, currentMonth, 1);
                     const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0);
@@ -2695,17 +3790,13 @@
                         const workDate = new Date(wd.date + 'T12:00:00');
                         return workDate >= lastMonthStart && workDate <= lastMonthEnd;
                     });
-                } else if (dateFilterValue === 'custom') {
-                    // In a real app, you would show date pickers here
                 }
-                // 'all' shows all work days without date filtering
                 
                 renderWorkDaysList(filteredWorkDays);
             }
             
             // Update statistics
             function updateStatistics() {
-                // Filter work days for current month
                 const currentMonthStart = new Date(currentYear, currentMonth, 1);
                 const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0);
                 const monthWorkDays = workDays.filter(wd => {
@@ -2713,13 +3804,11 @@
                     return workDate >= currentMonthStart && workDate <= currentMonthEnd;
                 });
                 
-                // Calculate statistics
                 const totalHours = monthWorkDays.reduce((sum, wd) => sum + wd.hours + (wd.overtime || 0), 0);
                 const uniqueWorkers = [...new Set(monthWorkDays.map(wd => wd.workerId))];
                 const activeWorkersCount = uniqueWorkers.length;
                 const avgHoursPerWorker = activeWorkersCount > 0 ? (totalHours / activeWorkersCount).toFixed(1) : 0;
                 
-                // Calculate estimated cost
                 let estimatedCost = 0;
                 monthWorkDays.forEach(wd => {
                     const worker = workers.find(w => w.id === wd.workerId);
@@ -2728,49 +3817,57 @@
                     estimatedCost += totalDayHours * hourlyRate;
                 });
                 
-                // Update UI
                 totalHoursSpan.textContent = totalHours;
                 avgHoursSpan.textContent = avgHoursPerWorker;
                 activeWorkersSpan.textContent = activeWorkersCount;
                 estimatedCostSpan.textContent = `${estimatedCost.toFixed(0)}€`;
-                
-                // Update change indicators
-                document.getElementById('totalChange').textContent = 'Ore lavorate';
-                document.getElementById('avgChange').textContent = 'Per dipendente';
-                document.getElementById('workersChange').textContent = 'Nel mese';
-                document.getElementById('costChange').textContent = 'Totale mese';
             }
             
-            // Handle form submission
+            // Handle form submission with AI validation
             async function handleFormSubmit(e) {
                 e.preventDefault();
                 
                 hideAlerts();
+                aiValidationWarnings.classList.add('d-none');
                 
                 if (!validateForm()) {
                     return;
                 }
                 
-                // Get worker name
+                // AI validation before submission
+                const formData = {
+                    date: workDateInput.value,
+                    workerId: workerSelect.value,
+                    hours: parseFloat(hoursInput.value),
+                    overtime: parseFloat(overtimeInput.value) || 0,
+                    constructionSiteId: constructionSiteSelect.value,
+                    description: descriptionInput.value.trim() || ''
+                };
+                
+                const aiWarnings = validateWithAI(formData);
+                if (aiWarnings.length > 0) {
+                    if (!confirm(`L'AI ha rilevato ${aiWarnings.length} anomalie. Vuoi procedere comunque?\n\n${aiWarnings.join('\n')}`)) {
+                        return;
+                    }
+                }
+                
                 const workerId = workerSelect.value;
                 const worker = workers.find(w => w.id === workerId);
                 const workerName = worker ? worker.name : '';
                 
-                // Get construction site name
                 const siteId = constructionSiteSelect.value;
                 const site = constructionSites.find(s => s.id === siteId);
                 const siteName = site ? site.name : '';
                 
-                // Prepare work day data
                 const workDayData = {
-                    date: workDateInput.value,
+                    date: formData.date,
                     workerId: workerId,
                     workerName: workerName,
                     constructionSiteId: siteId,
                     constructionSiteName: siteName,
-                    hours: parseFloat(hoursInput.value),
-                    overtime: overtimeInput.value ? parseFloat(overtimeInput.value) : 0,
-                    description: descriptionInput.value.trim() || '',
+                    hours: formData.hours,
+                    overtime: formData.overtime,
+                    description: formData.description,
                     lastUpdated: new Date().toISOString()
                 };
                 
@@ -2842,11 +3939,11 @@
                         });
                     }
                     
-                    // Update UI
                     renderCalendar();
                     renderWorkDaysList();
                     updateStatistics();
                     filterWorkDays();
+                    loadAIInsights(); // Refresh AI insights
                     
                 } catch (error) {
                     console.error("Error saving to Firebase:", error);
@@ -2862,7 +3959,6 @@
                         console.log("Work day updated in Firebase:", workDayId);
                     }
                     
-                    // Update local array
                     const index = workDays.findIndex(wd => wd.id === workDayId);
                     if (index !== -1) {
                         workDays[index] = {
@@ -2870,11 +3966,11 @@
                             ...workDayData
                         };
                         
-                        // Update UI
                         renderCalendar();
                         renderWorkDaysList();
                         updateStatistics();
                         filterWorkDays();
+                        loadAIInsights(); // Refresh AI insights
                     }
                     
                 } catch (error) {
@@ -2891,11 +3987,12 @@
                 formTitle.textContent = "Nuova Voce Lavorativa";
                 submitBtnText.textContent = "Salva Voce";
                 
-                // Set default date to today (Italian timezone)
                 workDateInput.value = getItalianDate();
                 
-                // Hide alerts
                 hideAlerts();
+                aiSuggestionsText.classList.remove('show');
+                aiValidationWarnings.classList.add('d-none');
+                aiValidationWarnings.innerHTML = '';
             }
             
             // Export data
@@ -2905,15 +4002,16 @@
                     return;
                 }
                 
-                // Prepare CSV data
                 const csvData = [
-                    ['Data', 'Lavoratore', 'Ruolo', 'Cantiere', 'Ore Normali', 'Straordinario', 'Ore Totali', 'Descrizione']
+                    ['Data', 'Lavoratore', 'Ruolo', 'Cantiere', 'Ore Normali', 'Straordinario', 'Ore Totali', 'Descrizione', 'Costo Stimato']
                 ];
                 
                 workDays.forEach(workDay => {
                     const worker = workers.find(w => w.id === workDay.workerId);
                     const role = worker ? worker.role : 'N/A';
                     const totalHours = workDay.hours + (workDay.overtime || 0);
+                    const hourlyRate = worker ? worker.hourlyRate : getDefaultHourlyRate(worker ? worker.role : '');
+                    const cost = totalHours * hourlyRate;
                     
                     csvData.push([
                         workDay.date,
@@ -2923,21 +4021,20 @@
                         workDay.hours,
                         workDay.overtime || 0,
                         totalHours,
-                        workDay.description || ''
+                        workDay.description || '',
+                        cost.toFixed(2)
                     ]);
                 });
                 
-                // Convert to CSV string
                 const csvString = csvData.map(row => 
                     row.map(cell => `"${cell.toString().replace(/"/g, '""')}"`).join(',')
                 ).join('\n');
                 
-                // Create download link
                 const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
                 link.setAttribute('href', url);
-                link.setAttribute('download', `giornate_lavorative_${getItalianDate()}.csv`);
+                link.setAttribute('download', `giornate_lavorative_ai_${getItalianDate()}.csv`);
                 link.style.visibility = 'hidden';
                 document.body.appendChild(link);
                 link.click();
@@ -2982,24 +4079,21 @@
                         console.log("Work day deleted from Firebase:", workDayToDelete);
                     }
                     
-                    // Remove from local array
                     const index = workDays.findIndex(wd => wd.id === workDayToDelete);
                     if (index !== -1) {
                         workDays.splice(index, 1);
                     }
                     
-                    // Update UI
                     renderCalendar();
                     renderWorkDaysList();
                     updateStatistics();
                     filterWorkDays();
+                    loadAIInsights(); // Refresh AI insights
                     
-                    // Reset form if editing deleted work day
                     if (workDayIdInput.value === workDayToDelete) {
                         resetForm();
                     }
                     
-                    // Close modal and show success message
                     deleteModal.classList.remove('show');
                     showSuccessAlert("Voce lavorativa eliminata con successo");
                     
@@ -3016,7 +4110,6 @@
                 const workDay = workDays.find(wd => wd.id === workDayId);
                 
                 if (workDay) {
-                    // Populate form
                     workDayIdInput.value = workDay.id;
                     workDateInput.value = workDay.date;
                     workerSelect.value = workDay.workerId;
@@ -3025,12 +4118,10 @@
                     constructionSiteSelect.value = workDay.constructionSiteId;
                     descriptionInput.value = workDay.description || '';
                     
-                    // Update UI
                     formTitle.textContent = "Modifica Voce Lavorativa";
                     submitBtnText.textContent = "Aggiorna Voce";
                     cancelBtn.style.display = 'block';
                     
-                    // Scroll to form
                     document.getElementById('workDayFormCard').scrollIntoView({ 
                         behavior: 'smooth',
                         block: 'start'
