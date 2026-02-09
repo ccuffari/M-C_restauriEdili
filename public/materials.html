@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuffari - Gestione Materiali con AI</title>
+    <title>Cuffari - Gestione Materiali</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* CSS Reset e Base */
         :root {
             --primary-color: #003366;
             --primary-dark: #002244;
@@ -48,6 +48,7 @@
             flex-direction: column;
         }
         
+        /* Container Responsive */
         .container {
             width: 100%;
             padding-right: 15px;
@@ -56,35 +57,43 @@
             margin-left: auto;
         }
         
+        /* Breakpoint per xxs (molto piccolo) */
         @media (max-width: 359.98px) {
             .container { padding: 0 8px; }
             html { font-size: 14px; }
         }
         
+        /* Breakpoint per xs (extra small) */
         @media (min-width: 360px) and (max-width: 575.98px) {
             .container { max-width: 100%; }
         }
         
+        /* Breakpoint per sm (small) */
         @media (min-width: 576px) and (max-width: 767.98px) {
             .container { max-width: 540px; }
         }
         
+        /* Breakpoint per md (medium) */
         @media (min-width: 768px) and (max-width: 991.98px) {
             .container { max-width: 720px; }
         }
         
+        /* Breakpoint per lg (large) */
         @media (min-width: 992px) and (max-width: 1199.98px) {
             .container { max-width: 960px; }
         }
         
+        /* Breakpoint per xl (extra large) */
         @media (min-width: 1200px) and (max-width: 1399.98px) {
             .container { max-width: 1140px; }
         }
         
+        /* Breakpoint per xxl (extra extra large) */
         @media (min-width: 1400px) {
             .container { max-width: 1320px; }
         }
         
+        /* Utility Classes */
         .text-center { text-align: center; }
         .text-right { text-align: right; }
         .text-left { text-align: left; }
@@ -112,6 +121,7 @@
         .p-4 { padding: 2rem; }
         .w-100 { width: 100%; }
         
+        /* Header Styles */
         .header {
             background-color: var(--primary-color);
             color: white;
@@ -235,6 +245,7 @@
             margin-right: 0.5rem;
         }
         
+        /* Main Content */
         .main-content {
             flex: 1;
             padding: 2rem 0;
@@ -274,6 +285,7 @@
             flex-wrap: wrap;
         }
         
+        /* Button Styles */
         .btn {
             padding: 0.75rem 1.5rem;
             border: none;
@@ -335,6 +347,7 @@
             font-size: 0.875rem;
         }
         
+        /* Stats Cards */
         .stats-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -399,6 +412,7 @@
             color: var(--danger-color);
         }
         
+        /* Main Content Layout */
         .content-container {
             display: grid;
             grid-template-columns: 1fr;
@@ -411,6 +425,7 @@
             }
         }
         
+        /* Form Card */
         .form-card {
             background: white;
             border-radius: 8px;
@@ -441,6 +456,7 @@
             padding: 1.5rem;
         }
         
+        /* Form Styles */
         .form-group {
             margin-bottom: 1.25rem;
         }
@@ -531,6 +547,7 @@
             min-width: 0;
         }
         
+        /* Materials List */
         .materials-list {
             background: white;
             border-radius: 8px;
@@ -623,6 +640,7 @@
             cursor: pointer;
         }
         
+        /* Table Styles */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -670,6 +688,7 @@
             margin-top: 0.25rem;
         }
         
+        /* Stock Indicators */
         .stock-badge {
             padding: 0.35rem 0.75rem;
             border-radius: 20px;
@@ -695,6 +714,7 @@
             color: #721c24;
         }
         
+        /* Category Badges */
         .category-badge {
             padding: 0.35rem 0.75rem;
             border-radius: 4px;
@@ -707,6 +727,7 @@
             color: var(--primary-color);
         }
         
+        /* Price Display */
         .price-display {
             font-weight: 600;
             color: var(--dark-color);
@@ -718,6 +739,7 @@
             margin-top: 0.25rem;
         }
         
+        /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 0.5rem;
@@ -750,6 +772,7 @@
             background: rgba(220, 53, 69, 0.1);
         }
         
+        /* No Data Message */
         .no-data {
             text-align: center;
             padding: 3rem 1rem;
@@ -772,6 +795,7 @@
             font-size: 1rem;
         }
         
+        /* Loading Spinner */
         .loading-spinner {
             text-align: center;
             padding: 3rem 1rem;
@@ -784,6 +808,7 @@
             color: var(--primary-color);
         }
         
+        /* Alerts */
         .alert {
             padding: 1rem;
             border-radius: 4px;
@@ -823,6 +848,7 @@
             border: 1px solid #bee5eb;
         }
         
+        /* Pagination */
         .pagination {
             display: flex;
             justify-content: center;
@@ -857,6 +883,7 @@
             border-color: var(--primary-color);
         }
         
+        /* Footer */
         .footer {
             background: var(--primary-color);
             color: white;
@@ -894,6 +921,7 @@
             opacity: 0.7;
         }
         
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -958,6 +986,7 @@
             gap: 0.75rem;
         }
         
+        /* Material Details */
         .material-details {
             display: grid;
             grid-template-columns: 1fr;
@@ -986,6 +1015,7 @@
             font-size: 1rem;
         }
         
+        /* Stock Level Indicator */
         .stock-level {
             height: 10px;
             background: #e9ecef;
@@ -1011,310 +1041,7 @@
             background: var(--danger-color);
         }
         
-        /* AI Dashboard Styles */
-        .ai-dashboard {
-            margin-bottom: 2.5rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .ai-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: var(--shadow-sm);
-            padding: 1.5rem;
-            transition: var(--transition);
-        }
-        
-        .ai-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .ai-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid var(--border-color);
-        }
-        
-        .ai-card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .ai-card-title i {
-            color: var(--secondary-color);
-        }
-        
-        .ai-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            background: var(--primary-light);
-            color: white;
-        }
-        
-        .ai-insight {
-            background: #f8f9fa;
-            border-radius: 6px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--secondary-color);
-        }
-        
-        .ai-insight.warning {
-            border-left-color: var(--warning-color);
-            background: #fff3cd;
-        }
-        
-        .ai-insight.critical {
-            border-left-color: var(--danger-color);
-            background: #f8d7da;
-        }
-        
-        .ai-insight.success {
-            border-left-color: var(--success-color);
-            background: #d4edda;
-        }
-        
-        .ai-insight-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .ai-insight-content {
-            font-size: 0.9rem;
-            color: var(--dark-color);
-        }
-        
-        .ai-action-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            margin-top: 0.5rem;
-        }
-        
-        .ai-action-btn:hover {
-            background: var(--primary-dark);
-        }
-        
-        .chart-container {
-            height: 200px;
-            margin-top: 1rem;
-        }
-        
-        .ai-recommendations {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .ai-recommendation {
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .ai-recommendation:last-child {
-            border-bottom: none;
-        }
-        
-        .recommendation-info {
-            flex: 1;
-        }
-        
-        .recommendation-material {
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-        
-        .recommendation-details {
-            font-size: 0.85rem;
-            color: var(--gray-color);
-            margin-top: 0.25rem;
-        }
-        
-        .recommendation-action {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .consumption-trend {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-        }
-        
-        .trend-up {
-            color: var(--success-color);
-        }
-        
-        .trend-down {
-            color: var(--danger-color);
-        }
-        
-        .trend-stable {
-            color: var(--gray-color);
-        }
-        
-        .notification-settings {
-            background: #f8f9fa;
-            border-radius: 6px;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .notification-toggle {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        
-        .ai-loading {
-            text-align: center;
-            padding: 2rem;
-            color: var(--gray-color);
-        }
-        
-        .ai-loading i {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-            animation: spin 2s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .ai-modal-body {
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-        
-        .ai-analysis-section {
-            margin-bottom: 2rem;
-        }
-        
-        .analysis-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .analysis-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-        
-        .analysis-confidence {
-            font-size: 0.8rem;
-            background: var(--primary-light);
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-        }
-        
-        .prediction-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        
-        .prediction-card {
-            background: #f8f9fa;
-            border-radius: 6px;
-            padding: 1rem;
-            text-align: center;
-        }
-        
-        .prediction-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-        
-        .prediction-label {
-            font-size: 0.85rem;
-            color: var(--gray-color);
-            margin-top: 0.5rem;
-        }
-        
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
             .logo-container {
                 min-width: auto;
@@ -1361,14 +1088,6 @@
             .action-buttons {
                 flex-wrap: wrap;
                 justify-content: center;
-            }
-            
-            .ai-dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            .prediction-grid {
-                grid-template-columns: 1fr;
             }
         }
         
@@ -1483,6 +1202,7 @@
             }
         }
         
+        /* Extra small devices (xxs) */
         @media (max-width: 320px) {
             .logo-text {
                 font-size: 1.1rem;
@@ -1528,12 +1248,15 @@
                 <i class="fas fa-building logo-icon"></i>
                 <div>
                     <div class="logo-text">Cuffari Restauri Edili</div>
-                    <div class="subtitle">Piattaforma di Management Intelligente</div>
+                    <div class="subtitle">Piattaforma di Management Interno</div>
                 </div>
             </div>
             
             <div class="user-menu">
                 <div class="nav-menu">
+                    <a href="profile.html" class="nav-btn">
+                        <i class="fas fa-tachometer-alt"></i> <span>Profilo</span>
+                    </a>
                     <a href="profile.html" class="nav-btn">
                         <i class="fas fa-user-circle"></i> <span>Profilo</span>
                     </a>
@@ -1553,7 +1276,7 @@
                         <i class="fas fa-truck"></i> <span>Fornitori</span>
                     </a>
                     <a href="materials.html" class="nav-btn active">
-                        <i class="fas fa-robot"></i> <span>AI Materiali</span>
+                        <i class="fas fa-boxes"></i> <span>Materiali</span>
                     </a>
                     <a href="invoices.html" class="nav-btn">
                         <i class="fas fa-file-invoice"></i> <span>Fatture</span>
@@ -1577,28 +1300,17 @@
             <div class="page-header">
                 <div>
                     <h1 class="page-title">
-                        <i class="fas fa-robot"></i> Gestione Materiali Intelligente
+                        <i class="fas fa-boxes"></i> Gestione Materiali
                     </h1>
-                    <p class="page-subtitle">AI-powered inventory management con analisi predittiva</p>
+                    <p class="page-subtitle">Gestisci i materiali e le scorte dell'azienda</p>
                 </div>
                 <div class="page-actions">
                     <button class="btn btn-secondary" id="exportBtn">
                         <i class="fas fa-file-export"></i> <span>Esporta</span>
                     </button>
-                    <button class="btn btn-info" id="aiInsightsBtn">
-                        <i class="fas fa-chart-line"></i> <span>Analisi AI</span>
-                    </button>
                     <button class="btn btn-primary" id="addMaterialBtn">
                         <i class="fas fa-plus-circle"></i> <span>Nuovo Materiale</span>
                     </button>
-                </div>
-            </div>
-            
-            <!-- AI Dashboard -->
-            <div class="ai-dashboard" id="aiDashboard">
-                <div class="ai-loading">
-                    <i class="fas fa-cog fa-spin"></i>
-                    <p>Caricamento analisi AI...</p>
                 </div>
             </div>
             
@@ -1735,6 +1447,7 @@
                                         <i class="fas fa-truck"></i>
                                         <select id="supplierId" class="form-control">
                                             <option value="">Seleziona fornitore</option>
+                                            <!-- Fornitori verranno caricati dinamicamente -->
                                         </select>
                                     </div>
                                 </div>
@@ -1771,6 +1484,7 @@
                                 <textarea id="description" class="form-control" placeholder="Descrizione del materiale, caratteristiche tecniche..." rows="3"></textarea>
                             </div>
                             
+                            <!-- Alerts -->
                             <div id="successAlert" class="alert alert-success d-none">
                                 <i class="fas fa-check-circle"></i>
                                 <div>Materiale salvato con successo!</div>
@@ -1880,7 +1594,7 @@
                 </div>
                 
                 <div class="company-info">
-                    <p><strong>Cuffari Restauri Edili</strong> - Sistema AI per gestione intelligente materiali</p>
+                    <p><strong>Cuffari Restauri Edili</strong> - Soluzioni edili di alta qualità</p>
                 </div>
                 
                 <div class="copyright">
@@ -1899,6 +1613,7 @@
             </div>
             <div class="modal-body">
                 <div class="material-details" id="materialDetailsContent">
+                    <!-- Material details will be loaded here -->
                 </div>
             </div>
             <div class="modal-footer">
@@ -1920,27 +1635,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="cancelDelete">Annulla</button>
-                <button class="btn btn-danger" id="confirmDelete">Elimina</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- AI Insights Modal -->
-    <div class="modal" id="aiInsightsModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">
-                    <i class="fas fa-brain"></i> Analisi AI Avanzata
-                </h3>
-                <button class="modal-close" id="closeAiInsightsModal">&times;</button>
-            </div>
-            <div class="modal-body ai-modal-body" id="aiInsightsContent">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="closeAiModalBtn">Chiudi</button>
-                <button class="btn btn-primary" id="generateReportBtn">
-                    <i class="fas fa-file-pdf"></i> Genera Report
-                </button>
+                                <button class="btn btn-danger" id="confirmDelete">Elimina</button>
             </div>
         </div>
     </div>
@@ -1949,7 +1644,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1978,13 +1673,6 @@
             const logoutBtn = document.getElementById('logoutBtn');
             const userNameElement = document.getElementById('userName');
             const userRoleElement = document.getElementById('userRole');
-            const aiInsightsBtn = document.getElementById('aiInsightsBtn');
-            const aiDashboard = document.getElementById('aiDashboard');
-            const aiInsightsModal = document.getElementById('aiInsightsModal');
-            const aiInsightsContent = document.getElementById('aiInsightsContent');
-            const closeAiInsightsModal = document.getElementById('closeAiInsightsModal');
-            const closeAiModalBtn = document.getElementById('closeAiModalBtn');
-            const generateReportBtn = document.getElementById('generateReportBtn');
             
             // Materials list elements
             const materialsTableBody = document.getElementById('materialsTableBody');
@@ -2014,19 +1702,12 @@
             // Global variables
             let db = null;
             let auth = null;
+            let storage = null;
             let currentUser = null;
             let materials = [];
             let suppliers = [];
             let materialToDelete = null;
             let selectedMaterialId = null;
-            let aiInsights = [];
-            let consumptionHistory = [];
-            let aiConfig = {
-                notifications: true,
-                emailAlerts: true,
-                predictionDays: 30,
-                confidenceThreshold: 0.7
-            };
             
             // Initialize Firebase
             async function initializeFirebase() {
@@ -2061,6 +1742,7 @@
                         
                         db = firebase.firestore();
                         auth = firebase.auth();
+                        storage = firebase.storage();
                         
                         auth.onAuthStateChanged(user => {
                             if (user) {
@@ -2071,12 +1753,13 @@
                             }
                         });
                         
-                        return { db, auth };
+                        return { db, auth, storage };
                     } else if (typeof firebase !== 'undefined') {
                         console.log("Firebase already initialized");
                         db = firebase.firestore();
                         auth = firebase.auth();
-                        return { db, auth };
+                        storage = firebase.storage();
+                        return { db, auth, storage };
                     }
                 } catch (error) {
                     console.error("Error initializing Firebase:", error);
@@ -2322,772 +2005,24 @@
                 showWarningAlert("Modalità offline: dati di esempio visualizzati.");
             }
             
-            // Initialize AI
-            async function initAI() {
-                try {
-                    await loadConsumptionHistory();
-                    await loadAIInsights();
-                    await loadAIConfig();
-                    renderAIDashboard();
-                } catch (error) {
-                    console.error("Error initializing AI:", error);
-                    showAIFallback();
-                }
-            }
-            
-            // Load consumption history
-            async function loadConsumptionHistory() {
-                if (!db) return;
-                
-                try {
-                    const movementsSnapshot = await db.collection('material_movements')
-                        .where('timestamp', '>=', new Date(Date.now() - 90 * 24 * 60 * 60 * 1000))
-                        .orderBy('timestamp', 'desc')
-                        .get();
-                    
-                    consumptionHistory = [];
-                    movementsSnapshot.forEach(doc => {
-                        consumptionHistory.push({
-                            id: doc.id,
-                            ...doc.data()
-                        });
-                    });
-                    
-                    console.log(`Loaded ${consumptionHistory.length} consumption records`);
-                    
-                } catch (error) {
-                    console.error("Error loading consumption history:", error);
-                    simulateConsumptionData();
-                }
-            }
-            
-            // Load AI insights
-            async function loadAIInsights() {
-                if (!db) return;
-                
-                try {
-                    const insightsSnapshot = await db.collection('ai_insights')
-                        .where('userId', '==', currentUser.uid)
-                        .orderBy('createdAt', 'desc')
-                        .limit(10)
-                        .get();
-                    
-                    aiInsights = [];
-                    insightsSnapshot.forEach(doc => {
-                        aiInsights.push({
-                            id: doc.id,
-                            ...doc.data()
-                        });
-                    });
-                    
-                    if (aiInsights.length === 0) {
-                        await generateNewInsights();
-                    }
-                    
-                } catch (error) {
-                    console.error("Error loading AI insights:", error);
-                    await generateNewInsights();
-                }
-            }
-            
-            // Generate new AI insights
-            async function generateNewInsights() {
-                if (!materials || materials.length === 0) return;
-                
-                const newInsights = await analyzeMaterialsAI();
-                
-                if (db && currentUser) {
-                    try {
-                        const batch = db.batch();
-                        newInsights.forEach(insight => {
-                            const docRef = db.collection('ai_insights').doc();
-                            batch.set(docRef, {
-                                ...insight,
-                                userId: currentUser.uid,
-                                createdAt: new Date().toISOString(),
-                                read: false
-                            });
-                        });
-                        await batch.commit();
-                        aiInsights = newInsights;
-                    } catch (error) {
-                        console.error("Error saving AI insights:", error);
-                        aiInsights = newInsights;
-                    }
-                } else {
-                    aiInsights = newInsights;
-                }
-                
-                await checkAndSendNotifications();
-            }
-            
-            // Analyze materials with AI
-            async function analyzeMaterialsAI() {
-                const insights = [];
-                
-                materials.forEach(material => {
-                    const stockStatus = getStockStatus(material.stockQuantity, material.minimumStock);
-                    const daysOfSupply = calculateDaysOfSupply(material);
-                    const exhaustionPrediction = predictExhaustion(material);
-                    const consumptionAnalysis = analyzeConsumption(material);
-                    const recommendations = generateRecommendations(material, stockStatus, exhaustionPrediction, consumptionAnalysis);
-                    
-                    insights.push({
-                        materialId: material.id,
-                        materialName: material.name,
-                        materialCode: material.code,
-                        category: material.category,
-                        stockStatus: stockStatus,
-                        currentStock: material.stockQuantity,
-                        minimumStock: material.minimumStock || 0,
-                        daysOfSupply: daysOfSupply,
-                        predictedExhaustionDate: exhaustionPrediction.date,
-                        confidence: exhaustionPrediction.confidence,
-                        consumptionTrend: consumptionAnalysis.trend,
-                        averageDailyConsumption: consumptionAnalysis.averageDaily,
-                        recommendations: recommendations,
-                        priority: determinePriority(stockStatus, exhaustionPrediction, consumptionAnalysis),
-                        createdAt: new Date().toISOString()
-                    });
-                });
-                
-                const globalInsights = generateGlobalInsights(insights);
-                insights.push(globalInsights);
-                
-                return insights;
-            }
-            
-            // Calculate days of supply
-            function calculateDaysOfSupply(material) {
-                const dailyConsumption = calculateAverageDailyConsumption(material.id);
-                
-                if (dailyConsumption <= 0) {
-                    return material.stockQuantity > 0 ? 999 : 0;
-                }
-                
-                return Math.floor(material.stockQuantity / dailyConsumption);
-            }
-            
-            // Calculate average daily consumption
-            function calculateAverageDailyConsumption(materialId) {
-                const materialMovements = consumptionHistory.filter(m => 
-                    m.materialId === materialId && m.type === 'out'
-                );
-                
-                if (materialMovements.length === 0) return 0;
-                
-                const totalConsumption = materialMovements.reduce((sum, movement) => 
-                    sum + movement.quantity, 0
-                );
-                
-                const timestamps = materialMovements.map(m => new Date(m.timestamp).getTime());
-                const oldest = Math.min(...timestamps);
-                const newest = Math.max(...timestamps);
-                const days = Math.max(1, (newest - oldest) / (1000 * 60 * 60 * 24));
-                
-                return totalConsumption / days;
-            }
-            
-            // Predict exhaustion
-            function predictExhaustion(material) {
-                const dailyConsumption = calculateAverageDailyConsumption(material.id);
-                
-                if (dailyConsumption <= 0) {
-                    return {
-                        date: null,
-                        confidence: 0,
-                        message: "Consumo non rilevabile"
-                    };
-                }
-                
-                const daysToExhaustion = Math.floor(material.stockQuantity / dailyConsumption);
-                const exhaustionDate = new Date();
-                exhaustionDate.setDate(exhaustionDate.getDate() + daysToExhaustion);
-                
-                let confidence = 0.5;
-                const materialMovements = consumptionHistory.filter(m => m.materialId === material.id);
-                
-                if (materialMovements.length >= 10) {
-                    confidence = 0.8;
-                } else if (materialMovements.length >= 5) {
-                    confidence = 0.7;
-                }
-                
-                return {
-                    date: exhaustionDate,
-                    days: daysToExhaustion,
-                    confidence: confidence,
-                    message: `Stima esaurimento: ${exhaustionDate.toLocaleDateString()}`
-                };
-            }
-            
-            // Analyze consumption
-            function analyzeConsumption(material) {
-                const materialMovements = consumptionHistory.filter(m => m.materialId === material.id);
-                
-                if (materialMovements.length < 3) {
-                    return {
-                        trend: 'unknown',
-                        averageDaily: 0,
-                        volatility: 0,
-                        seasonality: false
-                    };
-                }
-                
-                const consumptions = materialMovements
-                    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-                    .map(m => m.quantity);
-                
-                let trend = 'stable';
-                if (consumptions.length >= 5) {
-                    const firstHalf = consumptions.slice(0, Math.floor(consumptions.length / 2));
-                    const secondHalf = consumptions.slice(Math.floor(consumptions.length / 2));
-                    
-                    const avgFirst = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
-                    const avgSecond = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
-                    
-                    const change = ((avgSecond - avgFirst) / avgFirst) * 100;
-                    
-                    if (change > 10) trend = 'increasing';
-                    else if (change < -10) trend = 'decreasing';
-                }
-                
-                return {
-                    trend: trend,
-                    averageDaily: calculateAverageDailyConsumption(material.id),
-                    volatility: calculateVolatility(consumptions),
-                    seasonality: checkSeasonality(materialMovements)
-                };
-            }
-            
-            // Generate recommendations
-            function generateRecommendations(material, stockStatus, exhaustionPrediction, consumptionAnalysis) {
-                const recommendations = [];
-                
-                if (stockStatus === 'critical') {
-                    recommendations.push({
-                        type: 'urgent',
-                        action: 'order',
-                        message: `Riordina immediatamente ${material.name}. Scorta critica!`,
-                        suggestedQuantity: Math.max(material.minimumStock * 2, material.stockQuantity * 3),
-                        priority: 1
-                    });
-                } else if (stockStatus === 'low') {
-                    recommendations.push({
-                        type: 'warning',
-                        action: 'plan_order',
-                        message: `Pianifica riordino per ${material.name}`,
-                        suggestedQuantity: material.minimumStock * 1.5,
-                        priority: 2
-                    });
-                }
-                
-                if (exhaustionPrediction.days && exhaustionPrediction.days <= 7) {
-                    recommendations.push({
-                        type: 'urgent',
-                        action: 'order',
-                        message: `${material.name} si esaurirà in ${exhaustionPrediction.days} giorni`,
-                        suggestedQuantity: calculateOptimalOrderQuantity(material, consumptionAnalysis),
-                        priority: 1
-                    });
-                } else if (exhaustionPrediction.days && exhaustionPrediction.days <= 30) {
-                    recommendations.push({
-                        type: 'info',
-                        action: 'review',
-                        message: `Verifica scorte di ${material.name}. Esaurimento previsto tra ${exhaustionPrediction.days} giorni`,
-                        suggestedQuantity: null,
-                        priority: 3
-                    });
-                }
-                
-                if (consumptionAnalysis.trend === 'increasing') {
-                    recommendations.push({
-                        type: 'warning',
-                        action: 'increase_stock',
-                        message: `Consumo in aumento per ${material.name}. Considera aumentare la scorta minima`,
-                        suggestedQuantity: null,
-                        priority: 2
-                    });
-                }
-                
-                return recommendations;
-            }
-            
-            // Determine priority
-            function determinePriority(stockStatus, exhaustionPrediction, consumptionAnalysis) {
-                if (stockStatus === 'critical') return 1;
-                if (exhaustionPrediction.days && exhaustionPrediction.days <= 7) return 1;
-                if (stockStatus === 'low') return 2;
-                if (exhaustionPrediction.days && exhaustionPrediction.days <= 30) return 3;
-                return 4;
-            }
-            
-            // Generate global insights
-            function generateGlobalInsights(insights) {
-                const criticalInsights = insights.filter(i => i.priority === 1);
-                const warningInsights = insights.filter(i => i.priority === 2);
-                const totalValue = calculateTotalInventoryValue();
-                
-                return {
-                    type: 'global',
-                    insights: [
-                        {
-                            title: 'Materiali Critici',
-                            value: criticalInsights.length,
-                            description: `${criticalInsights.length} materiali richiedono attenzione immediata`
-                        },
-                        {
-                            title: 'Investimento Scorte',
-                            value: `€${totalValue.toFixed(2)}`,
-                            description: 'Valore totale inventario'
-                        },
-                        {
-                            title: 'Efficienza Scorte',
-                            value: calculateStockEfficiency(),
-                            description: 'Indice di rotazione scorte'
-                        }
-                    ],
-                    recommendations: generateGlobalRecommendations(insights)
-                };
-            }
-            
-            // Calculate total inventory value
-            function calculateTotalInventoryValue() {
-                return materials.reduce((total, material) => {
-                    return total + (material.stockQuantity * material.unitPrice);
-                }, 0);
-            }
-            
-            // Calculate stock efficiency
-            function calculateStockEfficiency() {
-                if (consumptionHistory.length === 0) return 0;
-                
-                const totalConsumption = consumptionHistory
-                    .filter(m => m.type === 'out')
-                    .reduce((sum, m) => sum + m.quantity, 0);
-                
-                const averageStock = materials.reduce((sum, m) => sum + m.stockQuantity, 0) / materials.length;
-                
-                return totalConsumption > 0 ? (totalConsumption / averageStock).toFixed(2) : 0;
-            }
-            
-            // Generate global recommendations
-            function generateGlobalRecommendations(insights) {
-                const recommendations = [];
-                
-                const criticalByCategory = {};
-                insights.forEach(insight => {
-                    if (insight.priority <= 2) {
-                        criticalByCategory[insight.category] = (criticalByCategory[insight.category] || 0) + 1;
-                    }
-                });
-                
-                let maxCategory = null;
-                let maxCount = 0;
-                Object.entries(criticalByCategory).forEach(([category, count]) => {
-                    if (count > maxCount) {
-                        maxCount = count;
-                        maxCategory = category;
-                    }
-                });
-                
-                if (maxCategory) {
-                    recommendations.push({
-                        type: 'global',
-                        action: 'category_review',
-                        message: `Attenzione alla categoria "${getCategoryText(maxCategory)}": ${maxCount} materiali critici`,
-                        priority: 2
-                    });
-                }
-                
-                const lowTurnoverMaterials = insights.filter(i => i.daysOfSupply > 180);
-                if (lowTurnoverMaterials.length > 0) {
-                    recommendations.push({
-                        type: 'global',
-                        action: 'optimize',
-                        message: `${lowTurnoverMaterials.length} materiali con rotazione lenta. Considera ridurre le scorte`,
-                        priority: 3
-                    });
-                }
-                
-                return recommendations;
-            }
-            
-            // Load AI config
-            async function loadAIConfig() {
-                if (!db || !currentUser) return;
-                
-                try {
-                    const configDoc = await db.collection('ai_config')
-                        .doc(currentUser.uid)
-                        .get();
-                    
-                    if (configDoc.exists) {
-                        aiConfig = { ...aiConfig, ...configDoc.data() };
-                    }
-                } catch (error) {
-                    console.error("Error loading AI config:", error);
-                }
-            }
-            
-            // Check and send notifications
-            async function checkAndSendNotifications() {
-                if (!aiConfig.emailAlerts) return;
-                
-                const criticalAlerts = aiInsights.filter(insight => 
-                    insight.priority === 1 && !insight.notificationSent
-                );
-                
-                if (criticalAlerts.length === 0) return;
-                
-                const emailContent = prepareNotificationEmail(criticalAlerts);
-                
-                try {
-                    await db.collection('notifications').add({
-                        userId: currentUser.uid,
-                        type: 'email_alert',
-                        content: emailContent,
-                        criticalAlerts: criticalAlerts.map(a => ({
-                            materialId: a.materialId,
-                            materialName: a.materialName,
-                            reason: a.stockStatus === 'critical' ? 'Scorta critica' : 'Esaurimento imminente'
-                        })),
-                        sentAt: new Date().toISOString(),
-                        status: 'pending'
-                    });
-                    
-                    const batch = db.batch();
-                    criticalAlerts.forEach(alert => {
-                        if (alert.id) {
-                            const alertRef = db.collection('ai_insights').doc(alert.id);
-                            batch.update(alertRef, { notificationSent: true });
-                        }
-                    });
-                    await batch.commit();
-                    
-                    console.log("Notification saved for sending");
-                    
-                } catch (error) {
-                    console.error("Error saving notification:", error);
-                }
-            }
-            
-            // Prepare notification email
-            function prepareNotificationEmail(alerts) {
-                const subject = `🚨 Alert Scorte Critiche - ${alerts.length} materiali`;
-                
-                let body = `<!DOCTYPE html>
-                <html>
-                <head>
-                    <style>
-                        body { font-family: Arial, sans-serif; }
-                        .alert { background: #ffebee; padding: 15px; border-radius: 5px; margin: 10px 0; }
-                        .material { font-weight: bold; color: #d32f2f; }
-                        .action { background: #4caf50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
-                    </style>
-                </head>
-                <body>
-                    <h2>Alert Gestione Materiali</h2>
-                    <p>I seguenti materiali richiedono attenzione immediata:</p>`;
-                
-                alerts.forEach(alert => {
-                    body += `
-                    <div class="alert">
-                        <p class="material">${alert.materialName} (${alert.materialCode || 'N/A'})</p>
-                        <p>Stato: ${alert.stockStatus === 'critical' ? '🔴 Critico' : '🟡 Basso'}</p>
-                        <p>Scorte attuali: ${alert.currentStock}</p>
-                        <p>Scorte minime: ${alert.minimumStock}</p>
-                        <p>Esaurimento previsto: ${alert.predictedExhaustionDate ? new Date(alert.predictedExhaustionDate).toLocaleDateString() : 'N/A'}</p>
-                    </div>`;
-                });
-                
-                body += `
-                    <p><a href="${window.location.origin}/materials.html" class="action">Vai alla gestione materiali</a></p>
-                    <p>Questo messaggio è stato generato automaticamente dal sistema AI.</p>
-                </body>
-                </html>`;
-                
-                return { subject, body };
-            }
-            
-            // Render AI dashboard
-            function renderAIDashboard() {
-                if (!aiInsights || aiInsights.length === 0) {
-                    showAIFallback();
-                    return;
-                }
-                
-                let dashboardHTML = '';
-                
-                const criticalInsights = aiInsights.filter(i => i.priority === 1);
-                const warningInsights = aiInsights.filter(i => i.priority === 2);
-                
-                dashboardHTML += `
-                    <div class="ai-card">
-                        <div class="ai-card-header">
-                            <h3 class="ai-card-title">
-                                <i class="fas fa-exclamation-triangle"></i> Allarmi Attivi
-                            </h3>
-                            <span class="ai-badge">${criticalInsights.length + warningInsights.length}</span>
-                        </div>
-                        
-                        ${criticalInsights.length > 0 ? `
-                            <div class="ai-insight critical">
-                                <div class="ai-insight-title">
-                                    <i class="fas fa-fire"></i> ${criticalInsights.length} Allarmi Critici
-                                </div>
-                                <div class="ai-insight-content">
-                                    ${criticalInsights.slice(0, 3).map(insight => 
-                                        `<p><strong>${insight.materialName}</strong>: ${insight.recommendations?.[0]?.message || 'Scorta critica'}</p>`
-                                    ).join('')}
-                                    ${criticalInsights.length > 3 ? 
-                                        `<p>+ ${criticalInsights.length - 3} altri materiali critici</p>` : ''
-                                    }
-                                </div>
-                                <button class="ai-action-btn" onclick="viewCriticalMaterials()">
-                                    <i class="fas fa-list"></i> Vedi tutti
-                                </button>
-                            </div>
-                        ` : ''}
-                        
-                        ${warningInsights.length > 0 ? `
-                            <div class="ai-insight warning">
-                                <div class="ai-insight-title">
-                                    <i class="fas fa-exclamation-circle"></i> ${warningInsights.length} Avvisi
-                                </div>
-                                <div class="ai-insight-content">
-                                    ${warningInsights.slice(0, 2).map(insight => 
-                                        `<p><strong>${insight.materialName}</strong>: Esaurimento previsto tra ${insight.predictedExhaustionDate ? 
-                                            Math.ceil((new Date(insight.predictedExhaustionDate) - new Date()) / (1000 * 60 * 60 * 24)) : 'N/A'} giorni</p>`
-                                    ).join('')}
-                                </div>
-                            </div>
-                        ` : ''}
-                        
-                        ${criticalInsights.length === 0 && warningInsights.length === 0 ? `
-                            <div class="ai-insight success">
-                                <div class="ai-insight-title">
-                                    <i class="fas fa-check-circle"></i> Tutto sotto controllo
-                                </div>
-                                <div class="ai-insight-content">
-                                    <p>Nessun allarme attivo. Le scorte sono ben gestite.</p>
-                                </div>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-                
-                const allRecommendations = [];
-                aiInsights.forEach(insight => {
-                    if (insight.recommendations) {
-                        allRecommendations.push(...insight.recommendations.map(rec => ({
-                            ...rec,
-                            materialName: insight.materialName,
-                            materialId: insight.materialId
-                        })));
-                    }
-                });
-                
-                allRecommendations.sort((a, b) => a.priority - b.priority);
-                
-                dashboardHTML += `
-                    <div class="ai-card">
-                        <div class="ai-card-header">
-                            <h3 class="ai-card-title">
-                                <i class="fas fa-lightbulb"></i> Raccomandazioni AI
-                            </h3>
-                            <span class="ai-badge">${allRecommendations.length}</span>
-                        </div>
-                        
-                        <ul class="ai-recommendations">
-                            ${allRecommendations.slice(0, 5).map(rec => `
-                                <li class="ai-recommendation">
-                                    <div class="recommendation-info">
-                                        <div class="recommendation-material">${rec.materialName}</div>
-                                        <div class="recommendation-details">${rec.message}</div>
-                                        ${rec.suggestedQuantity ? 
-                                            `<div class="recommendation-details">
-                                                <i class="fas fa-box"></i> Quantità suggerita: ${rec.suggestedQuantity}
-                                            </div>` : ''
-                                        }
-                                    </div>
-                                    <div class="recommendation-action">
-                                        <button class="action-btn" title="Ordina" onclick="quickOrder('${rec.materialId}', ${rec.suggestedQuantity || 0})">
-                                            <i class="fas fa-shopping-cart"></i>
-                                        </button>
-                                        <button class="action-btn" title="Vedi dettagli" onclick="viewMaterial('${rec.materialId}')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                </li>
-                            `).join('')}
-                        </ul>
-                        
-                        ${allRecommendations.length > 5 ? `
-                            <button class="ai-action-btn" onclick="viewAllRecommendations()" style="width: 100%; margin-top: 1rem;">
-                                <i class="fas fa-list"></i> Vedi tutte le raccomandazioni (${allRecommendations.length})
-                            </button>
-                        ` : ''}
-                    </div>
-                `;
-                
-                dashboardHTML += `
-                    <div class="ai-card">
-                        <div class="ai-card-header">
-                            <h3 class="ai-card-title">
-                                <i class="fas fa-chart-line"></i> Previsioni Esaurimento
-                            </h3>
-                            <span class="ai-badge">Proattivo</span>
-                        </div>
-                        
-                        <div class="prediction-grid">
-                            ${aiInsights
-                                .filter(insight => insight.predictedExhaustionDate && insight.daysOfSupply)
-                                .slice(0, 4)
-                                .map(insight => {
-                                    const daysToExhaustion = Math.ceil((new Date(insight.predictedExhaustionDate) - new Date()) / (1000 * 60 * 60 * 24));
-                                    return `
-                                        <div class="prediction-card">
-                                            <div class="prediction-value">${daysToExhaustion}</div>
-                                            <div class="prediction-label">giorni</div>
-                                            <div class="prediction-label">${insight.materialName}</div>
-                                            <div class="consumption-trend ${insight.consumptionTrend === 'increasing' ? 'trend-up' : insight.consumptionTrend === 'decreasing' ? 'trend-down' : 'trend-stable'}">
-                                                <i class="fas fa-${insight.consumptionTrend === 'increasing' ? 'arrow-up' : insight.consumptionTrend === 'decreasing' ? 'arrow-down' : 'minus'}"></i>
-                                                ${insight.consumptionTrend === 'increasing' ? '↑' : insight.consumptionTrend === 'decreasing' ? '↓' : '→'}
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                        </div>
-                        
-                        <div class="notification-settings">
-                            <div class="notification-toggle">
-                                <span>Notifiche Email</span>
-                                <label class="switch">
-                                    <input type="checkbox" id="emailNotificationsToggle" ${aiConfig.emailAlerts ? 'checked' : ''}>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="notification-toggle">
-                                <span>Alert in tempo reale</span>
-                                <label class="switch">
-                                    <input type="checkbox" id="realtimeAlertsToggle" ${aiConfig.notifications ? 'checked' : ''}>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                aiDashboard.innerHTML = dashboardHTML;
-                
-                document.getElementById('emailNotificationsToggle')?.addEventListener('change', updateAIConfig);
-                document.getElementById('realtimeAlertsToggle')?.addEventListener('change', updateAIConfig);
-            }
-            
-            // Show AI fallback
-            function showAIFallback() {
-                aiDashboard.innerHTML = `
-                    <div class="ai-card">
-                        <div class="ai-card-header">
-                            <h3 class="ai-card-title">
-                                <i class="fas fa-robot"></i> AI Assistant
-                            </h3>
-                        </div>
-                        <div class="ai-insight">
-                            <div class="ai-insight-title">
-                                <i class="fas fa-info-circle"></i> Sistema AI non disponibile
-                            </div>
-                            <div class="ai-insight-content">
-                                <p>Il sistema di intelligenza artificiale richiede dati sufficienti per funzionare.</p>
-                                <p>Continua a utilizzare il sistema per raccogliere dati sui consumi e abilita le funzionalità AI.</p>
-                            </div>
-                            <button class="ai-action-btn" onclick="enableAIFeatures()">
-                                <i class="fas fa-play"></i> Attiva Funzionalità AI
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Update AI config
-            async function updateAIConfig() {
-                const emailToggle = document.getElementById('emailNotificationsToggle');
-                const realtimeToggle = document.getElementById('realtimeAlertsToggle');
-                
-                if (emailToggle) aiConfig.emailAlerts = emailToggle.checked;
-                if (realtimeToggle) aiConfig.notifications = realtimeToggle.checked;
-                
-                if (db && currentUser) {
-                    try {
-                        await db.collection('ai_config').doc(currentUser.uid).set(aiConfig, { merge: true });
-                        console.log("AI config updated");
-                    } catch (error) {
-                        console.error("Error updating AI config:", error);
-                    }
-                }
-            }
-            
-            // Helper functions
-            function calculateVolatility(values) {
-                if (values.length < 2) return 0;
-                const mean = values.reduce((a, b) => a + b) / values.length;
-                const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
-                return Math.sqrt(variance);
-            }
-            
-            function checkSeasonality(movements) {
-                const monthlyConsumption = {};
-                movements.forEach(movement => {
-                    const month = new Date(movement.timestamp).getMonth();
-                    monthlyConsumption[month] = (monthlyConsumption[month] || 0) + movement.quantity;
-                });
-                
-                const values = Object.values(monthlyConsumption);
-                if (values.length < 3) return false;
-                
-                const max = Math.max(...values);
-                const min = Math.min(...values);
-                return (max - min) / max > 0.3;
-            }
-            
-            function calculateOptimalOrderQuantity(material, consumptionAnalysis) {
-                const leadTimeDays = 7;
-                const safetyStock = material.minimumStock * 0.2;
-                
-                return Math.max(
-                    material.minimumStock,
-                    consumptionAnalysis.averageDaily * leadTimeDays + safetyStock
-                );
-            }
-            
-            function simulateConsumptionData() {
-                consumptionHistory = [];
-                
-                materials.forEach((material, index) => {
-                    const daysAgo = [1, 7, 14, 30, 45, 60, 90];
-                    daysAgo.forEach(day => {
-                        consumptionHistory.push({
-                            materialId: material.id,
-                            type: 'out',
-                            quantity: Math.random() * material.stockQuantity * 0.1,
-                            timestamp: new Date(Date.now() - day * 24 * 60 * 60 * 1000).toISOString()
-                        });
-                    });
-                });
-            }
-            
             // Initialize page
             async function initPage() {
+                // Initialize Firebase
                 await initializeFirebase();
+                
+                // Load materials
                 await loadMaterials();
+                
+                // Load suppliers for dropdown
                 await loadSuppliers();
-                await initAI();
+                
+                // Setup event listeners
                 setupEventListeners();
             }
             
             // Setup all event listeners
             function setupEventListeners() {
+                // Form buttons
                 addMaterialBtn.addEventListener('click', () => {
                     resetForm();
                     formTitle.textContent = "Nuovo Materiale";
@@ -3097,23 +2032,32 @@
                 
                 resetFormBtn.addEventListener('click', resetForm);
                 cancelBtn.addEventListener('click', resetForm);
+                
+                // Form submission
                 materialForm.addEventListener('submit', handleFormSubmit);
+                
+                // Export button
                 exportBtn.addEventListener('click', exportData);
+                
+                // Logout button
                 logoutBtn.addEventListener('click', handleLogout);
+                
+                // List filters
                 searchInput.addEventListener('input', filterMaterials);
                 categoryFilter.addEventListener('change', filterMaterials);
                 stockFilter.addEventListener('change', filterMaterials);
-                aiInsightsBtn.addEventListener('click', showAIInsightsModal);
-                closeAiInsightsModal.addEventListener('click', () => aiInsightsModal.classList.remove('show'));
-                closeAiModalBtn.addEventListener('click', () => aiInsightsModal.classList.remove('show'));
-                generateReportBtn.addEventListener('click', generateAIReport);
+                
+                // Modal buttons
                 closeMaterialDetailsModal.addEventListener('click', () => materialDetailsModal.classList.remove('show'));
                 closeModalBtn.addEventListener('click', () => materialDetailsModal.classList.remove('show'));
+                
+                // Delete modal buttons
                 closeDeleteModal.addEventListener('click', () => deleteModal.classList.remove('show'));
                 cancelDelete.addEventListener('click', () => deleteModal.classList.remove('show'));
                 confirmDelete.addEventListener('click', confirmMaterialDelete);
                 
-                [materialDetailsModal, deleteModal, aiInsightsModal].forEach(modal => {
+                // Close modals on outside click
+                [materialDetailsModal, deleteModal].forEach(modal => {
                     modal.addEventListener('click', (e) => {
                         if (e.target === modal) {
                             modal.classList.remove('show');
@@ -3189,6 +2133,7 @@
                 
                 let filteredMaterials = materials;
                 
+                // Filter by search term
                 if (searchTerm) {
                     filteredMaterials = filteredMaterials.filter(material => 
                         material.name.toLowerCase().includes(searchTerm) ||
@@ -3197,10 +2142,12 @@
                     );
                 }
                 
+                // Filter by category
                 if (categoryFilterValue) {
                     filteredMaterials = filteredMaterials.filter(material => material.category === categoryFilterValue);
                 }
                 
+                // Filter by stock status
                 if (stockFilterValue) {
                     filteredMaterials = filteredMaterials.filter(material => 
                         getStockStatus(material.stockQuantity, material.minimumStock) === stockFilterValue
@@ -3239,6 +2186,7 @@
                 lowStockSpan.textContent = low;
                 criticalStockSpan.textContent = critical;
                 
+                // Update change indicators
                 document.getElementById('totalChange').textContent = 'Totale';
                 document.getElementById('adequateChange').textContent = 'Adeguate';
                 document.getElementById('lowChange').textContent = 'Da riordinare';
@@ -3255,6 +2203,7 @@
                     return;
                 }
                 
+                // Prepare material data
                 const materialData = {
                     name: nameInput.value.trim(),
                     code: codeInput.value.trim() || '',
@@ -3349,10 +2298,10 @@
                         });
                     }
                     
+                    // Update UI
                     renderMaterialsTable();
                     updateStatistics();
                     filterMaterials();
-                    await initAI();
                     
                 } catch (error) {
                     console.error("Error saving to Firebase:", error);
@@ -3368,6 +2317,7 @@
                         console.log("Material updated in Firebase:", materialId);
                     }
                     
+                    // Update local array
                     const index = materials.findIndex(m => m.id === materialId);
                     if (index !== -1) {
                         materials[index] = {
@@ -3375,10 +2325,10 @@
                             ...materialData
                         };
                         
+                        // Update UI
                         renderMaterialsTable();
                         updateStatistics();
                         filterMaterials();
-                        await initAI();
                     }
                     
                 } catch (error) {
@@ -3394,6 +2344,8 @@
                 cancelBtn.style.display = 'none';
                 formTitle.textContent = "Nuovo Materiale";
                 submitBtnText.textContent = "Salva Materiale";
+                
+                // Hide alerts
                 hideAlerts();
             }
             
@@ -3404,6 +2356,7 @@
                     return;
                 }
                 
+                // Prepare CSV data
                 const csvData = [
                     ['Nome', 'Codice', 'Categoria', 'Unità', 'Prezzo Unitario', 'Quantità Stock', 'Scorta Minima', 'Valore Stock', 'Posizione', 'Descrizione']
                 ];
@@ -3425,10 +2378,12 @@
                     ]);
                 });
                 
+                // Convert to CSV string
                 const csvString = csvData.map(row => 
                     row.map(cell => `"${cell.toString().replace(/"/g, '""')}"`).join(',')
                 ).join('\n');
                 
+                // Create download link
                 const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
@@ -3461,7 +2416,7 @@
                 }
             }
             
-            // View material
+            // View material (global function)
             window.viewMaterial = function(materialId) {
                 const material = materials.find(m => m.id === materialId);
                 
@@ -3472,6 +2427,7 @@
                     const stockStatusText = getStockStatusText(stockStatus);
                     const stockValue = calculateStockValue(material.stockQuantity, material.unitPrice);
                     
+                    // Calculate stock percentage for visual indicator
                     let stockPercentage = 0;
                     let stockLevelClass = 'stock-level-low';
                     
@@ -3573,7 +2529,7 @@
                 }
             };
             
-            // Show delete modal
+            // Show delete modal (global function)
             window.showDeleteModal = function(materialId, materialInfo) {
                 materialToDelete = materialId;
                 deleteMaterialInfo.textContent = materialInfo;
@@ -3585,24 +2541,29 @@
                 if (!materialToDelete) return;
                 
                 try {
+                    // Delete from Firestore
                     if (db) {
                         await db.collection('materials').doc(materialToDelete).delete();
                         console.log("Material deleted from Firebase:", materialToDelete);
                     }
                     
+                    // Remove from local array
                     const index = materials.findIndex(m => m.id === materialToDelete);
                     if (index !== -1) {
                         materials.splice(index, 1);
                     }
                     
+                    // Update UI
                     renderMaterialsTable();
                     updateStatistics();
                     filterMaterials();
                     
+                    // Reset form if editing deleted material
                     if (materialIdInput.value === materialToDelete) {
                         resetForm();
                     }
                     
+                    // Close modal and show success message
                     deleteModal.classList.remove('show');
                     showSuccessAlert("Materiale eliminato con successo");
                     
@@ -3614,11 +2575,12 @@
                 }
             }
             
-            // Edit material
+            // Edit material (global function)
             window.editMaterial = function(materialId) {
                 const material = materials.find(m => m.id === materialId);
                 
                 if (material) {
+                    // Populate form
                     materialIdInput.value = material.id;
                     nameInput.value = material.name;
                     codeInput.value = material.code || '';
@@ -3631,289 +2593,17 @@
                     locationInput.value = material.location || '';
                     descriptionInput.value = material.description || '';
                     
+                    // Update UI
                     formTitle.textContent = "Modifica Materiale";
                     submitBtnText.textContent = "Aggiorna Materiale";
                     cancelBtn.style.display = 'block';
                     
+                    // Scroll to form
                     document.getElementById('materialFormCard').scrollIntoView({ 
                         behavior: 'smooth',
                         block: 'start'
                     });
                 }
-            };
-            
-            // Show AI insights modal
-            async function showAIInsightsModal() {
-                const insights = await analyzeMaterialsAI();
-                
-                let modalHTML = '';
-                
-                const criticalMaterials = insights.filter(i => i.priority === 1);
-                if (criticalMaterials.length > 0) {
-                    modalHTML += `
-                        <div class="ai-analysis-section">
-                            <div class="analysis-header">
-                                <h4 class="analysis-title">
-                                    <i class="fas fa-fire text-danger"></i> Materiali Critici
-                                </h4>
-                                <span class="analysis-confidence">Alta Priorità</span>
-                            </div>
-                            
-                            <div class="prediction-grid">
-                                ${criticalMaterials.map(material => `
-                                    <div class="prediction-card" style="border-left: 4px solid var(--danger-color);">
-                                        <div class="prediction-value">${material.currentStock}</div>
-                                        <div class="prediction-label">scorte attuali</div>
-                                        <div class="prediction-label">${material.materialName}</div>
-                                        <div class="prediction-label">
-                                            <small>Esaurimento: ${material.predictedExhaustionDate ? 
-                                                new Date(material.predictedExhaustionDate).toLocaleDateString() : 'N/A'}</small>
-                                        </div>
-                                        <button class="btn btn-sm btn-danger mt-2" onclick="editMaterial('${material.materialId}')">
-                                            <i class="fas fa-edit"></i> Gestisci
-                                        </button>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                modalHTML += `
-                    <div class="ai-analysis-section">
-                        <div class="analysis-header">
-                            <h4 class="analysis-title">
-                                <i class="fas fa-chart-line"></i> Analisi Previsionale
-                            </h4>
-                            <span class="analysis-confidence">${aiConfig.confidenceThreshold * 100}% Confidenza</span>
-                        </div>
-                        
-                        <div class="ai-insight">
-                            <div class="ai-insight-title">
-                                <i class="fas fa-calendar-alt"></i> Timeline Esaurimento
-                            </div>
-                            <div class="ai-insight-content">
-                                <p>${insights.filter(i => i.predictedExhaustionDate).length} materiali con previsione di esaurimento disponibile</p>
-                                <div class="chart-container">
-                                    <canvas id="exhaustionTimelineChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                const globalInsight = insights.find(i => i.type === 'global');
-                if (globalInsight) {
-                    modalHTML += `
-                        <div class="ai-analysis-section">
-                            <div class="analysis-header">
-                                <h4 class="analysis-title">
-                                    <i class="fas fa-cogs"></i> Ottimizzazione Inventario
-                                </h4>
-                            </div>
-                            
-                            ${globalInsight.insights.map(insight => `
-                                <div class="ai-insight">
-                                    <div class="ai-insight-title">${insight.title}</div>
-                                    <div class="ai-insight-content">
-                                        <h5>${insight.value}</h5>
-                                        <p>${insight.description}</p>
-                                    </div>
-                                </div>
-                            `).join('')}
-                            
-                            ${globalInsight.recommendations && globalInsight.recommendations.length > 0 ? `
-                                <div class="ai-insight warning">
-                                    <div class="ai-insight-title">
-                                        <i class="fas fa-lightbulb"></i> Raccomandazioni Globali
-                                    </div>
-                                    <div class="ai-insight-content">
-                                        ${globalInsight.recommendations.map(rec => `
-                                            <p><strong>${rec.type.toUpperCase()}:</strong> ${rec.message}</p>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }
-                
-                aiInsightsContent.innerHTML = modalHTML;
-                aiInsightsModal.classList.add('show');
-                
-                setTimeout(() => {
-                    renderExhaustionTimelineChart(insights);
-                }, 100);
-            }
-            
-            // Render exhaustion timeline chart
-            function renderExhaustionTimelineChart(insights) {
-                const ctx = document.getElementById('exhaustionTimelineChart')?.getContext('2d');
-                if (!ctx) return;
-                
-                const materialsWithPrediction = insights.filter(i => 
-                    i.predictedExhaustionDate && i.type !== 'global'
-                );
-                
-                materialsWithPrediction.sort((a, b) => 
-                    new Date(a.predictedExhaustionDate) - new Date(b.predictedExhaustionDate)
-                );
-                
-                const labels = materialsWithPrediction
-                    .slice(0, 10)
-                    .map(m => m.materialName.substring(0, 15) + (m.materialName.length > 15 ? '...' : ''));
-                
-                const data = materialsWithPrediction
-                    .slice(0, 10)
-                    .map(m => {
-                        const days = Math.ceil((new Date(m.predictedExhaustionDate) - new Date()) / (1000 * 60 * 60 * 24));
-                        return days;
-                    });
-                
-                const backgroundColors = materialsWithPrediction
-                    .slice(0, 10)
-                    .map(m => {
-                        if (m.priority === 1) return 'rgba(220, 53, 69, 0.7)';
-                        if (m.priority === 2) return 'rgba(255, 193, 7, 0.7)';
-                        return 'rgba(23, 162, 184, 0.7)';
-                    });
-                
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Giorni fino all\'esaurimento',
-                            data: data,
-                            backgroundColor: backgroundColors,
-                            borderColor: backgroundColors.map(c => c.replace('0.7', '1')),
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Giorni'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const material = materialsWithPrediction[context.dataIndex];
-                                        return [
-                                            `Materiale: ${material.materialName}`,
-                                            `Giorni: ${context.parsed.y}`,
-                                            `Data stimata: ${new Date(material.predictedExhaustionDate).toLocaleDateString()}`,
-                                            `Confidenza: ${(material.confidence * 100).toFixed(0)}%`
-                                        ];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            
-            // Generate AI report
-            async function generateAIReport() {
-                const insights = await analyzeMaterialsAI();
-                
-                const csvData = [
-                    ['Materiale', 'Codice', 'Categoria', 'Scorte Attuali', 'Scorte Minime', 
-                     'Giorni a Esaurimento', 'Data Prevista', 'Confidenza', 'Trend Consumo', 'Priorità', 'Raccomandazioni']
-                ];
-                
-                insights.filter(i => i.type !== 'global').forEach(insight => {
-                    csvData.push([
-                        insight.materialName,
-                        insight.materialCode || '',
-                        getCategoryText(insight.category),
-                        insight.currentStock,
-                        insight.minimumStock,
-                        insight.daysOfSupply || 'N/A',
-                        insight.predictedExhaustionDate ? 
-                            new Date(insight.predictedExhaustionDate).toLocaleDateString() : 'N/A',
-                        `${(insight.confidence * 100).toFixed(0)}%`,
-                        insight.consumptionTrend,
-                        insight.priority,
-                        insight.recommendations?.[0]?.message || 'N/A'
-                    ]);
-                });
-                
-                const csvString = csvData.map(row => 
-                    row.map(cell => `"${cell.toString().replace(/"/g, '""')}"`).join(',')
-                ).join('\n');
-                
-                const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', `report_ai_materiali_${new Date().toISOString().split('T')[0]}.csv`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                showSuccessAlert("Report AI generato e scaricato con successo!");
-            }
-            
-            // Global AI functions
-            window.viewCriticalMaterials = function() {
-                const criticalMaterials = materials.filter(material => {
-                    const status = getStockStatus(material.stockQuantity, material.minimumStock);
-                    return status === 'critical';
-                });
-                
-                stockFilter.value = 'critical';
-                filterMaterials();
-                
-                document.querySelector('.materials-list').scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            };
-            
-            window.viewAllRecommendations = function() {
-                showAIInsightsModal();
-            };
-            
-            window.quickOrder = async function(materialId, quantity) {
-                const material = materials.find(m => m.id === materialId);
-                if (!material) return;
-                
-                alert(`Ordine rapido per ${material.name}\nQuantità: ${quantity || material.minimumStock * 1.5}`);
-                
-                try {
-                    if (db) {
-                        await db.collection('orders').add({
-                            materialId: materialId,
-                            materialName: material.name,
-                            quantity: quantity || material.minimumStock * 1.5,
-                            status: 'pending',
-                            createdAt: new Date().toISOString(),
-                            createdBy: currentUser.uid
-                        });
-                        
-                        showSuccessAlert(`Ordine per ${material.name} creato con successo!`);
-                    }
-                } catch (error) {
-                    console.error("Error creating order:", error);
-                }
-            };
-            
-            window.enableAIFeatures = function() {
-                showSuccessAlert("Funzionalità AI attivate. Il sistema inizierà ad analizzare i dati.");
-                initAI();
             };
             
             // Alert functions
@@ -3955,4 +2645,3 @@
     </script>
 </body>
 </html>
-
