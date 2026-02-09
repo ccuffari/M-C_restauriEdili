@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "deploy:preview": "firebase hosting:channel:deploy pr-$(date +%s) --expires 7d",
+    "deploy:prod": "firebase deploy --only hosting",
+    "version:patch": "npm version patch",
+    "version:minor": "npm version minor",
+    "version:major": "npm version major"
+  }
+}
